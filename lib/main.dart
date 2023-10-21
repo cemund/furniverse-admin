@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:furniverse_admin/LoginandLogout/login.dart';
+import 'package:furniverse_admin/admin_prod_list/admin_prod_list.dart';
 import 'package:furniverse_admin/sample.dart';
 import 'home/main_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
   final routes = {
     '/': 'Home Page',
     '/page1': 'Page 1',
+    '/adminProdList': "Admin Product List",
   };
 
   // This widget is the root of your application.
@@ -29,6 +31,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => MainButtons(routes),
         '/page1': (context) => const LogIn(),
+        '/adminProdList': (context) => const AdminProdList(),
       },
     );
   }
