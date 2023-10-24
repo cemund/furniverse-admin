@@ -10,13 +10,15 @@ class AdminProdList extends StatefulWidget {
 
 class _AdminProdListState extends State<AdminProdList> {
   bool value = false;
+  final List<String> items = [
+    'Action 1',
+    'Action 2',
+    'Action 3',
+    'Action 4',
+  ];
+  String? selectedValue;
   @override
   Widget build(BuildContext context) {
-    final List<String> items = [
-      'Action 1',
-      'Action 22',
-    ];
-    String? selectedValue;
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -166,7 +168,7 @@ class _AdminProdListState extends State<AdminProdList> {
                         buttonStyleData: const ButtonStyleData(
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           height: 40,
-                          width: 100,
+                          width: 110,
                         ),
                         menuItemStyleData: const MenuItemStyleData(
                           height: 40,
@@ -222,8 +224,8 @@ class _AdminProdListState extends State<AdminProdList> {
                       width: 32,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
-                          border:
-                              Border.all(width: 1, color: Color(0xFFE2E2EA))),
+                          border: Border.all(
+                              width: 1, color: const Color(0xFFE2E2EA))),
                       child: const Icon(
                         Icons.chevron_right_rounded,
                         size: 24,
