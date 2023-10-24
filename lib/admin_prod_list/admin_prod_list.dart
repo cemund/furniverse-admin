@@ -63,10 +63,10 @@ class _AdminProdListState extends State<AdminProdList> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Products List',
                         style: TextStyle(
                           color: Color(0xFF171725),
@@ -75,17 +75,60 @@ class _AdminProdListState extends State<AdminProdList> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        "Show",
-                        style: TextStyle(
-                          color: Color(0xFF92929D),
-                          fontSize: 14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
-                          height: 0,
-                          letterSpacing: 0.08,
-                        ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          const Text(
+                            "Show: ",
+                            style: TextStyle(
+                              color: Color(0xFF92929D),
+                              fontSize: 14,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              height: 0,
+                              letterSpacing: 0.08,
+                            ),
+                          ),
+                          DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                              isExpanded: true,
+                              hint: Text(
+                                selectedValue ?? "All Products",
+                                style: const TextStyle(
+                                  color: Color(0xFF44444F),
+                                  fontSize: 14,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              items: items
+                                  .map(
+                                      (String item) => DropdownMenuItem<String>(
+                                            value: item,
+                                            child: Text(
+                                              item,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ))
+                                  .toList(),
+                              value: selectedValue,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  selectedValue = value;
+                                });
+                              },
+                              buttonStyleData: const ButtonStyleData(
+                                height: 40,
+                                width: 100,
+                              ),
+                              menuItemStyleData: const MenuItemStyleData(
+                                height: 40,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -177,10 +220,58 @@ class _AdminProdListState extends State<AdminProdList> {
               const SizedBox(height: 10),
               Expanded(
                   child: ListView(
-                children: const [
-                  ProductDetailCard(),
-                  ProductDetailCard(),
-                  ProductDetailCard(),
+                children: [
+                  const ProductDetailCard(),
+                  const ProductDetailCard(),
+                  const ProductDetailCard(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          '1-10 of 195 items',
+                          style: TextStyle(
+                            color: Color(0xFF44444F),
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 32,
+                        width: 32,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                                width: 1, color: const Color(0xFFE2E2EA))),
+                        child: const Icon(
+                          Icons.chevron_left_rounded,
+                          size: 24,
+                          color: Color(0xff92929D),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 22,
+                      ),
+                      Container(
+                        height: 32,
+                        width: 32,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border:
+                                Border.all(width: 1, color: Color(0xFFE2E2EA))),
+                        child: const Icon(
+                          Icons.chevron_right_rounded,
+                          size: 24,
+                          color: Color(0xff92929D),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ))
             ],
@@ -191,174 +282,195 @@ class _AdminProdListState extends State<AdminProdList> {
   }
 }
 
-class ProductDetailCard extends StatelessWidget {
+class ProductDetailCard extends StatefulWidget {
   const ProductDetailCard({
     super.key,
   });
 
   @override
+  State<ProductDetailCard> createState() => _ProductDetailCardState();
+}
+
+class _ProductDetailCardState extends State<ProductDetailCard> {
+  bool? isChecked = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-            margin: const EdgeInsets.only(top: 20),
-            height: 16,
-            width: 16,
-            child: Checkbox(
-              value: false,
-              onChanged: (value) {},
-            )),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            height: 36,
-                            width: 36,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                image: const DecorationImage(
-                                    image:
-                                        AssetImage('assets/images/table.jpeg'),
-                                    fit: BoxFit.cover)),
-                          ),
-                          const SizedBox(
-                            width: 6,
-                          ),
-                          const Text(
-                            "Coffee Table",
-                            style: TextStyle(
-                              color: Color(0xFF171625),
-                              fontSize: 14,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w500,
-                              height: 0,
-                              letterSpacing: 0.20,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+              color:
+                  isChecked ?? false ? const Color(0xff3DD598) : Colors.white)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+              margin: const EdgeInsets.only(top: 20),
+              height: 16,
+              width: 16,
+              child: Checkbox(
+                activeColor: const Color(0xff3DD598),
+                value: isChecked,
+                onChanged: (value) {
+                  setState(() {
+                    isChecked = value;
+                  });
+                },
+              )),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              height: 36,
+                              width: 36,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  image: const DecorationImage(
+                                      image: AssetImage(
+                                          'assets/images/table.jpeg'),
+                                      fit: BoxFit.cover)),
                             ),
-                          ),
-                        ],
-                      ),
-                      const Text(
-                        "₱200.00",
-                        style: TextStyle(
-                          color: Color(0xFF171625),
-                          fontSize: 14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w700,
-                          height: 0,
-                          letterSpacing: 0.10,
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            const Text(
+                              "Coffee Table",
+                              style: TextStyle(
+                                color: Color(0xFF171625),
+                                fontSize: 14,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w500,
+                                height: 0,
+                                letterSpacing: 0.20,
+                              ),
+                            ),
+                          ],
                         ),
-                      )
-                    ],
+                        const Text(
+                          "₱200.00",
+                          style: TextStyle(
+                            color: Color(0xFF171625),
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w700,
+                            height: 0,
+                            letterSpacing: 0.10,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            "ID",
-                            style: TextStyle(
-                              color: Color(0xFF686873),
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w600,
-                              height: 0,
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "ID",
+                              style: TextStyle(
+                                color: Color(0xFF686873),
+                                fontSize: 12,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                height: 0,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 6),
-                          Text(
-                            "123456",
-                            style: TextStyle(
-                              color: Color(0xFF44444F),
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                              letterSpacing: 0.20,
+                            SizedBox(width: 6),
+                            Text(
+                              "123456",
+                              style: TextStyle(
+                                color: Color(0xFF44444F),
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                                letterSpacing: 0.20,
+                              ),
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "STOCK",
+                              style: TextStyle(
+                                color: Color(0xFF686873),
+                                fontSize: 12,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                height: 0,
+                              ),
                             ),
-                          )
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            "STOCK",
-                            style: TextStyle(
-                              color: Color(0xFF686873),
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w600,
-                              height: 0,
+                            SizedBox(width: 6),
+                            Text(
+                              "98",
+                              style: TextStyle(
+                                color: Color(0xFF44444F),
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                                letterSpacing: 0.20,
+                              ),
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "VAR",
+                              style: TextStyle(
+                                color: Color(0xFF686873),
+                                fontSize: 12,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                height: 0,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 6),
-                          Text(
-                            "98",
-                            style: TextStyle(
-                              color: Color(0xFF44444F),
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                              letterSpacing: 0.20,
-                            ),
-                          )
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            "VAR",
-                            style: TextStyle(
-                              color: Color(0xFF686873),
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w600,
-                              height: 0,
-                            ),
-                          ),
-                          SizedBox(width: 6),
-                          Text(
-                            "2",
-                            style: TextStyle(
-                              color: Color(0xFF44444F),
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                              letterSpacing: 0.20,
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                )
-              ],
+                            SizedBox(width: 6),
+                            Text(
+                              "2",
+                              style: TextStyle(
+                                color: Color(0xFF44444F),
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                                letterSpacing: 0.20,
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-        Container(
-          margin: const EdgeInsets.only(top: 16),
-          child: const Icon(
-            Icons.more_horiz,
-          ),
-        )
-      ],
+          Container(
+            margin: const EdgeInsets.only(top: 16),
+            child: const Icon(
+              Icons.more_horiz,
+            ),
+          )
+        ],
+      ),
     );
   }
 }
