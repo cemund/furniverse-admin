@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:furniverse_admin/LoginandLogout/login.dart';
-import 'package:furniverse_admin/admin_home/admin_main.dart';
-import 'package:furniverse_admin/admin_home/pages/admin_add_product.dart';
-import 'package:furniverse_admin/admin_home/pages/admin_prod_list_dart.dart';
+import 'package:furniverse_admin/screens/LoginandLogout/login.dart';
+import 'package:furniverse_admin/screens/admin_home/admin_main.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/admin_add_product.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/admin_prod_list_dart.dart';
 import 'package:furniverse_admin/sample.dart';
-import 'home/main_page.dart';
+import 'screens/home/main_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
 
@@ -22,7 +22,6 @@ class MyApp extends StatelessWidget {
     '/page1': 'Page 1',
     '/adminHome': "Admin Home",
     '/newprod': "New Product",
-
   };
 
   // This widget is the root of your application.

@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:furniverse_admin/widgets/line_chart_widget.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -17,7 +18,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   String? selectedValue;
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,7 +107,128 @@ class _AdminHomePageState extends State<AdminHomePage> {
             ),
           ],
         ),
+        SizedBox(
+          height: 250,
+          child: GridView.count(
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: 2,
+            childAspectRatio: (1 / .7),
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 14,
+            children: const [
+              Report(
+                title: 'Sales',
+                previous: 21340,
+                percent: 2.5,
+                price: 60289,
+              ),
+              Report(
+                title: 'Purchase',
+                previous: 21340,
+                percent: 2.5,
+                price: 60289,
+              ),
+              Report(
+                title: 'Return',
+                previous: 21340,
+                percent: 2.5,
+                price: 60289,
+              ),
+              Report(
+                title: 'Marketing',
+                previous: 21340,
+                percent: 2.5,
+                price: 60289,
+              ),
+            ],
+          ),
+        ),
+        LineChartWidget(),
       ],
+    );
+  }
+}
+
+class Report extends StatelessWidget {
+  final String title;
+  final int price;
+  final int previous;
+  final double percent;
+
+  const Report({
+    super.key,
+    required this.title,
+    required this.price,
+    required this.previous,
+    required this.percent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 123,
+      padding: const EdgeInsets.all(14.0),
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color(0xFF171725),
+                  fontSize: 12,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              Text(
+                '+$percent%',
+                style: const TextStyle(
+                  color: Color(0xFF3DD598),
+                  fontSize: 12,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                  height: 0,
+                ),
+              ),
+              const Icon(
+                Icons.arrow_upward_rounded,
+                size: 12,
+                color: Color(0xFF3DD598),
+              ),
+            ],
+          ),
+          Text(
+            '₱$price',
+            style: const TextStyle(
+              color: Color(0xFF171725),
+              fontSize: 22,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            'Compared to \n(₱$previous last year)',
+            style: const TextStyle(
+              color: Color(0xFF92929D),
+              fontSize: 12,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w400,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:furniverse_admin/admin_home/pages/admin_business_perf_page.dart';
-import 'package:furniverse_admin/admin_home/pages/admin_customer_req_page.dart';
-import 'package:furniverse_admin/admin_home/pages/admin_home_page.dart';
-import 'package:furniverse_admin/admin_home/pages/admin_prod_list_dart.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/admin_business_perf_page.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/admin_customer_req_page.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/admin_home_page.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/admin_prod_list_dart.dart';
 
 class AdminMain extends StatefulWidget {
   const AdminMain({super.key});
