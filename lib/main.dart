@@ -27,10 +27,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final customTheme = ThemeData(
+      primaryColor: Colors.white,
+      primaryIconTheme: const IconThemeData(color: Colors.black),
+    );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       title: 'Furniverse',
+      theme: customTheme,
       routes: {
         '/': (context) => MainButtons(routes),
         '/page1': (context) => const Sample(),

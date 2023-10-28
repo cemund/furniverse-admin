@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/pdf_preview_page.dart';
 import 'package:furniverse_admin/widgets/line_chart_widget.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -98,17 +99,22 @@ class _AdminHomePageState extends State<AdminHomePage> {
             Row(
               children: [
                 GestureDetector(
-                  onTap: () async {
-                    final pdf = pw.Document();
-                    pdf.addPage(
-                      pw.Page(
-                        build: (pw.Context context) => pw.Center(
-                          child: pw.Text('Hello World!'),
-                        ),
-                      ),
-                    );
+                  onTap: () {
+                    print("hello");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const PdfPreviewPage()));
+                    // final pdf = pw.Document();
+                    // pdf.addPage(
+                    //   pw.Page(
+                    //     build: (pw.Context context) => pw.Center(
+                    //       child: pw.Text('Hello World!'),
+                    //     ),
+                    //   ),
+                    // );
 
-                    final file = File('example.pdf');
+                    // final file = File('example.pdf');
                     // await file.writeAsBytes(await pdf.save());
                   },
                   child: Container(
