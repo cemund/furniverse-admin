@@ -43,6 +43,7 @@ dependencies:
   firebase_storage: ^11.4.0
   model_viewer_plus: ^1.7.0
   fl_chart: ^0.64.0
+  pdf: ^3.10.4
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +69,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

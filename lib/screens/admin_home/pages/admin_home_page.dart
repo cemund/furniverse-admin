@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniverse_admin/widgets/line_chart_widget.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -93,16 +97,31 @@ class _AdminHomePageState extends State<AdminHomePage> {
             ),
             Row(
               children: [
-                Container(
-                    height: 32,
-                    width: 32,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        color: const Color(0xffF6BE2C)),
-                    child: const Icon(
-                      Icons.download,
-                      color: Colors.white,
-                    ))
+                GestureDetector(
+                  onTap: () async {
+                    final pdf = pw.Document();
+                    pdf.addPage(
+                      pw.Page(
+                        build: (pw.Context context) => pw.Center(
+                          child: pw.Text('Hello World!'),
+                        ),
+                      ),
+                    );
+
+                    final file = File('example.pdf');
+                    // await file.writeAsBytes(await pdf.save());
+                  },
+                  child: Container(
+                      height: 32,
+                      width: 32,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: const Color(0xffF6BE2C)),
+                      child: const Icon(
+                        Icons.download,
+                        color: Colors.white,
+                      )),
+                )
               ],
             ),
           ],
@@ -143,8 +162,105 @@ class _AdminHomePageState extends State<AdminHomePage> {
             ],
           ),
         ),
-        LineChartWidget(),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Sales Figures',
+                style: TextStyle(
+                  color: Color(0xFF171625),
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              LineChartWidget(),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Top Selling Products',
+                style: TextStyle(
+                  color: Color(0xFF171625),
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              const TopProducts(),
+              const TopProducts(),
+              const TopProducts(),
+              const TopProducts(),
+              const TopProducts(),
+              Align(
+                alignment: Alignment.center,
+                child: TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'VIEW MORE PRODUCTS',
+                      style: TextStyle(
+                        color: Color(0xFFF6BE2C),
+                        fontSize: 12,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )),
+              )
+            ],
+          ),
+        )
       ],
+    );
+  }
+}
+
+class TopProducts extends StatelessWidget {
+  const TopProducts({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: const EdgeInsets.all(0),
+      leading: const CircleAvatar(
+        backgroundImage: AssetImage('assets/images/table.jpeg'),
+      ),
+      title: const Text(
+        'Coffee Chair',
+        style: TextStyle(
+          color: Color(0xFF171625),
+          fontSize: 14,
+          fontFamily: 'Inter',
+          fontWeight: FontWeight.w600,
+          height: 0,
+          letterSpacing: 0.10,
+        ),
+      ),
+      subtitle: const Text(
+        'Sales: 12,567',
+        style: TextStyle(
+          color: Color(0xFF92929D),
+          fontSize: 12,
+          fontFamily: 'Inter',
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      trailing: SizedBox(
+          height: 30, width: 30, child: Image.asset('assets/images/top1.png')),
     );
   }
 }
