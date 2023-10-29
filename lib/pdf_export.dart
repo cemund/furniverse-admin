@@ -6,49 +6,113 @@ import 'package:pdf/widgets.dart';
 
 Future<Uint8List> makePDF() async {
   final pdf = Document();
-  pdf.addPage(Page(
-      margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 14),
-      build: (context) {
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            decoration:
-                const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Text(
-                  "A.C.Q WOOD WORKS",
-                  style: const TextStyle(
-                    color: PdfColor.fromInt(0xFFFFFFFF),
-                    fontSize: 24,
-                  ),
-                ),
-                Text(
-                  "Malolos, Bulacan",
-                  style: const TextStyle(
-                    color: PdfColor.fromInt(0xFFFFFFFF),
-                    fontSize: 18,
-                  ),
-                ),
-                Text(
-                  "www.facebook.com/ACQWoodWorks",
-                  style: const TextStyle(
-                    color: PdfColor.fromInt(0xFFFFFFFF),
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-              crossAxisAlignment: CrossAxisAlignment.start,
+
+  List<Widget> widgets = [];
+
+  // company name
+  var companyName = Container(
+    decoration: const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+    padding: const EdgeInsets.all(10),
+    child: Column(
+      children: [
+        Text(
+          "A.C.Q WOOD WORKS",
+          style: const TextStyle(
+            color: PdfColor.fromInt(0xFFFFFFFF),
+            fontSize: 24,
+          ),
+        ),
+        Text(
+          "Malolos, Bulacan",
+          style: const TextStyle(
+            color: PdfColor.fromInt(0xFFFFFFFF),
+            fontSize: 18,
+          ),
+        ),
+        Text(
+          "www.facebook.com/ACQWoodWorks",
+          style: const TextStyle(
+            color: PdfColor.fromInt(0xFFFFFFFF),
+            fontSize: 16,
+          ),
+        ),
+      ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+    ),
+  );
+  widgets.add(companyName);
+
+  // sized box
+  widgets.add(SizedBox(height: 20));
+
+  // location table
+  widgets.add(_buildCityTable());
+
+  // sized box
+  widgets.add(SizedBox(height: 20));
+
+  // product table title
+  widgets.add(
+    Table(
+      children: [
+        TableRow(
+          decoration: const BoxDecoration(
+            border: TableBorder(
+              bottom: BorderSide(color: PdfColors.white),
             ),
           ),
-          SizedBox(height: 20),
-          _buildCityTable(),
-          SizedBox(height: 20),
-          _buildCityTable(),
-          SizedBox(height: 40),
-          Container()
-        ]);
-      }));
+          children: [
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 1),
+                padding: const EdgeInsets.all(10),
+                decoration:
+                    const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+                child: Text(
+                  "Furniture Retail Sales Analysis",
+                  style: const TextStyle(
+                    color: PdfColor.fromInt(0xFFFFFFFF),
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ],
+    ),
+  );
+
+  // product table
+  widgets.add(
+    Table(
+      children: [
+        // Headers
+        TableRow(
+          children: [
+            Expanded(
+              child: _buildHeader(title: "Furniture"),
+            ),
+            _buildHeader(title: "Total Retail Sales"),
+            _buildHeader(title: "Potential Retail Sales"),
+            _buildHeader(title: "Surplus/Leakage"),
+            _buildHeader(title: "Trade Area Capture"),
+            _buildHeader(title: "Pull Factor"),
+          ],
+        ),
+
+        // total
+        _buildCityRow("Total"),
+
+        // loop
+        for (int i = 0; i < 20; i++) _buildCityRow("Coffee Table")
+      ],
+    ),
+  );
+
+  pdf.addPage(MultiPage(
+      margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
+      build: (context) => widgets));
   return pdf.save();
 }
 
@@ -64,12 +128,12 @@ Table _buildCityTable() {
       _buildHeader(title: "Trade Area Capture"),
       _buildHeader(title: "Total Sales Pull Factor"),
     ]),
-    _buildCityRow(),
-    _buildCityRow(),
+    _buildCityRow("Malolos"),
+    _buildCityRow("Hagonoy"),
   ]);
 }
 
-TableRow _buildCityRow() {
+TableRow _buildCityRow(String title) {
   return TableRow(
       decoration: const BoxDecoration(
           border: TableBorder(bottom: BorderSide(color: PdfColors.black))),
@@ -80,7 +144,7 @@ TableRow _buildCityRow() {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Malolos",
+                  title,
                   textAlign: TextAlign.left,
                   style: const TextStyle(
                     color: PdfColors.black,
