@@ -7,7 +7,8 @@ class EditProductWidget extends StatefulWidget {
 
   final ProductVariants productVariants;
 
-  const EditProductWidget({super.key,
+  const EditProductWidget({
+    super.key,
     required this.productVariants
   });
 
@@ -37,57 +38,53 @@ class _EditProductWidgetState extends State<EditProductWidget> {
     _productnameController.text = productname;
     _materialController.text = material;
     
-     return AlertDialog(
+    return AlertDialog(
       content: Form(
         key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Edit Variant"),
+            const Text("Edit Variant"),
       
             TextFormField(
-                    controller: _productnameController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-                      labelText: 'Product Name',
-                    ),
+              controller: _productnameController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+                labelText: 'Product Name',
+              ),
+            ),
+      
+            const SizedBox(height: 20),
+      
+            TextFormField(
+              controller: _materialController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+                labelText: 'Material',
+              ),
+            ),
+      
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed:(){editVariant();},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+                ),
+                child: const Text("Save",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontFamily: 'Nunito Sans',
+                    fontWeight: FontWeight.w600,
+                    height: 0,
                   ),
-      
-                  const SizedBox(height: 20),
-      
-                  TextFormField(
-                    controller: _materialController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-                      labelText: 'Material',
-                    ),
-                  ),
-      
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed:(){editVariant();},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
-                      ),
-                      child: const Text("Save",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontFamily: 'Nunito Sans',
-                          fontWeight: FontWeight.w600,
-                          height: 0,
-                        ),
-                      ),       
-                    ),
-                  ),
-      
-            // sampelwidget(
-            //   OnChangeTitle
-            // )
+                ),       
+              ),
+            ),
           ],
         ),
       ),
@@ -100,12 +97,11 @@ class _EditProductWidgetState extends State<EditProductWidget> {
     if (!isValid!) {
       return;
     } else {
-      
-      final provider = Provider.of<VariantsProvider>(context, listen: false);
-      provider.updateVariant(widget.productVariants, _productnameController.text, _materialController.text);
+        
+        final provider = Provider.of<VariantsProvider>(context, listen: false);
+        provider.updateVariant(widget.productVariants, _productnameController.text, _materialController.text);
 
-      Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      }
   }
-}
-
 }

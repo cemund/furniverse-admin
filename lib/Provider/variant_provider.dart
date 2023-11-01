@@ -26,7 +26,8 @@ class VariantsProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-   void saveVariant(String id) {
+  // DI PA GUMAGANA
+  void saveVariant(String id) {
     FirebaseFirestore.instance.collection("products").add({
       'variants' : FieldValue.arrayUnion(variant),
     });

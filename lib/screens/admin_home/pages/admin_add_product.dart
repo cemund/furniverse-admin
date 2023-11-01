@@ -248,7 +248,6 @@ class _AddProductState extends State<AddProduct> {
                     variants.productname,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
                       fontSize: 22,
                     ),
                   ),
