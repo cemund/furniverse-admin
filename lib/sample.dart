@@ -5,7 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:furniverse_admin/firebasefiles/firebase_storage.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:path/path.dart';
 
@@ -29,8 +28,8 @@ class _SampleState extends State<Sample> {
   @override
   Widget build(BuildContext context) {
 
-    var fileName = file != null ? basename(file!.path) : "No file is selected";
-    final Storage storage = Storage();
+    // var fileName = file != null ? basename(file!.path) : "No file is selected";
+    // final Storage storage = Storage();
     return Scaffold(
       body: 
       
