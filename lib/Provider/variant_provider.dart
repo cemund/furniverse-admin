@@ -3,7 +3,7 @@ import 'package:furniverse_admin/models/productvariants_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-class VariantsProvider extends ChangeNotifier{
+class VariantsProvider extends ChangeNotifier {
   final List<ProductVariants> _variant = [];
   List<ProductVariants> get variant => _variant;
 
@@ -19,7 +19,8 @@ class VariantsProvider extends ChangeNotifier{
     notifyListeners();
   }
 
-  void updateVariant(ProductVariants productVariants, String productname, String material) {
+  void updateVariant(
+      ProductVariants productVariants, String productname, String material) {
     productVariants.productname = productname;
     productVariants.material = material;
 
@@ -29,9 +30,20 @@ class VariantsProvider extends ChangeNotifier{
   // DI PA GUMAGANA
   void saveVariant(String id) {
     FirebaseFirestore.instance.collection("products").add({
-      'variants' : FieldValue.arrayUnion(variant),
+      'variants': FieldValue.arrayUnion(variant),
     });
 
     notifyListeners();
+  }
+
+  List<Map<String, dynamic>> getMap() {
+    List<Map<String, dynamic>> productMaps = _variant.map((product) {
+      return {
+        'productname': product.productname,
+        'material': product.material,
+      };
+    }).toList();
+    print(productMaps);
+    return productMaps;
   }
 }
