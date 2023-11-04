@@ -48,7 +48,7 @@ class _AddProductState extends State<AddProduct> {
 
   //image picker
   XFile? selectedImage;
-  List<XFile>? listSelectedImage;
+  List<XFile> listSelectedImage = [];
   String? imageUrl;
   bool imageIsUploaded = false;
   final ImagePicker _picker = ImagePicker();
@@ -71,25 +71,31 @@ class _AddProductState extends State<AddProduct> {
     if (image != null) {
       setState(() {
         selectedImage = image;
-        listSelectedImage?.add(image);
+        listSelectedImage.add(image);
       });
     }
   }
 
   Future<List<String>> uploadSelectedImages() async {
     List<String> images = [];
-    listSelectedImage?.forEach((element) async {
-      String? downloadUrl = await uploadImageToFirebase(element);
-      if (downloadUrl != null) {
-        // Store the downloadUrl in your database or use it as needed.
-        // You can display the uploaded image using this URL.
-        imageUrl = downloadUrl;
-        images.add(downloadUrl);
-        print(downloadUrl);
-      } else {
-        // Handle upload failure.
-      }
-    });
+    for (int i = 0; i < listSelectedImage.length; i++) {
+      String? downloadUrl = await uploadImageToFirebase(listSelectedImage[i]);
+      imageUrl = downloadUrl;
+      images.add(downloadUrl!);
+    }
+    // listSelectedImage.forEach((element) async {
+    //   String? downloadUrl = await uploadImageToFirebase(element);
+    //   if (downloadUrl != null) {
+    //     // Store the downloadUrl in your database or use it as needed.
+    //     // You can display the uploaded image using this URL.
+    //     imageUrl = downloadUrl;
+    //     images.add(downloadUrl);
+    //     print(downloadUrl);
+    //   } else {
+    //     // Handle upload failure.
+    //   }
+    // });
+    print("images");
     print(images);
     return images;
     // if (selectedImage != null) {
