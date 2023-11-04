@@ -132,8 +132,8 @@ class _AddProductState extends State<AddProduct> {
                   Container(
                     width: 80,
                     decoration: BoxDecoration(
-                      border:
-                          Border.all(width: 2, color: const Color(0xFFA9ADB2)),
+                      // border:
+                      //     Border.all(width: 2, color: const Color(0xFFA9ADB2)),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Image.file(
