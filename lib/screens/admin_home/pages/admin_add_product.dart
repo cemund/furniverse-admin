@@ -4,17 +4,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/productvariants_model.dart';
 import 'package:furniverse_admin/services/product_services.dart';
+import 'package:furniverse_admin/services/upload_image_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/widgets/addproductwidget.dart';
 import 'package:furniverse_admin/widgets/editproductwidget.dart';
+import 'package:gap/gap.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:uuid/uuid.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class AddProduct extends StatefulWidget {
   const AddProduct({super.key});
@@ -38,32 +44,94 @@ class _AddProductState extends State<AddProduct> {
   File? file;
   List<ProductVariants> list = [];
   List<Map<String, dynamic>> listItems = [];
+  List<String> productImages = [];
+
+  //image picker
+  XFile? selectedImage;
+  List<XFile>? listSelectedImage;
+  String? imageUrl;
+  bool imageIsUploaded = false;
+  final ImagePicker _picker = ImagePicker();
+
+  //dropdown
+  final List<String> items = [
+    'Living Room',
+    'Bedroom',
+    'Dining Room',
+    'Office',
+    'Outdoor',
+    'Kids\' Furniture',
+    'Storage and Organization',
+    'Accent Furniture',
+  ];
+  String? selectedCategory;
+
+  Future<void> pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        selectedImage = image;
+        listSelectedImage?.add(image);
+      });
+    }
+  }
+
+  Future<List<String>> uploadSelectedImages() async {
+    List<String> images = [];
+    listSelectedImage?.forEach((element) async {
+      String? downloadUrl = await uploadImageToFirebase(element);
+      if (downloadUrl != null) {
+        // Store the downloadUrl in your database or use it as needed.
+        // You can display the uploaded image using this URL.
+        imageUrl = downloadUrl;
+        images.add(downloadUrl);
+        print(downloadUrl);
+      } else {
+        // Handle upload failure.
+      }
+    });
+    print(images);
+    return images;
+    // if (selectedImage != null) {
+    //   String? downloadUrl = await uploadImageToFirebase(selectedImage);
+    //   if (downloadUrl != null) {
+    //     // Store the downloadUrl in your database or use it as needed.
+    //     // You can display the uploaded image using this URL.
+    //     imageUrl = downloadUrl;
+    //     imageIsUploaded = true;
+    //   } else {
+    //     // Handle upload failure.
+    //   }
+    // }
+  }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     listItems.add({
-      "imageID": 1,
+      // "imageID": 1,
       "widget": GestureDetector(
-        onTap: () {
+        onTap: () async {
           final id = const Uuid().v4();
+          // final loadingID = const Uuid().v4();
+          await pickImage();
+
           setState(() {
-            listItems.insert(
-              0,
-              {
-                "imageID": id,
-                "widget": Stack(children: [
+            listItems.insert(0, {
+              'id': id,
+              'widget': Stack(
+                children: [
                   Container(
                     width: 80,
                     decoration: BoxDecoration(
+                      border:
+                          Border.all(width: 2, color: const Color(0xFFA9ADB2)),
                       borderRadius: BorderRadius.circular(8),
-                      image: const DecorationImage(
-                          image: CachedNetworkImageProvider(
-                            "https://firebasestorage.googleapis.com/v0/b/furniverse-5f170.appspot.com/o/assets%2Fimages%2Flamp.jpeg?alt=media&token=fabdd434-e15c-4b28-9d3e-640b26393950",
-                          ),
-                          fit: BoxFit.cover),
+                    ),
+                    child: Image.file(
+                      File(selectedImage!.path),
+                      fit: BoxFit.cover,
                     ),
                   ),
                   Positioned(
@@ -73,20 +141,90 @@ class _AddProductState extends State<AddProduct> {
                       onTap: () {
                         setState(() {
                           listItems.removeWhere((element) {
-                            return element['imageID'] == id;
+                            return element['id'] == id;
                           });
                         });
                       },
                       child: const Icon(
-                        Icons.close,
+                        Icons.close_rounded,
                         size: 18,
+                        color: backgroundColor,
                       ),
                     ),
                   ),
-                ])
-              },
-            );
+                ],
+              )
+            });
           });
+
+          // if (!imageIsUploaded) {
+          //   setState(() {
+          //     listItems.insert(0, {
+          //       "loadingID": loadingID,
+          //       "widget": const SizedBox(
+          //           width: 80,
+          //           // decoration: BoxDecoration(
+          //           //   border:
+          //           //       Border.all(width: 2, color: const Color(0xFFA9ADB2)),
+          //           //   borderRadius: BorderRadius.circular(8),
+          //           // ),
+          //           child: Padding(
+          //             padding: EdgeInsets.all(20.0),
+          //             child: CircularProgressIndicator(),
+          //           )),
+          //     });
+          //   });
+          //   await uploadSelectedImage();
+          // }
+
+          // setState(() {
+          //   final image = imageUrl!;
+          //   listItems.removeWhere((element) {
+          //     return element['loadingID'] == loadingID;
+          //   });
+          //   productImages.add(image);
+
+          //   listItems.insert(
+          //     0,
+          //     {
+          //       "imageID": id,
+          //       "widget": Stack(children: [
+          //         Container(
+          //           width: 80,
+          //           decoration: BoxDecoration(
+          //             borderRadius: BorderRadius.circular(8),
+          //             image: DecorationImage(
+          //               image: CachedNetworkImageProvider(
+          //                 image,
+          //               ),
+          //               fit: BoxFit.cover,
+          //             ),
+          //           ),
+          //         ),
+          //         Positioned(
+          //           top: 5,
+          //           right: 5,
+          //           child: GestureDetector(
+          //             onTap: () async {
+          //               setState(() {
+          //                 listItems.removeWhere((element) {
+          //                   return element['imageID'] == id;
+          //                 });
+          //               });
+          //               await deleteImageFromFirebase(image);
+          //             },
+          //             child: const Icon(
+          //               Icons.close,
+          //               size: 18,
+          //               color: backgroundColor,
+          //             ),
+          //           ),
+          //         ),
+          //       ])
+          //     },
+          //   );
+          //   imageIsUploaded = false;
+          // });
         },
         child: Container(
           width: 80,
@@ -121,7 +259,7 @@ class _AddProductState extends State<AddProduct> {
   Widget build(BuildContext context) {
     // final products = [Container(), Container(),];
 
-    var fileName = file != null ? basename(file!.path) : "No file is selected";
+    var fileName = file != null ? basename(file!.path) : "Upload 3D Model";
     _fileController.text = fileName;
 
     final provider = Provider.of<VariantsProvider>(context);
@@ -199,7 +337,7 @@ class _AddProductState extends State<AddProduct> {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xFFF0F0F0),
+        backgroundColor: backgroundColor,
         appBar: AppBar(
           centerTitle: true,
           title: const Text(
@@ -242,14 +380,67 @@ class _AddProductState extends State<AddProduct> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                TextFormField(
-                  controller: _productnameController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    labelText: 'Category',
+                DropdownButtonFormField2<String>(
+                  buttonStyleData: const ButtonStyleData(
+                    padding: EdgeInsets.only(right: 8),
                   ),
+                  hint: const Text(
+                    'Select Product Category',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  iconStyleData: const IconStyleData(
+                    icon: Icon(
+                      Icons.arrow_drop_down,
+                    ),
+                    iconSize: 24,
+                  ),
+                  dropdownStyleData: DropdownStyleData(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  menuItemStyleData: const MenuItemStyleData(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  items: items
+                      .map((String item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(
+                              item,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                // fontWeight: FontWeight.bold,
+                                // color: Colors.],
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ))
+                      .toList(),
+                  isExpanded: true,
+                  value: selectedCategory,
+                  onChanged: (String? value) {
+                    setState(() {
+                      selectedCategory = value;
+                    });
+                  },
                 ),
+
+                // DONT DELETE for backup
+                // const SizedBox(height: 20),
+                // TextFormField(
+                //   controller: _categoryController,
+                //   decoration: const InputDecoration(
+                //     border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                //     labelText: 'Category',
+                //   ),
+                // ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _colorController,
@@ -285,6 +476,11 @@ class _AddProductState extends State<AddProduct> {
                         borderRadius: BorderRadius.all(Radius.circular(8))),
                     labelText: 'Price',
                   ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    signed: false,
+                    decimal: true,
+                  ),
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
@@ -294,7 +490,11 @@ class _AddProductState extends State<AddProduct> {
                         borderRadius: BorderRadius.all(Radius.circular(8))),
                     labelText: 'Stocks',
                   ),
-                  keyboardType: TextInputType.number,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    signed: false,
+                    decimal: true,
+                  ),
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
@@ -305,7 +505,7 @@ class _AddProductState extends State<AddProduct> {
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8))),
-                    hintText: 'Enter your description',
+                    hintText: 'Enter Product Description',
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -360,6 +560,59 @@ class _AddProductState extends State<AddProduct> {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8))),
                     labelText: 'Upload 3d Model',
+                  ),
+                ),
+                const Gap(10),
+                GestureDetector(
+                  onTap: selectFile,
+                  child: Container(
+                    height: 60,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(width: 2, color: borderColor)),
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset('assets/icons/model.svg'),
+                              const Gap(8),
+                              Text(
+                                fileName,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: foregroundColor,
+                                  fontSize: 16,
+                                  fontFamily: 'Nunito Sans',
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (file != null)
+                          Positioned(
+                            top: 5,
+                            right: 5,
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              iconSize: 18,
+                              constraints: const BoxConstraints(),
+                              color: foregroundColor,
+                              onPressed: () {
+                                setState(() {
+                                  file = null;
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.close,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -487,9 +740,7 @@ class _AddProductState extends State<AddProduct> {
                           // );
                         },
                       ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const Gap(10),
                 const AddVariantButton(),
                 // SizedBox(
                 //   width: double.infinity,
@@ -517,36 +768,31 @@ class _AddProductState extends State<AddProduct> {
                 //     ),
                 //   ),
                 // ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 60,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        saveproduct(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8))),
-                      child: const Text(
-                        "Save Product",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontFamily: 'Nunito Sans',
-                          fontWeight: FontWeight.w600,
-                          height: 0,
-                        ),
+                const Gap(20),
+                SizedBox(
+                  width: double.infinity,
+                  height: 60,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      saveproduct(context);
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8))),
+                    child: const Text(
+                      "Save Product",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontFamily: 'Nunito Sans',
+                        fontWeight: FontWeight.w600,
+                        height: 0,
                       ),
                     ),
                   ),
                 ),
-                // const SizedBox(height: 20),
               ],
             ),
           ),
@@ -563,6 +809,8 @@ class _AddProductState extends State<AddProduct> {
     final provider = Provider.of<VariantsProvider>(context, listen: false);
     // provider.saveVariant(product.id);
     provider.getMap();
+
+    final images = await uploadSelectedImages();
 
     // if (file == null) return;
     if (file != null) {
@@ -589,23 +837,11 @@ class _AddProductState extends State<AddProduct> {
       'dimension': _dimensionController.text,
       'price': _priceController.text,
       'objectmodel': "urlDownload",
-      // 'variants': provider.getMap(),
+      'productimages': images,
     };
 
     // Add the product to Firestore
     productService.addProduct(productData, provider.getMap());
-
-    // await product.set(json);
-
-    // DatabaseReference ref = FirebaseDatabase.instance.ref("users/123");
-
-    // await ref.set({
-    //   "name": "John",
-    //   "age": 18,
-    //   "address": {
-    //     "line1": "100 Mountain View"
-    //   }
-    // });
   }
 
   Future selectFile() async {
@@ -643,14 +879,20 @@ class AddVariantButton extends StatelessWidget {
           radius: const Radius.circular(8),
           borderType: BorderType.RRect,
           child: const Center(
-            child: Text(
-              "Add Variant",
-              style: TextStyle(
-                color: foregroundColor,
-                fontSize: 16,
-                fontFamily: 'Nunito Sans',
-                fontWeight: FontWeight.w400,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add_rounded, color: foregroundColor),
+                Text(
+                  "Add Variant",
+                  style: TextStyle(
+                    color: foregroundColor,
+                    fontSize: 16,
+                    fontFamily: 'Nunito Sans',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
