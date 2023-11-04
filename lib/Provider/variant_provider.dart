@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:furniverse_admin/models/productvariants_model.dart';
+import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
@@ -20,26 +20,29 @@ class VariantsProvider extends ChangeNotifier {
   }
 
   void updateVariant(
-      ProductVariants productVariants, String productname, String material) {
-    productVariants.productname = productname;
+    ProductVariants productVariants,
+    String variantName,
+    String material,
+  ) {
+    productVariants.variantName = variantName;
     productVariants.material = material;
 
     notifyListeners();
   }
 
   // DI PA GUMAGANA
-  void saveVariant(String id) {
-    FirebaseFirestore.instance.collection("products").add({
-      'variants': FieldValue.arrayUnion(variant),
-    });
+  // void saveVariant(String id) {
+  //   FirebaseFirestore.instance.collection("products").add({
+  //     'variants': FieldValue.arrayUnion(variant),
+  //   });
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
   List<Map<String, dynamic>> getMap() {
     List<Map<String, dynamic>> productMaps = _variant.map((product) {
       return {
-        'productname': product.productname,
+        'productname': product.variantName,
         'material': product.material,
       };
     }).toList();

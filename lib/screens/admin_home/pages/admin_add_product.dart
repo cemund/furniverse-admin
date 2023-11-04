@@ -7,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
-import 'package:furniverse_admin/models/productvariants_model.dart';
+import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/upload_image_services.dart';
+import 'package:furniverse_admin/services/upload_model_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/widgets/addproductwidget.dart';
 import 'package:furniverse_admin/widgets/editproductwidget.dart';
@@ -447,62 +448,62 @@ class _AddProductState extends State<AddProduct> {
                 //     labelText: 'Category',
                 //   ),
                 // ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _colorController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    labelText: 'Color',
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _materialController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    labelText: 'Material',
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _dimensionController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    labelText: 'Dimension/Size',
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _priceController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    labelText: 'Price',
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    signed: false,
-                    decimal: true,
-                  ),
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _stocksController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    labelText: 'Stocks',
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    signed: false,
-                    decimal: true,
-                  ),
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                ),
-                const SizedBox(height: 20),
+                const Gap(20),
+                // TextFormField(
+                //   controller: _colorController,
+                //   decoration: const InputDecoration(
+                //     border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                //     labelText: 'Color',
+                //   ),
+                // ),
+                // const SizedBox(height: 20),
+                // TextFormField(
+                //   controller: _materialController,
+                //   decoration: const InputDecoration(
+                //     border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                //     labelText: 'Material',
+                //   ),
+                // ),
+                // const SizedBox(height: 20),
+                // TextFormField(
+                //   controller: _dimensionController,
+                //   decoration: const InputDecoration(
+                //     border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                //     labelText: 'Dimension/Size',
+                //   ),
+                // ),
+                // const SizedBox(height: 20),
+                // TextFormField(
+                //   controller: _priceController,
+                //   decoration: const InputDecoration(
+                //     border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                //     labelText: 'Price',
+                //   ),
+                //   keyboardType: const TextInputType.numberWithOptions(
+                //     signed: false,
+                //     decimal: true,
+                //   ),
+                //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                // ),
+                // const SizedBox(height: 20),
+                // TextFormField(
+                //   controller: _stocksController,
+                //   decoration: const InputDecoration(
+                //     border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                //     labelText: 'Stocks',
+                //   ),
+                //   keyboardType: const TextInputType.numberWithOptions(
+                //     signed: false,
+                //     decimal: true,
+                //   ),
+                //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                // ),
+                // const SizedBox(height: 20),
                 TextFormField(
                   controller: _descriptionController,
                   minLines: 3,
@@ -559,16 +560,16 @@ class _AddProductState extends State<AddProduct> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                TextFormField(
-                  controller: _fileController,
-                  onTap: selectFile,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    labelText: 'Upload 3d Model',
-                  ),
-                ),
-                const Gap(10),
+                // TextFormField(
+                //   controller: _fileController,
+                //   onTap: selectFile,
+                //   decoration: const InputDecoration(
+                //     border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                //     labelText: 'Upload 3d Model',
+                //   ),
+                // ),
+                // const Gap(10),
                 GestureDetector(
                   onTap: selectFile,
                   child: Container(
@@ -635,12 +636,12 @@ class _AddProductState extends State<AddProduct> {
                 variant.isEmpty
                     ? const Column(
                         children: [
-                          Center(
-                            child: Text(
-                              'No variants',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ),
+                          // Center(
+                          //   child: Text(
+                          //     'No variants',
+                          //     style: TextStyle(fontSize: 16),
+                          //   ),
+                          // ),
 
                           // SizedBox(
                           //     width: double.infinity,
@@ -703,9 +704,10 @@ class _AddProductState extends State<AddProduct> {
                                       icon: const Icon(Icons.delete))
                                 ],
                               ),
-                              Text(
-                                variants.productname,
-                                style: const TextStyle(
+                              const Text(
+                                // variants.productname,
+                                "variants.productname",
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 22,
                                 ),
@@ -810,44 +812,49 @@ class _AddProductState extends State<AddProduct> {
   //WRITE
   saveproduct(BuildContext context) async {
     ProductService productService = ProductService();
-    final product = FirebaseFirestore.instance.collection('products').doc();
+    // final product = FirebaseFirestore.instance.collection('products').doc();
 
     final provider = Provider.of<VariantsProvider>(context, listen: false);
     // provider.saveVariant(product.id);
-    provider.getMap();
+    // provider.getMap();
 
     final images = await uploadSelectedImages();
+    final model = await uploadModelToFirebase(file);
 
-    // if (file == null) return;
-    if (file != null) {
-      final fileName = basename(file!.path);
-      final objectmodel =
-          FirebaseStorage.instance.ref('threedifiles/$fileName');
-      uploadTask = objectmodel.putFile(file!);
-      final snapshot = await uploadTask!.whenComplete(() {});
-      final urlDownload = await snapshot.ref.getDownloadURL();
-      print(product.path);
-
-      final json = {
-        'productname': _productnameController.text,
-        'material': _materialController.text,
-        'dimension': _dimensionController.text,
-        'price': _priceController.text,
-        'objectmodel': urlDownload,
+    if (model != null) {
+      Map<String, dynamic> productData = {
+        'product name': _productnameController.text,
+        // 'material': _materialController.text,
+        // 'dimension': _dimensionController.text,
+        // 'price': _priceController.text,
+        // 'product 3D model': model,
+        'product images': images,
+        'category': selectedCategory,
+        'description': _descriptionController.text,
       };
+
+      // Add the product to Firestore
+      productService.addProduct(productData, provider.getMap());
     }
 
-    Map<String, dynamic> productData = {
-      'productname': _productnameController.text,
-      'material': _materialController.text,
-      'dimension': _dimensionController.text,
-      'price': _priceController.text,
-      'objectmodel': "urlDownload",
-      'productimages': images,
-    };
+    // if (file == null) return;
+    // if (file != null) {
+    //   final fileName = basename(file!.path);
+    //   final objectmodel =
+    //       FirebaseStorage.instance.ref('threedifiles/$fileName');
+    //   uploadTask = objectmodel.putFile(file!);
+    //   final snapshot = await uploadTask!.whenComplete(() {});
+    //   final urlDownload = await snapshot.ref.getDownloadURL();
+    //   print(product.path);
 
-    // Add the product to Firestore
-    productService.addProduct(productData, provider.getMap());
+    //   final json = {
+    //     'productname': _productnameController.text,
+    //     'material': _materialController.text,
+    //     'dimension': _dimensionController.text,
+    //     'price': _priceController.text,
+    //     'objectmodel': urlDownload,
+    //   };
+    // }
   }
 
   Future selectFile() async {
