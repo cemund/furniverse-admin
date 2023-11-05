@@ -59,6 +59,17 @@ class _EditProductWidgetState extends State<EditProductWidget> {
   final ImagePicker _picker = ImagePicker();
   String error = '';
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _materialController.dispose();
+    _colorController.dispose();
+    _dimensionController.dispose();
+    _priceController.dispose();
+    _stocksController.dispose();
+    super.dispose();
+  }
+
   Future<void> pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {

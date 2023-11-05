@@ -847,11 +847,10 @@ class _AddProductState extends State<AddProduct> {
                             final currentContext =
                                 context; // Capture the context outside the async block
                             saveproduct(currentContext).then((_) {
-                              setState(() {
-                                isSaving =
-                                    false; // Set the flag back to false when saving is complete
-                              });
-                              Navigator.pop(currentContext);
+                              // setState(() {
+                              //   isSaving =
+                              //       false; // Set the flag back to false when saving is complete
+                              // });
 
                               // Show the "Upload Complete" snackbar
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -860,6 +859,7 @@ class _AddProductState extends State<AddProduct> {
                                   duration: Duration(seconds: 2),
                                 ),
                               );
+                              Navigator.pop(currentContext);
                             });
                           },
                           style: ElevatedButton.styleFrom(
