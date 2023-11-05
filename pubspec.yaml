@@ -51,6 +51,8 @@ dependencies:
   dotted_border: ^2.1.0
   image_picker: ^1.0.4
   gap: ^3.0.1
+  readmore: ^2.1.0
+  flutter_spinkit: ^5.2.0
 
 dev_dependencies:
   flutter_test:

@@ -24,3 +24,16 @@ Future<void> deleteImageFromFirebase(String imageUrl) async {
     print("Error deleting image: $e");
   }
 }
+
+Future<String?> uploadVariantImageToFirebase(XFile? imageFile) async {
+  Reference storageReference = FirebaseStorage.instance
+      .ref()
+      .child('variant_images/${DateTime.now()}.jpg');
+  UploadTask uploadTask = storageReference.putFile(File(imageFile!.path));
+  TaskSnapshot snapshot = await uploadTask;
+  if (snapshot.state == TaskState.success) {
+    return await snapshot.ref.getDownloadURL();
+  }
+
+  return null;
+}

@@ -7,7 +7,6 @@ class ProductService {
   Future<void> addProduct(Map<String, dynamic> productData,
       List<Map<String, dynamic>> productVariations) async {
     try {
-      print('hello');
       DocumentReference productDocRef =
           await _productsCollection.add(productData);
 

@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:image_picker/image_picker.dart';
+
 class ProductVariants {
   String variantName;
   String color;
@@ -5,8 +9,8 @@ class ProductVariants {
   String material;
   double price;
   int stocks;
-  String image;
-  String model;
+  XFile image;
+  File model;
 
   ProductVariants({
     required this.variantName,
