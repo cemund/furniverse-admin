@@ -87,6 +87,7 @@ class VariantsProvider extends ChangeNotifier {
         'stocks': product.stocks,
         'image': imageReference,
         'model': modelReference,
+        'id': product.id,
       });
     }
 
@@ -104,7 +105,7 @@ class VariantsProvider extends ChangeNotifier {
     //     'model': product.model,
     //   };
     // }).toList();
-    print(productMaps);
+    // print(productMaps);
     return productMaps;
   }
 }
