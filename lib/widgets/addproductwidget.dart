@@ -11,6 +11,7 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
 
 class AddProductWidget extends StatefulWidget {
   const AddProductWidget({super.key});
@@ -49,7 +50,7 @@ class _AddProductWidgetState extends State<AddProductWidget> {
       type: FileType.any,
 
       // for GLB files only
-      // type: FileType.any,
+      // type: FileType.custom,
       // allowedExtensions: ['glb'],
     );
     if (result == null) return;
@@ -287,6 +288,8 @@ class _AddProductWidgetState extends State<AddProductWidget> {
 
   addVariant(BuildContext context) {
     final isValid = _formKey.currentState?.validate();
+    final id = const Uuid().v4();
+    print(id);
 
     if (!isValid! && selectedImage == null && selectedModel == null) {
       setState(() {
@@ -306,7 +309,8 @@ class _AddProductWidgetState extends State<AddProductWidget> {
           size: _dimensionController.text,
           model: selectedModel!,
           price: double.parse(_priceController.text),
-          stocks: int.parse(_stocksController.text));
+          stocks: int.parse(_stocksController.text),
+          id: id);
 
       final provider = Provider.of<VariantsProvider>(context, listen: false);
       provider.addVariant(variant);

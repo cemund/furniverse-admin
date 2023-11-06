@@ -898,6 +898,7 @@ class _AddProductState extends State<AddProduct> {
 
     final images = await uploadSelectedImages();
     // final model = await uploadModelToFirebase(file);
+    final productMaps = await provider.getMap();
 
     Map<String, dynamic> productData = {
       'product_name': _productnameController.text,
@@ -908,12 +909,12 @@ class _AddProductState extends State<AddProduct> {
       'product_images': images,
       'category': selectedCategory,
       'description': _descriptionController.text,
+      'variants': productMaps,
     };
 
-    final productMaps = await provider.getMap();
-
     // Add the product to Firestore
-    await productService.addProduct(productData, productMaps);
+    await productService.addProduct(productData);
+    // await productService.addProduct(productData, productMaps);
 
     provider.clearVariant();
     // if (file == null) return;

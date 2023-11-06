@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class ProductVariants {
+  String id;
   String variantName;
   String color;
   String size;
@@ -13,6 +14,7 @@ class ProductVariants {
   File model;
 
   ProductVariants({
+    required this.id,
     required this.variantName,
     required this.material,
     required this.color,

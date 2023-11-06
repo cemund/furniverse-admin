@@ -26,6 +26,7 @@ class _EditProductWidgetState extends State<EditProductWidget> {
   String material = "";
   String color = "";
   String size = "";
+  String id = "";
   double price = 0.0;
   int stocks = 0;
   XFile? selectedImage;
@@ -41,6 +42,7 @@ class _EditProductWidgetState extends State<EditProductWidget> {
     stocks = widget.productVariants.stocks;
     selectedImage = widget.productVariants.image;
     selectedModel = widget.productVariants.model;
+    id = widget.productVariants.id;
     super.initState();
   }
 
@@ -343,6 +345,7 @@ class _EditProductWidgetState extends State<EditProductWidget> {
         error = "";
       });
       final newVariant = ProductVariants(
+          id: widget.productVariants.id,
           variantName: _nameController.text,
           material: _materialController.text,
           color: _colorController.text,
