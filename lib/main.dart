@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
     '/adminHome': "Admin Home",
     '/newprod': "New Product",
     '/notif': "Notfication",
-    '/status': "Status"
-    '/req' : "Request"
+    '/status': "Status",
+    '/req': "Request",
   };
 
   MyApp({super.key});
@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
         '/newprod': (context) => const AddProduct(),
         '/notif': (context) => const AppNotification(),
         '/status': (context) => const OrderStatus(),
-        '/req' : (context) => const CustomerRequest()
+        '/req': (context) => const CustomerRequest(),
       },
     );
   }
