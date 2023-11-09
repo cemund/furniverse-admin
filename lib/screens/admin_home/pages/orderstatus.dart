@@ -3,7 +3,13 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:furniverse_admin/firebasefiles/firebase_user_notification.dart';
+import 'package:furniverse_admin/models/order.dart';
+import 'package:furniverse_admin/services/messaging_services.dart';
+import 'package:furniverse_admin/services/order_services.dart';
+import 'package:furniverse_admin/shared/constants.dart';
+import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
+import 'package:provider/provider.dart';
 
 class OrderStatus extends StatefulWidget {
   const OrderStatus({super.key});
@@ -13,7 +19,6 @@ class OrderStatus extends StatefulWidget {
 }
 
 class _OrderStatusState extends State<OrderStatus> {
-
   final List<String> items = [
     'Processing',
     'On Delivery',
@@ -23,6 +28,14 @@ class _OrderStatusState extends State<OrderStatus> {
 
   @override
   Widget build(BuildContext context) {
+    final orders = Provider.of<List<OrderModel>?>(context);
+
+    if (orders == null) {
+      return const Center(
+        child: Loading(),
+      );
+    }
+
     return SafeArea(
       child: Scaffold(
         body: Padding(
@@ -59,20 +72,18 @@ class _OrderStatusState extends State<OrderStatus> {
                 ],
               ),
               const SizedBox(height: 28),
-
               Expanded(
-                child: ListView(
-                  children: const [
-                    OrdersCard(),
-                    OrdersCard(),
-                    OrdersCard(),
-                    OrdersCard(),
-                    OrdersCard(),
-                  ],
-                )
+                child: ListView.builder(
+                  itemCount: orders.length,
+                  itemBuilder: (context, index) {
+                    return OrdersCard(
+                      order: orders[index],
+                    );
+                  },
+                ),
               ),
-            ]
-          )
+            ],
+          ),
         ),
       ),
     );
@@ -80,45 +91,108 @@ class _OrderStatusState extends State<OrderStatus> {
 }
 
 class OrdersCard extends StatefulWidget {
-  const OrdersCard({super.key});
+  const OrdersCard({super.key, required this.order});
+  final OrderModel order;
 
   @override
   State<OrdersCard> createState() => _OrdersCardState();
 }
 
 class _OrdersCardState extends State<OrdersCard> {
+  String? selectedValue, samplel;
+  String? hintText;
 
-  
-    final List<String> items = [
+  final messagingService = MessagingService();
+  List<String> items = [
+    'Pending',
     'Processing',
     'On Delivery',
     'Delivered',
+    'Cancelled',
   ];
-  String? selectedValue, samplel;
+
+  void _updateDropdownItems() {
+    setState(() {
+      // Change the items list to update the dropdown options
+      if (hintText?.toUpperCase() == 'Pending'.toUpperCase()) {
+        items = ['Processing', 'Cancelled'];
+      } else if (hintText?.toUpperCase() == 'Processing'.toUpperCase()) {
+        items = [
+          'On Delivery',
+          'Cancelled',
+        ];
+      } else if (hintText?.toUpperCase() == 'On Delivery'.toUpperCase()) {
+        items = [
+          'Delivered',
+          'Cancelled',
+        ];
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    OrderModel order = widget.order;
+    DateTime dateTime = order.orderDate.toDate();
+    String orderDate = "${dateTime.day}/${dateTime.month}/${dateTime.year}";
+    int quantity = 0;
+
+    // get quantity
+    for (int i = 0; i < order.products.length; i++) {
+      quantity += order.products[i]['quantity'] as int;
+    }
+    hintText = order.shippingStatus;
+    _updateDropdownItems();
+
+    // initial selectedValue
+    // if (order.shippingStatus.toUpperCase() == 'pending'.toUpperCase()) {
+    //   items = [
+    //     'Processing',
+    //     'Cancelled',
+    //   ];
+    // }
+
+    // if (order.shippingStatus.toUpperCase() == 'processing'.toUpperCase()) {
+    //   items = [
+    //     'On Delivery',
+    //     'Cancelled',
+    //   ];
+    // }
+
+    // if (order.shippingStatus.toUpperCase() == 'On Delivery'.toUpperCase()) {
+    //   items = [
+    //     'Delivered',
+    //     'Cancelled',
+    //   ];
+    // }
+
+    // String initialvalue = order.shippingStatus;
+
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.all(14.0),
+        Padding(
+          padding: const EdgeInsets.all(14.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Order #238562312',
-                style: TextStyle(
-                  color: Color(0xFF303030),
-                  fontSize: 16,
-                  fontFamily: 'Nunito Sans',
-                  fontWeight: FontWeight.w600,
-                  height: 0,
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width / 2.5,
+                child: Text(
+                  'ID: ${order.orderId.toUpperCase()}',
+                  style: const TextStyle(
+                    color: Color(0xFF303030),
+                    fontSize: 16,
+                    fontFamily: 'Nunito Sans',
+                    fontWeight: FontWeight.w600,
+                    height: 0,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               Text(
-                '20/03/2023',
+                orderDate,
                 textAlign: TextAlign.right,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xFF909090),
                   fontSize: 14,
                   fontFamily: 'Nunito Sans',
@@ -137,15 +211,15 @@ class _OrdersCardState extends State<OrdersCard> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           ),
         ),
-        const Padding(
-          padding: EdgeInsets.all(14.0),
+        Padding(
+          padding: const EdgeInsets.all(14.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text.rich(
                 TextSpan(
                   children: [
-                    TextSpan(
+                    const TextSpan(
                       text: 'Quantity: ',
                       style: TextStyle(
                         color: Color(0xFF909090),
@@ -155,8 +229,8 @@ class _OrdersCardState extends State<OrdersCard> {
                       ),
                     ),
                     TextSpan(
-                      text: '03',
-                      style: TextStyle(
+                      text: quantity.toString(),
+                      style: const TextStyle(
                         color: Color(0xFF303030),
                         fontSize: 16,
                         fontFamily: 'Nunito Sans',
@@ -169,8 +243,8 @@ class _OrdersCardState extends State<OrdersCard> {
               Text.rich(
                 TextSpan(
                   children: [
-                    TextSpan(
-                      text: 'Total Amount: ',
+                    const TextSpan(
+                      text: 'Total: ',
                       style: TextStyle(
                         color: Color(0xFF909090),
                         fontSize: 16,
@@ -180,8 +254,8 @@ class _OrdersCardState extends State<OrdersCard> {
                       ),
                     ),
                     TextSpan(
-                      text: '₱2,200',
-                      style: TextStyle(
+                      text: '₱${order.totalPrice.toStringAsFixed(2)}',
+                      style: const TextStyle(
                         color: Color(0xFF303030),
                         fontSize: 16,
                         fontFamily: 'Nunito Sans',
@@ -226,60 +300,107 @@ class _OrdersCardState extends State<OrdersCard> {
                   ),
                 ),
               ),
-              DropdownButtonHideUnderline(
-                child: DropdownButton2<String>(
-                  isExpanded: true,
-                  hint: Text(
-                    selectedValue ?? items[0],
-                    style: const TextStyle(
-                      color: Color(0xFF44444F),
-                      fontSize: 14,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-
-                  items: items
-                  .map((String item) => DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(item, style: const TextStyle(fontSize: 14)),
-                  )).toList(),
-
-                  value: selectedValue,
-
-                  onChanged: (String? value) {
-                    showDialog(
-                      context: context,
-                      builder: (context) => ConfirmationAlertDialog(
-                        title: "",
-                        content: const Text(
-                          "Are you sure you want to update the status?",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                child: order.shippingStatus.toUpperCase() ==
+                        'cancelled'.toUpperCase()
+                    ? const Text(
+                        "Cancelled",
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontSize: 16,
+                          fontFamily: 'Nunito Sans',
+                          fontWeight: FontWeight.w600,
                         ),
-
-                        onTapYes: () => {
-                          setState(() {
-                            selectedValue = value;
-                          }),
-
-                          notifyUser(value),
-                        },
-                        onTapNo: () => Navigator.pop(context),
-                        
-                        tapYesString: "Yes",
-                        tapNoString: "No",
                       )
-                    );    
-                  },
+                    : order.shippingStatus.toUpperCase() ==
+                            'Delivered'.toUpperCase()
+                        ? const Text(
+                            "Delivered",
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontSize: 16,
+                              fontFamily: 'Nunito Sans',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )
+                        : DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                              isExpanded: true,
+                              alignment: Alignment.centerRight,
+                              hint: Text(
+                                hintText ?? "",
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 16,
+                                  fontFamily: 'Nunito Sans',
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              items: items
+                                  .map(
+                                      (String item) => DropdownMenuItem<String>(
+                                            value: item,
+                                            child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Text(
+                                                item,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily: 'Nunito Sans',
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                textAlign: TextAlign.right,
+                                              ),
+                                            ),
+                                          ))
+                                  .toList(),
+                              value: selectedValue,
+                              onChanged: (String? value) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) =>
+                                        ConfirmationAlertDialog(
+                                          title: "",
+                                          content: const Text(
+                                            "Are you sure you want to update the status?",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          onTapYes: () {
+                                            setState(() {
+                                              // value = value;
+                                            });
+                                            if (value != null) {
+                                              OrderService().updateStatus(
+                                                  order.orderId, value);
 
-                  buttonStyleData: const ButtonStyleData(
-                    height: 40,
-                    width: 110,
-                  ),
-                  
-                  menuItemStyleData: const MenuItemStyleData(height: 40),
-                ),
+                                              messagingService.notifyUser(
+                                                  userId: order.userId,
+                                                  message: value);
+                                            }
+
+                                            // notifyUser(value),
+                                            // messagingService.notifyUser(
+                                            //     userId: order.userId,
+                                            //     message: value!);
+                                            Navigator.pop(context);
+                                          },
+                                          onTapNo: () => Navigator.pop(context),
+                                          tapYesString: "Yes",
+                                          tapNoString: "No",
+                                        ));
+                              },
+                              buttonStyleData: const ButtonStyleData(
+                                height: 40,
+                                width: 110,
+                              ),
+                              menuItemStyleData:
+                                  const MenuItemStyleData(height: 40),
+                            ),
+                          ),
               ),
             ],
           ),
@@ -288,16 +409,21 @@ class _OrdersCardState extends State<OrdersCard> {
     );
   }
 
-  notifyUser(value){
-    FirebaseFirestore.instance.collection('users').doc("CzKVkPWfrxcsLbac6qT28MDWGom1")
-          //.where("uid", isEqualTo: "Q3tRGI2r4n8rUkGArsla")
-      .get().then((ds) {
-        samplel = "${ds["token"]}";
-        setState(() {});
-      });
+  notifyUser(
+    value,
+  ) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc("CzKVkPWfrxcsLbac6qT28MDWGom1")
+        //.where("uid", isEqualTo: "Q3tRGI2r4n8rUkGArsla")
+        .get()
+        .then((ds) {
+      samplel = "${ds["token"]}";
+      setState(() {});
+    });
 
     FirebaseUserNotification().sendPushMessage(value!, samplel);
-    
+
     Navigator.pop(context);
   }
 }
