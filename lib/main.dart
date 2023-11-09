@@ -8,6 +8,7 @@ import 'package:furniverse_admin/screens/admin_home/pages/admin_prod_list_dart.d
 import 'package:furniverse_admin/sample.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/notification.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/orderstatus.dart';
+import 'package:furniverse_admin/services/order_services.dart';
 import 'package:provider/provider.dart';
 import 'screens/home/main_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,20 +19,25 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseUserNotification().initNotifications();
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => VariantsProvider())
+    ChangeNotifierProvider(
+      create: (_) => VariantsProvider(),
+    ),
+    StreamProvider.value(
+        value: OrderService().streamOrders(), initialData: null)
   ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-
   final routes = {
     '/': 'Home Page',
     '/page1': 'Page 1',
     '/adminHome': "Admin Home",
     '/newprod': "New Product",
-    '/notif' : "Notfication",
-    '/status' : "Status"
+    '/notif': "Notfication",
+    '/status': "Status"
   };
+
+  MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -50,8 +56,8 @@ class MyApp extends StatelessWidget {
         '/page1': (context) => const Sample(),
         '/adminHome': (context) => const AdminMain(),
         '/newprod': (context) => const AddProduct(),
-        '/notif' :(context) => const AppNotification(),
-        '/status' :(context) => const OrderStatus(),
+        '/notif': (context) => const AppNotification(),
+        '/status': (context) => const OrderStatus(),
       },
     );
   }
