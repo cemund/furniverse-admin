@@ -207,13 +207,14 @@ class _AdminProdListState extends State<AdminProdList> {
                                 ))
                             .toList(),
                         value: selectedAction,
-                        onChanged: (String? value) {
+                        onChanged: (String? value) async {
                           if (value == 'Delete') {
-                            for (int i = 0;
-                                i < highlightedProducts.length;
-                                i++) {
-                              ProductService()
+                            int i = highlightedProducts.length - 1;
+                            while (highlightedProducts.isNotEmpty) {
+                              await ProductService()
                                   .deleteProduct(highlightedProducts[i].id);
+                              highlightedProducts.removeAt(i);
+                              i--;
                             }
                           }
                           setState(() {
@@ -281,6 +282,7 @@ class _AdminProdListState extends State<AdminProdList> {
               product: finalList[start + index],
               highlight: highlightProduct,
               removeHighlight: removeHighlight,
+              highlightedProd: highlightedProducts,
             );
           }
         },
@@ -367,12 +369,14 @@ class ProductDetailCard extends StatefulWidget {
   final Product product;
   final Function highlight;
   final Function removeHighlight;
+  final List<Product> highlightedProd;
 
   const ProductDetailCard({
     super.key,
     required this.product,
     required this.highlight,
     required this.removeHighlight,
+    required this.highlightedProd,
   });
 
   @override
@@ -384,6 +388,8 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
 
   @override
   Widget build(BuildContext context) {
+    isChecked = widget.highlightedProd.contains(widget.product);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
       padding: const EdgeInsets.symmetric(horizontal: 10),
