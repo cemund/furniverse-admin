@@ -6,6 +6,7 @@ import 'package:furniverse_admin/screens/admin_home/admin_main.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_add_product.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_prod_list_dart.dart';
 import 'package:furniverse_admin/sample.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/customerrequest.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/notification.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/orderstatus.dart';
 import 'package:furniverse_admin/services/order_services.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
     '/newprod': "New Product",
     '/notif': "Notfication",
     '/status': "Status"
+    '/req' : "Request"
   };
 
   MyApp({super.key});
@@ -58,6 +60,7 @@ class MyApp extends StatelessWidget {
         '/newprod': (context) => const AddProduct(),
         '/notif': (context) => const AppNotification(),
         '/status': (context) => const OrderStatus(),
+        '/req' : (context) => const CustomerRequest()
       },
     );
   }
