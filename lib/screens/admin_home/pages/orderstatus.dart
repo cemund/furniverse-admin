@@ -3,10 +3,13 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:furniverse_admin/firebasefiles/firebase_user_notification.dart';
+import 'package:furniverse_admin/models/notification.dart';
 import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/order_detail_screen.dart';
 import 'package:furniverse_admin/services/messaging_services.dart';
+import 'package:furniverse_admin/services/notification_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
+import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:provider/provider.dart';
@@ -103,6 +106,8 @@ class _OrdersCardState extends State<OrdersCard> {
   String? hintText;
 
   final messagingService = MessagingService();
+  final orderService = OrderService();
+  final notificationService = NotificationService();
   List<String> items = [
     'Pending',
     'Processing',
@@ -344,7 +349,7 @@ class _OrdersCardState extends State<OrdersCard> {
                                           ))
                                   .toList(),
                               value: selectedValue,
-                              onChanged: (String? value) {
+                              onChanged: (String? value) async {
                                 showDialog(
                                     context: context,
                                     builder: (context) =>
@@ -357,12 +362,67 @@ class _OrdersCardState extends State<OrdersCard> {
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.w500),
                                           ),
-                                          onTapYes: () {
-                                            setState(() {
-                                              // value = value;
-                                            });
+                                          onTapYes: () async {
+                                            setState(() {});
+
+                                            // initialize fields
+                                            String title = "";
+                                            String subtitile = "";
+                                            String? notifImage =
+                                                await ProductService()
+                                                    .getProductImage(
+                                                        order.products[0]
+                                                            ['productId']);
+
+                                            switch (value?.toUpperCase()) {
+                                              case "PROCESSING":
+                                                {
+                                                  title =
+                                                      "Your order #${order.orderId.toUpperCase()} has been confirmed.";
+                                                  subtitile =
+                                                      "Seller has confirmed your order! Please expect your item to be shipped within 5-7 days.";
+                                                  break;
+                                                }
+                                              case "ON DELIVERY":
+                                                {
+                                                  title =
+                                                      "Your order #${order.orderId.toUpperCase()} is now being shipped.";
+                                                  subtitile =
+                                                      "Please expect your item to be delivered in the next few day/s.";
+                                                  break;
+                                                }
+                                              case "DELIVERED":
+                                                {
+                                                  title =
+                                                      "Your order #${order.orderId.toUpperCase()} has been shipped successfully.";
+                                                  subtitile =
+                                                      "Thank you for purchasing.";
+                                                  break;
+                                                }
+                                              case "CANCELLED":
+                                                {
+                                                  title =
+                                                      "Your order #${order.orderId.toUpperCase()} has been cancelled by the seller.";
+                                                  subtitile =
+                                                      "Your order #${order.orderId.toUpperCase()} has been canceled by the seller. Please click here for more details.";
+                                                  break;
+                                                }
+                                            }
+
                                             if (value != null) {
-                                              OrderService().updateStatus(
+                                              notificationService
+                                                  .addNotification(
+                                                      NotificationModel(
+                                                          userId: order.userId,
+                                                          orderId:
+                                                              order.orderId,
+                                                          notifTitle: title,
+                                                          notifSubtitle:
+                                                              subtitile,
+                                                          notifImage:
+                                                              notifImage,
+                                                          isViewed: false));
+                                              orderService.updateStatus(
                                                   order.orderId, value);
 
                                               messagingService.notifyUser(
@@ -374,7 +434,9 @@ class _OrdersCardState extends State<OrdersCard> {
                                             // messagingService.notifyUser(
                                             //     userId: order.userId,
                                             //     message: value!);
-                                            Navigator.pop(context);
+                                            if (context.mounted) {
+                                              Navigator.pop(context);
+                                            }
                                           },
                                           onTapNo: () => Navigator.pop(context),
                                           tapYesString: "Yes",
@@ -397,23 +459,23 @@ class _OrdersCardState extends State<OrdersCard> {
     );
   }
 
-  notifyUser(
-    value,
-  ) {
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc("CzKVkPWfrxcsLbac6qT28MDWGom1")
-        //.where("uid", isEqualTo: "Q3tRGI2r4n8rUkGArsla")
-        .get()
-        .then((ds) {
-      samplel = "${ds["token"]}";
-      setState(() {});
-    });
+  // notifyUser(
+  //   value,
+  // ) {
+  //   FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc("CzKVkPWfrxcsLbac6qT28MDWGom1")
+  //       //.where("uid", isEqualTo: "Q3tRGI2r4n8rUkGArsla")
+  //       .get()
+  //       .then((ds) {
+  //     samplel = "${ds["token"]}";
+  //     setState(() {});
+  //   });
 
-    FirebaseUserNotification().sendPushMessage(value!, samplel);
+  //   FirebaseUserNotification().sendPushMessage(value!, samplel);
 
-    Navigator.pop(context);
-  }
+  //   Navigator.pop(context);
+  // }
 }
 
 class MyOrdersTab extends StatelessWidget {

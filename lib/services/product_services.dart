@@ -21,23 +21,6 @@ class ProductService {
       print('Error adding a product: $e');
     }
   }
-  // Future<void> addProduct(Map<String, dynamic> productData,
-  //     List<Map<String, dynamic>> productVariations) async {
-  //   try {
-  //     final productTimestamp =
-  //         FieldValue.serverTimestamp(); // Get a server-side timestamp
-  //     productData['timestamp'] =
-  //         productTimestamp; // Add the timestamp to your data
-  //     DocumentReference productDocRef =
-  //         await _productsCollection.add(productData);
-
-  //     for (int i = 0; i < productVariations.length; i++) {
-  //       await productDocRef.collection('variants').add(productVariations[i]);
-  //     }
-  //   } catch (e) {
-  //     print('Error adding a product: $e');
-  //   }
-  // }
 
   Future<void> deleteProduct(String productId) async {
     try {
@@ -70,5 +53,29 @@ class ProductService {
               .toList()
               .cast(),
         );
+  }
+
+  Future<String?> getProductImage(String productId) async {
+    try {
+      DocumentSnapshot productDoc =
+          await _productsCollection.doc(productId).get();
+
+      if (productDoc.exists) {
+        // Check if the product document exists
+        Map<String, dynamic> productData =
+            productDoc.data() as Map<String, dynamic>;
+
+        // Retrieve the image URL from the product data
+        String imageUrl = productData['product_images'][0];
+
+        return imageUrl;
+      } else {
+        // Handle the case where the product doesn't exist
+        return null;
+      }
+    } catch (e) {
+      print('Error getting product image: $e');
+      return null;
+    }
   }
 }
