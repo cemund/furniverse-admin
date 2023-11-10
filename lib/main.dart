@@ -10,6 +10,7 @@ import 'package:furniverse_admin/screens/admin_home/pages/customerrequest.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/notification.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/orderstatus.dart';
 import 'package:furniverse_admin/services/order_services.dart';
+import 'package:furniverse_admin/services/product_services.dart';
 import 'package:provider/provider.dart';
 import 'screens/home/main_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -24,7 +25,9 @@ void main() async {
       create: (_) => VariantsProvider(),
     ),
     StreamProvider.value(
-        value: OrderService().streamOrders(), initialData: null)
+        value: OrderService().streamOrders(), initialData: null),
+    StreamProvider.value(
+        value: ProductService().streamProducts(), initialData: null)
   ], child: MyApp()));
 }
 
