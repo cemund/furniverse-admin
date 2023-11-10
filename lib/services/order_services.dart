@@ -44,6 +44,7 @@ class OrderService {
   }
 
   Stream<OrderModel> streamOrder(String orderId) {
+    print("hello");
     return _db
         .collection('orders')
         .doc(orderId)

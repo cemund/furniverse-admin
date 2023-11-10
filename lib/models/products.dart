@@ -20,6 +20,8 @@ class Product {
   factory Product.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
+    print(data);
+
     return Product(
         id: doc.id,
         name: data['product_name'] ?? '',

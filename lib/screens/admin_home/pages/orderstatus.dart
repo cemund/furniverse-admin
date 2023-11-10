@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:furniverse_admin/firebasefiles/firebase_user_notification.dart';
 import 'package:furniverse_admin/models/order.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/order_detail_screen.dart';
 import 'package:furniverse_admin/services/messaging_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
-import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:provider/provider.dart';
@@ -144,30 +144,6 @@ class _OrdersCardState extends State<OrdersCard> {
     hintText = order.shippingStatus;
     _updateDropdownItems();
 
-    // initial selectedValue
-    // if (order.shippingStatus.toUpperCase() == 'pending'.toUpperCase()) {
-    //   items = [
-    //     'Processing',
-    //     'Cancelled',
-    //   ];
-    // }
-
-    // if (order.shippingStatus.toUpperCase() == 'processing'.toUpperCase()) {
-    //   items = [
-    //     'On Delivery',
-    //     'Cancelled',
-    //   ];
-    // }
-
-    // if (order.shippingStatus.toUpperCase() == 'On Delivery'.toUpperCase()) {
-    //   items = [
-    //     'Delivered',
-    //     'Cancelled',
-    //   ];
-    // }
-
-    // String initialvalue = order.shippingStatus;
-
     return Column(
       children: [
         Padding(
@@ -275,27 +251,39 @@ class _OrdersCardState extends State<OrdersCard> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                width: 100,
-                height: 36,
-                decoration: const ShapeDecoration(
-                  color: Color(0xFF303030),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(4),
-                      bottomRight: Radius.circular(4),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return OrderDetailPage(
+                        orderId: order.orderId,
+                        userId: order.userId,
+                      );
+                    },
+                  ));
+                },
+                child: Container(
+                  width: 100,
+                  height: 36,
+                  decoration: const ShapeDecoration(
+                    color: Color(0xFF303030),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(4),
+                        bottomRight: Radius.circular(4),
+                      ),
                     ),
                   ),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Detail',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontFamily: 'Nunito Sans',
-                      fontWeight: FontWeight.w600,
-                      height: 0,
+                  child: const Center(
+                    child: Text(
+                      'Detail',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'Nunito Sans',
+                        fontWeight: FontWeight.w600,
+                        height: 0,
+                      ),
                     ),
                   ),
                 ),
