@@ -55,4 +55,20 @@ class CustomerRequests {
       'reqStatus': reqStatus,
     };
   }
+
+  // from map, single query
+  factory CustomerRequests.fromMap(Map data, String requestId) {
+    return CustomerRequests(
+      id: requestId,
+      size: data['size'] ?? "",
+      material: data['material'] ?? "",
+      color: data['color'] ?? "",
+      others: data['others'] ?? "",
+      reqquantity: data['quantity'] ?? 1,
+      productId: data['productId'] ?? "",
+      price: data['price']?.toDouble(),
+      userId: data['userId'] ?? "",
+      reqStatus: data['reqStatus'] ?? "",
+    );
+  }
 }

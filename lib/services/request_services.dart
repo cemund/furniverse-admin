@@ -4,6 +4,7 @@ import 'package:furniverse_admin/models/request.dart';
 class RequestsService {
   final CollectionReference _requestsCollection =
       FirebaseFirestore.instance.collection('requests');
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<void> addToRequest(
       {required String userId,
@@ -85,6 +86,16 @@ class RequestsService {
     }
   }
 
+  Future<void> rejectRequest(String requestId) async {
+    try {
+      await _requestsCollection.doc(requestId).update({
+        'reqStatus': 'Rejected',
+      });
+    } catch (e) {
+      print('Error updating product quantity in cart: $e');
+    }
+  }
+
   Stream<List<CustomerRequests>> streamRequests() {
     return _requestsCollection
         .orderBy('timestamp', descending: true)
@@ -96,5 +107,10 @@ class RequestsService {
               )
               .toList(),
         );
+  }
+
+  Stream<CustomerRequests> streamRequest(String requestId) {
+    return _db.collection('requests').doc(requestId).snapshots().map(
+        (event) => CustomerRequests.fromMap(event.data() ?? {}, requestId));
   }
 }

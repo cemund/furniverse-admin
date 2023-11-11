@@ -10,6 +10,7 @@ class OrderModel {
   final String shippingMethod;
   final String shippingStatus;
   final Timestamp completedDate;
+  final dynamic requestDetails;
 
   OrderModel(
       {required this.userId,
@@ -20,7 +21,8 @@ class OrderModel {
       required this.shippingMethod,
       required this.completedDate,
       required this.shippingStatus,
-      required this.orderId});
+      required this.orderId,
+      required this.requestDetails});
 
   factory OrderModel.fromMap(Map data, String orderId) {
     return OrderModel(
@@ -33,6 +35,7 @@ class OrderModel {
       shippingStatus: data['shippingStatus'] ?? "",
       totalPrice: data['totalPrice'] ?? 0.0,
       products: data['products'] ?? [],
+      requestDetails: data['requestDetails'] ?? {},
     );
   }
 
@@ -49,6 +52,7 @@ class OrderModel {
       shippingStatus: data['shippingStatus'] ?? "",
       totalPrice: data['totalPrice'] ?? 0.0,
       products: data['products'] ?? [],
+      requestDetails: data['requestDetails'] ?? {},
     );
   }
 }
