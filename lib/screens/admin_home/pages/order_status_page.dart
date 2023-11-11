@@ -1,6 +1,5 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:furniverse_admin/models/notification.dart';
 import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/order_detail_screen.dart';
@@ -20,12 +19,12 @@ class OrderStatus extends StatefulWidget {
 }
 
 class _OrderStatusState extends State<OrderStatus> {
-  final List<String> items = [
-    'Processing',
-    'On Delivery',
-    'Delivered',
-  ];
-  String? selectedValue;
+  // final List<String> items = [
+  //   'Processing',
+  //   'On Delivery',
+  //   'Delivered',
+  // ];
+  // String? selectedValue;
 
   @override
   Widget build(BuildContext context) {
@@ -37,55 +36,50 @@ class _OrderStatusState extends State<OrderStatus> {
       );
     }
 
-    return SafeArea(
-      child: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: SvgPicture.asset('assets/icons/chevron_left.svg'),
-                  ),
-                  const Column(
-                    children: [
-                      Text(
-                        'ORDERS',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xFF303030),
-                          fontSize: 16,
-                          fontFamily: 'Avenir Next LT Pro',
-                          fontWeight: FontWeight.w700,
-                          height: 0,
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    width: 24,
-                  )
-                ],
-              ),
-              const SizedBox(height: 28),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: orders.length,
-                  itemBuilder: (context, index) {
-                    return OrdersCard(
-                      order: orders[index],
-                    );
-                  },
-                ),
-              ),
-            ],
+    return Scaffold(
+      body: Column(
+        children: [
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     GestureDetector(
+          //       onTap: () {
+          //         Navigator.pop(context);
+          //       },
+          //       child: SvgPicture.asset('assets/icons/chevron_left.svg'),
+          //     ),
+          //     const Column(
+          //       children: [
+          //         Text(
+          //           'ORDERS',
+          //           textAlign: TextAlign.center,
+          //           style: TextStyle(
+          //             color: Color(0xFF303030),
+          //             fontSize: 16,
+          //             fontFamily: 'Avenir Next LT Pro',
+          //             fontWeight: FontWeight.w700,
+          //             height: 0,
+          //           ),
+          //         )
+          //       ],
+          //     ),
+          //     const SizedBox(
+          //       width: 24,
+          //     )
+          //   ],
+          // ),
+          // const SizedBox(height: 28),
+          Expanded(
+            child: ListView.builder(
+              itemCount: orders.length,
+              itemBuilder: (context, index) {
+                return OrdersCard(
+                  order: orders[index],
+                );
+              },
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

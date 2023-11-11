@@ -8,7 +8,7 @@ import 'package:furniverse_admin/screens/admin_home/pages/admin_prod_list_dart.d
 import 'package:furniverse_admin/sample.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/request_detail_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/notification.dart';
-import 'package:furniverse_admin/screens/admin_home/pages/orderstatus.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/order_status_page.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:provider/provider.dart';
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
     '/adminHome': "Admin Home",
     '/newprod': "New Product",
     '/notif': "Notfication",
-    '/status': "Status",
+    // '/status': "Status",
     // '/req': "Request",
   };
 
@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
         '/adminHome': (context) => const AdminMain(),
         '/newprod': (context) => const AddProduct(),
         '/notif': (context) => const AppNotification(),
-        '/status': (context) => const OrderStatus(),
+        // '/status': (context) => const OrderStatus(),
         // '/req': (context) => const CustomerRequestPage(),
       },
     );
