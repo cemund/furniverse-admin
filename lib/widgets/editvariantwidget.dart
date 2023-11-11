@@ -12,16 +12,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart';
 
-class EditProductWidget extends StatefulWidget {
+class EditVariantWidget extends StatefulWidget {
   final ProductVariants productVariants;
 
-  const EditProductWidget({super.key, required this.productVariants});
+  const EditVariantWidget({super.key, required this.productVariants});
 
   @override
-  State<EditProductWidget> createState() => _EditProductWidgetState();
+  State<EditVariantWidget> createState() => _EditVariantWidgetState();
 }
 
-class _EditProductWidgetState extends State<EditProductWidget> {
+class _EditVariantWidgetState extends State<EditVariantWidget> {
   String name = "";
   String material = "";
   String color = "";

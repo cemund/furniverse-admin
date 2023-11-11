@@ -6,6 +6,7 @@ import 'package:furniverse_admin/screens/admin_home/pages/admin_add_product.dart
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
+import 'package:furniverse_admin/widgets/editproduct.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
@@ -573,6 +574,12 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
             onSelected: (value) {
               if (value == 1) {
                 ProductService().deleteProduct(widget.product.id);
+              }
+              if (value == 2) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditProduct(id : widget.product.id.toString(), product : widget.product)));
               }
             },
             padding: EdgeInsets.zero,

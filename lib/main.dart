@@ -11,6 +11,7 @@ import 'package:furniverse_admin/screens/admin_home/pages/notification.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/orderstatus.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
+import 'package:furniverse_admin/widgets/editproduct.dart';
 import 'package:provider/provider.dart';
 import 'screens/home/main_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
     '/notif': "Notfication",
     '/status': "Status",
     '/req': "Request",
+    '/editprod' : 'Edit Product',
   };
 
   MyApp({super.key});
@@ -64,6 +66,7 @@ class MyApp extends StatelessWidget {
         '/notif': (context) => const AppNotification(),
         '/status': (context) => const OrderStatus(),
         '/req': (context) => const CustomerRequest(),
+        // '/editprod' : (context) => const EditProduct(),
       },
     );
   }

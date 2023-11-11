@@ -13,14 +13,14 @@ import 'package:provider/provider.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
-class AddProductWidget extends StatefulWidget {
-  const AddProductWidget({super.key});
+class AddVariantWidget extends StatefulWidget {
+  const AddVariantWidget({super.key});
 
   @override
-  State<AddProductWidget> createState() => _AddProductWidgetState();
+  State<AddVariantWidget> createState() => _AddVariantWidgetState();
 }
 
-class _AddProductWidgetState extends State<AddProductWidget> {
+class _AddVariantWidgetState extends State<AddVariantWidget> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _materialController = TextEditingController();
