@@ -3,7 +3,9 @@ import 'package:furniverse_admin/screens/admin_home/pages/admin_business_perf_pa
 import 'package:furniverse_admin/screens/admin_home/pages/admin_customer_req_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_home_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_prod_list_dart.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/order_status_page.dart';
 import 'package:furniverse_admin/services/product_services.dart';
+import 'package:furniverse_admin/services/request_services.dart';
 import 'package:provider/provider.dart';
 
 class AdminMain extends StatefulWidget {
@@ -20,9 +22,10 @@ class _AdminMainState extends State<AdminMain> {
 
   List pages = <Widget>[
     const AdminHomePage(),
+    const OrderStatus(),
     const AdminProdList(),
     const BusinessPerformancePage(),
-    const CustomerRequestPage()
+    const CustomerRequestsPage()
   ];
 
   @override
@@ -30,7 +33,9 @@ class _AdminMainState extends State<AdminMain> {
     return MultiProvider(
       providers: [
         StreamProvider.value(
-            value: ProductService().streamProducts(), initialData: null)
+            value: ProductService().streamProducts(), initialData: null),
+        StreamProvider.value(
+            value: RequestsService().streamRequests(), initialData: null),
       ],
       child: SafeArea(
         child: Scaffold(
@@ -135,6 +140,30 @@ class _AdminMainState extends State<AdminMain> {
                   },
                   minLeadingWidth: 10,
                   contentPadding: EdgeInsets.zero,
+                  leading: const Icon(
+                    Icons.receipt_rounded,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                  title: const Text(
+                    'Orders',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontFamily: 'Nunito Sans',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
+                    setState(() {
+                      selectedIdxPage = 2;
+                      Navigator.pop(context);
+                    });
+                  },
+                  minLeadingWidth: 10,
+                  contentPadding: EdgeInsets.zero,
                   leading:
                       const Icon(Icons.discount_outlined, color: Colors.white),
                   title: const Text(
@@ -151,7 +180,7 @@ class _AdminMainState extends State<AdminMain> {
                 ListTile(
                   onTap: () {
                     setState(() {
-                      selectedIdxPage = 2;
+                      selectedIdxPage = 3;
                       Navigator.pop(context);
                     });
                   },
@@ -173,7 +202,7 @@ class _AdminMainState extends State<AdminMain> {
                 ListTile(
                   onTap: () {
                     setState(() {
-                      selectedIdxPage = 3;
+                      selectedIdxPage = 4;
                       Navigator.pop(context);
                     });
                   },

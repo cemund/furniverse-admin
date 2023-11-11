@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/pdf_preview_page.dart';
 import 'package:furniverse_admin/widgets/line_chart_widget.dart';
-import 'package:pdf/widgets.dart' as pw;
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
