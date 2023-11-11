@@ -4,6 +4,7 @@ import 'package:furniverse_admin/screens/admin_home/pages/admin_customer_req_pag
 import 'package:furniverse_admin/screens/admin_home/pages/admin_home_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_prod_list_dart.dart';
 import 'package:furniverse_admin/services/product_services.dart';
+import 'package:furniverse_admin/services/request_services.dart';
 import 'package:provider/provider.dart';
 
 class AdminMain extends StatefulWidget {
@@ -22,7 +23,7 @@ class _AdminMainState extends State<AdminMain> {
     const AdminHomePage(),
     const AdminProdList(),
     const BusinessPerformancePage(),
-    const CustomerRequestPage()
+    const CustomerRequestsPage()
   ];
 
   @override
@@ -30,7 +31,9 @@ class _AdminMainState extends State<AdminMain> {
     return MultiProvider(
       providers: [
         StreamProvider.value(
-            value: ProductService().streamProducts(), initialData: null)
+            value: ProductService().streamProducts(), initialData: null),
+        StreamProvider.value(
+            value: RequestsService().streamRequests(), initialData: null),
       ],
       child: SafeArea(
         child: Scaffold(

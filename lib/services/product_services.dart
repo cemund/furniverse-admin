@@ -78,4 +78,28 @@ class ProductService {
       return null;
     }
   }
+
+  Future<String?> getProductName(String productId) async {
+    try {
+      DocumentSnapshot productDoc =
+          await _productsCollection.doc(productId).get();
+
+      if (productDoc.exists) {
+        // Check if the product document exists
+        Map<String, dynamic> productData =
+            productDoc.data() as Map<String, dynamic>;
+
+        // Retrieve the image URL from the product data
+        String productName = productData['product_name'];
+
+        return productName;
+      } else {
+        // Handle the case where the product doesn't exist
+        return null;
+      }
+    } catch (e) {
+      print('Error getting product image: $e');
+      return null;
+    }
+  }
 }

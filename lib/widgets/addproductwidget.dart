@@ -195,7 +195,7 @@ class _AddProductWidgetState extends State<AddProductWidget> {
                     decoration: outlineInputBorder(label: 'Stocks'),
                     keyboardType: const TextInputType.numberWithOptions(
                       signed: false,
-                      decimal: true,
+                      decimal: false,
                     ),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
