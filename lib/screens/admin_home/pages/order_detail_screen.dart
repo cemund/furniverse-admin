@@ -116,13 +116,20 @@ class _BodyState extends State<Body> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                for (int i = 0; i < orderedProducts.length; i++) ...[
-                  OrderListTile(
-                    product: orderedProducts[i],
-                    variantId: order.products[i]['variationId'],
-                    quantity: order.products[i]['quantity'],
+                if (order.products[0]['variationId'] != "")
+                  for (int i = 0; i < orderedProducts.length; i++) ...[
+                    OrderListTile(
+                      product: orderedProducts[i],
+                      variantId: order.products[i]['variationId'],
+                      quantity: order.products[i]['quantity'],
+                    ),
+                  ],
+                if (order.products[0]['variationId'] == "")
+                  OrderRequestTile(
+                    product: orderedProducts[0],
+                    quantity: order.products[0]['quantity'],
+                    order: order,
                   ),
-                ],
                 const Gap(10),
                 const Text(
                   "Shipping Address",
@@ -423,6 +430,82 @@ class _OrderListTileState extends State<OrderListTile> {
           fontFamily: 'Nunito Sans',
           fontWeight: FontWeight.w600,
         ),
+      ),
+    );
+  }
+}
+
+class OrderRequestTile extends StatefulWidget {
+  const OrderRequestTile({
+    super.key,
+    required this.product,
+    required this.quantity,
+    required this.order,
+  });
+
+  final Product product;
+  final int quantity;
+  final OrderModel order;
+
+  @override
+  State<OrderRequestTile> createState() => _OrderRequestTileState();
+}
+
+class _OrderRequestTileState extends State<OrderRequestTile> {
+  String title = "";
+
+  @override
+  Widget build(BuildContext context) {
+    title = widget.product.name;
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+      leading: Container(
+        height: double.infinity,
+        width: 50,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          image: DecorationImage(
+              image: CachedNetworkImageProvider(
+                widget.product.images[0] ??
+                    "http://via.placeholder.com/350x150",
+              ),
+              fit: BoxFit.cover),
+        ),
+      ),
+      title: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: title,
+              style: const TextStyle(
+                color: Color(0xFF303030),
+                fontSize: 14,
+                fontFamily: 'Nunito Sans',
+                fontWeight: FontWeight.w700,
+                height: 0,
+              ),
+            ),
+            TextSpan(
+              text: " x${widget.quantity}",
+              style: const TextStyle(
+                color: Color(0xFF303030),
+                fontSize: 12,
+                fontFamily: 'Nunito Sans',
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+      subtitle: Text(
+        "color: ${widget.order.requestDetails['color']}; size: ${widget.order.requestDetails['size']}; material: ${widget.order.requestDetails['material']}; ${widget.order.requestDetails['others']}",
+        style: const TextStyle(
+          color: Color(0xFF808080),
+          fontSize: 12,
+          fontFamily: 'Nunito Sans',
+          fontWeight: FontWeight.w400,
+        ),
+        maxLines: 3,
       ),
     );
   }
