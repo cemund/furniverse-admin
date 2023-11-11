@@ -13,8 +13,8 @@ import 'package:furniverse_admin/services/upload_image_services.dart';
 import 'package:furniverse_admin/services/upload_model_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
-import 'package:furniverse_admin/widgets/addproductwidget.dart';
-import 'package:furniverse_admin/widgets/editproductwidget.dart';
+import 'package:furniverse_admin/widgets/addvariantwidget.dart';
+import 'package:furniverse_admin/widgets/editvariantwidget.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
@@ -750,7 +750,7 @@ class _AddProductState extends State<AddProduct> {
                                         onPressed: () {
                                           showDialog(
                                               builder: (context) =>
-                                                  EditProductWidget(
+                                                  EditVariantWidget(
                                                     productVariants: variant,
                                                   ),
                                               context: context,
@@ -963,7 +963,7 @@ class AddVariantButton extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           showDialog(
-              builder: (context) => const AddProductWidget(),
+              builder: (context) => const AddVariantWidget(),
               context: context,
               barrierDismissible: false);
         },

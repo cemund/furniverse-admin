@@ -32,6 +32,11 @@ class ProductService {
     }
   }
 
+  Stream<DocumentSnapshot<Object?>> editProduct(String productId) {
+      // delete file in firestorage
+      return _productsCollection.doc(productId).snapshots();
+  }
+
   Stream<QuerySnapshot> getAllProducts() {
     return _productsCollection.snapshots();
   }
