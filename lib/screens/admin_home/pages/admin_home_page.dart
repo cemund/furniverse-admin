@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/pdf_preview_page.dart';
+import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/line_chart_widget.dart';
+import 'package:provider/provider.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -11,14 +15,24 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
-  final List<String> items = [
-    'This Year',
-    'Year 2022',
-    'Year 2021',
-  ];
+  List<int> years = [];
   String? selectedValue;
   @override
   Widget build(BuildContext context) {
+    final orders = Provider.of<List<OrderModel>?>(context);
+
+    if (orders == null) {
+      return const Center(
+        child: Loading(),
+      );
+    }
+
+    for (int i = 0; i < orders.length; i++) {
+      int year = orders[0].orderDate.toDate().year;
+
+      if (!years.contains(year)) years.add(year);
+    }
+
     return ListView(
       children: [
         Row(
@@ -40,21 +54,20 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 Row(
                   children: [
                     const Text(
-                      "Show: ",
+                      "Show year:",
                       style: TextStyle(
                         color: Color(0xFF92929D),
                         fontSize: 14,
                         fontFamily: 'Inter',
                         fontWeight: FontWeight.w400,
-                        height: 0,
-                        letterSpacing: 0.08,
                       ),
                     ),
                     DropdownButtonHideUnderline(
                       child: DropdownButton2<String>(
+                        alignment: Alignment.centerRight,
                         isExpanded: true,
                         hint: Text(
-                          selectedValue ?? items[0],
+                          selectedValue ?? years[0].toString(),
                           style: const TextStyle(
                             color: Color(0xFF44444F),
                             fontSize: 14,
@@ -62,16 +75,18 @@ class _AdminHomePageState extends State<AdminHomePage> {
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        items: items
-                            .map((String item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
+                        items: years
+                            .map(
+                              (int item) => DropdownMenuItem<String>(
+                                value: item.toString(),
+                                child: Text(
+                                  item.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 14,
                                   ),
-                                ))
+                                ),
+                              ),
+                            )
                             .toList(),
                         value: selectedValue,
                         onChanged: (String? value) {
@@ -80,11 +95,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
                           });
                         },
                         buttonStyleData: const ButtonStyleData(
-                          height: 40,
-                          width: 100,
+                          width: 60,
                         ),
                         menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
+                          height: 20,
+                          padding: EdgeInsets.symmetric(horizontal: 5),
                         ),
                       ),
                     ),
