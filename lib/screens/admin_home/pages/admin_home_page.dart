@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:furniverse_admin/models/order.dart';
+import 'package:furniverse_admin/models/products.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/pdf_preview_page.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/line_chart_widget.dart';
@@ -16,7 +17,9 @@ class AdminHomePage extends StatefulWidget {
 
 class _AdminHomePageState extends State<AdminHomePage> {
   List<int> years = [];
+  List<Product> products = [];
   String? selectedValue;
+
   @override
   Widget build(BuildContext context) {
     final orders = Provider.of<List<OrderModel>?>(context);
@@ -27,10 +30,17 @@ class _AdminHomePageState extends State<AdminHomePage> {
       );
     }
 
-    for (int i = 0; i < orders.length; i++) {
-      int year = orders[0].orderDate.toDate().year;
+    // sort orders by year
+    // Map<int, List<OrderModel>> orderPerYear = {};
 
-      if (!years.contains(year)) years.add(year);
+    for (int i = 0; i < orders.length; i++) {
+      int year = orders[i].orderDate.toDate().year;
+      // orderPerYear.putIfAbsent(year, () => []);
+      // orderPerYear[year]!.add(orders[i]);
+
+      if (!years.contains(year)) {
+        years.add(year);
+      }
     }
 
     return ListView(
