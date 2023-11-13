@@ -35,6 +35,24 @@ class OrderService {
             .cast());
   }
 
+  Stream<List<OrderModel>> streamOrdersByYear(int year) {
+    DateTime startOfYear = DateTime(year, 1, 1);
+    DateTime endOfYear = DateTime(year + 1, 1, 1);
+    return _ordersCollection
+        .where('orderDate', isGreaterThanOrEqualTo: startOfYear)
+        .where('orderDate', isLessThan: endOfYear)
+        .orderBy('orderDate', descending: true)
+        .snapshots()
+        .map((event) => event.docs
+            .map(
+              (e) {
+                return OrderModel.fromFirestore(e);
+              },
+            )
+            .toList()
+            .cast());
+  }
+
   Stream<OrderModel> streamOrder(String orderId) {
     return _db
         .collection('orders')
