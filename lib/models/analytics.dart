@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class AnalyticsModel {
   final int year;
   final int totalQuantity;

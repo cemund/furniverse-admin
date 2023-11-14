@@ -310,7 +310,7 @@ class Analytics extends StatelessWidget {
       children: [
         SizedBox(
           // height: 250,
-          height: 125,
+          height: years.contains(year - 1) ? 125 : 80,
           child: GridView.count(
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
@@ -556,7 +556,7 @@ class Report extends StatelessWidget {
             ],
           ),
           Text(
-            '₱${price.toStringAsFixed(2)}',
+            '₱${price.toStringAsFixed(0)}',
             style: const TextStyle(
               color: Color(0xFF171725),
               fontSize: 22,
@@ -635,7 +635,7 @@ class AOVReport extends StatelessWidget {
             ],
           ),
           Text(
-            '₱${price.toStringAsFixed(2)}',
+            '₱${price.toStringAsFixed(0)}',
             style: const TextStyle(
               color: Color(0xFF171725),
               fontSize: 22,

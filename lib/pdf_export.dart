@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:furniverse_admin/services/analytics_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/shared/company_info.dart';
@@ -15,10 +14,12 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerProvince,
   final totalQuantity = await AnalyticsServices().getTotalQuantity(year);
   final totalRevenue = await AnalyticsServices().getTotalRevenue(year);
 
-  Map<String, dynamic> ordersWithName = {};
-  // ordersWithName = ordersPerProduct.map((key, value) {
+  Map<String, dynamic> ordersWithName = ordersPerProduct;
 
-  // });
+  await Future.forEach(ordersWithName.keys, (key) async {
+    ordersWithName[key]['productName'] =
+        await ProductService().getProductName(key);
+  });
 
   // company name
   var companyInfo = Container(
@@ -97,7 +98,7 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerProvince,
   // product table
   widgets.add(Builder(
     builder: (context) {
-      final products = ordersPerProduct.keys.toList();
+      final productIds = ordersWithName.keys.toList();
 
       return Table(
         children: [
@@ -126,9 +127,13 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerProvince,
             totalRevenue: totalRevenue,
           ),
 
-          // for(var product in products) ...[
-          //   _buildProductRow(productId: product, productName: await ProductService().getProductName(product), quantity: quantity, revenue: revenue),
-          // ]
+          for (var productId in productIds) ...[
+            _buildProductRow(
+                productId: productId,
+                productName: ordersWithName[productId]['productName'] ?? "",
+                quantity: ordersWithName[productId]['quantity'] ?? 0,
+                revenue: ordersWithName[productId]['total'] ?? 0.0),
+          ]
 
           // loop
           // for (int i = 0; i < 20; i++) _buildCityRow("Coffee Table")
@@ -140,6 +145,7 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerProvince,
   pdf.addPage(MultiPage(
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
       build: (context) => widgets));
+
   return pdf.save();
 }
 
@@ -216,22 +222,38 @@ TableRow _buildProductRow(
         ),
       ),
       children: [
-        _buildNextCell(value: productId),
+        // _buildNextCell(value: productId),
+        Container(
+          height: 25,
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              productId,
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: PdfColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ),
 
         Expanded(
           child: Container(
-              height: 25,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  productName,
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                    color: PdfColors.black,
-                    fontSize: 12,
-                  ),
+            height: 25,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                productName,
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  color: PdfColors.black,
+                  fontSize: 12,
                 ),
-              )),
+              ),
+            ),
+          ),
         ),
         _buildNextCell(value: quantity),
         _buildNextCell(value: revenue),
@@ -301,7 +323,7 @@ Container _buildHeader({required String title}) {
 Container _buildIdHeader({required String title}) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 1),
-    width: 90,
+    width: 170,
     height: 50,
     padding: const EdgeInsets.all(10),
     decoration: const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
