@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:furniverse_admin/services/analytics_services.dart';
 import 'package:furniverse_admin/shared/loading.dart';
+import 'package:intl/intl.dart';
 
 class LineChartWidget extends StatelessWidget {
   LineChartWidget(
@@ -10,14 +11,14 @@ class LineChartWidget extends StatelessWidget {
       required this.monthlySales,
       required this.hasPrevious,
       required this.year});
-  final Map<String, int> monthlySales;
+  final Map<String, dynamic> monthlySales;
   final bool hasPrevious;
   final int year;
 
   final List<Color> gradientColors = [Colors.black, Colors.green];
 
-  int getMaxSale(Map<String, int> sales) {
-    int max = 0;
+  double getMaxSale(Map<String, dynamic> sales) {
+    double max = 0.0;
 
     sales.forEach((key, value) {
       if (max < value) {
@@ -44,17 +45,17 @@ class LineChartWidget extends StatelessWidget {
               }
 
               final previousSales = snapshot.data;
-              final List<int> previousMonthlySales = [];
+              final List<double> previousMonthlySales = [];
               previousSales?.forEach((key, value) {
                 previousMonthlySales.add(value);
               });
 
               final withPreviousSales = monthlySales;
-              withPreviousSales['0'] = previousMonthlySales.average.toInt();
+              withPreviousSales['0'] = previousMonthlySales.average;
 
-              int highestSale = getMaxSale(withPreviousSales);
+              double highestSale = getMaxSale(withPreviousSales);
 
-              int length = highestSale.toString().length;
+              int length = highestSale.toInt().toString().length;
 
               double tmp = int.parse("1${"0" * length}") / 5;
 
@@ -76,7 +77,7 @@ class LineChartWidget extends StatelessWidget {
                 child: LineChart(
                   duration: const Duration(milliseconds: 250),
                   LineChartData(
-                    lineTouchData: _lineTouchData(),
+                    lineTouchData: _lineTouchData(tmp),
                     titlesData: _titlesData(tmp),
                     showingTooltipIndicators: [],
                     minX: 0,
@@ -108,9 +109,9 @@ class LineChartWidget extends StatelessWidget {
               );
             })
         : Builder(builder: (context) {
-            int highestSale = getMaxSale(monthlySales);
+            double highestSale = getMaxSale(monthlySales);
 
-            int length = highestSale.toString().length;
+            int length = highestSale.toInt().toString().length;
 
             double tmp = int.parse("1${"0" * length}") / 5;
 
@@ -133,7 +134,7 @@ class LineChartWidget extends StatelessWidget {
                 child: LineChart(
                   duration: const Duration(milliseconds: 250),
                   LineChartData(
-                    lineTouchData: _lineTouchData(),
+                    lineTouchData: _lineTouchData(tmp),
                     titlesData: _titlesData(tmp),
                     showingTooltipIndicators: [],
                     minX: 0,
@@ -199,19 +200,19 @@ class LineChartWidget extends StatelessWidget {
               text = '0';
               break;
             case 1:
-              text = (tmp * 1).toStringAsFixed(0);
+              text = NumberFormat.compact().format(tmp * 1);
               break;
             case 2:
-              text = (tmp * 2).toStringAsFixed(0);
+              text = NumberFormat.compact().format(tmp * 2);
               break;
             case 3:
-              text = (tmp * 3).toStringAsFixed(0);
+              text = NumberFormat.compact().format(tmp * 3);
               break;
             case 4:
-              text = (tmp * 4).toStringAsFixed(0);
+              text = NumberFormat.compact().format(tmp * 4);
               break;
             case 5:
-              text = (tmp * 5).toStringAsFixed(0);
+              text = NumberFormat.compact().format(tmp * 5);
               break;
             default:
               return Container();
@@ -272,7 +273,7 @@ class LineChartWidget extends StatelessWidget {
         },
       ));
 
-  LineTouchData _lineTouchData() {
+  LineTouchData _lineTouchData(double value) {
     return LineTouchData(
       handleBuiltInTouches: true,
       touchTooltipData: LineTouchTooltipData(
@@ -281,16 +282,16 @@ class LineChartWidget extends StatelessWidget {
             return touchedSpots.map((LineBarSpot touchedSpot) {
               final flSpot = touchedSpot.bar.spots[touchedSpot.spotIndex];
               String tooltipLabel =
-                  'X: ${flSpot.x.toInt()}, Y: ${flSpot.y.toStringAsFixed(1)} \n August';
+                  '₱${(flSpot.y * value).toStringAsFixed(2)} \n${(flSpot.x == 0.0) ? "Last Year" : DateFormat('MMMM').format(DateTime(0, flSpot.x.toInt()))}';
               return LineTooltipItem(
                 tooltipLabel,
                 const TextStyle(
-                  color: Color(0xFF696974),
-                  fontSize: 12,
+                  color: Color(0xFF171625),
+                  fontSize: 14,
                   fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w600,
                   height: 0,
-                  letterSpacing: 0.09,
+                  letterSpacing: 0.10,
                 ),
               );
             }).toList();

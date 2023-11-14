@@ -201,13 +201,13 @@ class Analytics extends StatelessWidget {
     }
 
     // monthly sales
-    Map<String, int> monthlySales = {};
+    Map<String, dynamic> monthlySales = {};
     for (var order in fullOrders) {
       // final month = DateFormat('MMMM')
       //     .format(DateTime(0, order?.orderDate.toDate().month ?? 0));
       final month = order!.orderDate.toDate().month.toString();
       monthlySales.putIfAbsent(month, () => 0);
-      monthlySales[month] = monthlySales[month]! + 1;
+      monthlySales[month] = monthlySales[month]! + order.totalPrice;
     }
 
     // print(monthlySales);

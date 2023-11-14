@@ -5,7 +5,7 @@ class AnalyticsModel {
   final double totalRevenue;
   final double averageOrderValue;
   final Map<String, int> topProducts;
-  final Map<String, int> monthlySales;
+  final Map<String, dynamic> monthlySales;
 
   AnalyticsModel({
     required this.year,
