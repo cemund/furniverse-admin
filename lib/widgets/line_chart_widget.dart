@@ -1,60 +1,187 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:furniverse_admin/services/analytics_services.dart';
+import 'package:furniverse_admin/shared/loading.dart';
 
 class LineChartWidget extends StatelessWidget {
-  LineChartWidget({super.key});
+  LineChartWidget(
+      {super.key,
+      required this.monthlySales,
+      required this.hasPrevious,
+      required this.year});
+  final Map<String, int> monthlySales;
+  final bool hasPrevious;
+  final int year;
 
   final List<Color> gradientColors = [Colors.black, Colors.green];
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        height: 220,
-        child: LineChart(
-          duration: const Duration(milliseconds: 250),
-          LineChartData(
-            lineTouchData: _lineTouchData(),
-            titlesData: _titlesData(),
-            showingTooltipIndicators: [],
-            minX: 0,
-            maxX: 12,
-            minY: 0,
-            maxY: 5,
-            // titlesData: LineTitles,
-            gridData: const FlGridData(show: false),
-            borderData: FlBorderData(show: false),
-            lineBarsData: [
-              LineChartBarData(
-                spots: [
-                  const FlSpot(0, 5),
-                  const FlSpot(2, 3),
-                  const FlSpot(4, 3),
-                  const FlSpot(6, 4),
-                  const FlSpot(8, 4),
-                  const FlSpot(11, 3),
-                  const FlSpot(12, 3),
-                ],
-                isCurved: true,
-                isStrokeCapRound: true,
-                color: const Color(0xff3DD598),
-                barWidth: 5,
-                dotData: const FlDotData(show: false),
-                belowBarData: BarAreaData(
-                    show: true,
-                    color: const Color(0xff3DD598).withOpacity(0.3)),
-              )
-            ],
-          ),
-        ));
+  int getMaxSale(Map<String, int> sales) {
+    int max = 0;
+
+    sales.forEach((key, value) {
+      if (max < value) {
+        max = value;
+      }
+    });
+
+    return max < 5 ? 5 : max;
   }
 
-  FlTitlesData _titlesData() => FlTitlesData(
+  @override
+  Widget build(BuildContext context) {
+    return hasPrevious
+        ? FutureBuilder<Map<String, dynamic>>(
+            future: AnalyticsServices().getMonthlySales(year),
+            builder: (context, snapshot) {
+              if (snapshot.data == null) {
+                return const SizedBox(
+                  height: 220,
+                  child: Center(
+                    child: Loading(),
+                  ),
+                );
+              }
+
+              final previousSales = snapshot.data;
+              final List<int> previousMonthlySales = [];
+              previousSales?.forEach((key, value) {
+                previousMonthlySales.add(value);
+              });
+
+              final withPreviousSales = monthlySales;
+              withPreviousSales['0'] = previousMonthlySales.average.toInt();
+
+              int highestSale = getMaxSale(withPreviousSales);
+
+              int length = highestSale.toString().length;
+
+              double tmp = int.parse("1${"0" * length}") / 5;
+
+              List<FlSpot> flSpots = [];
+
+              for (int i = 0; i < 12; i++) {
+                var x = i;
+
+                if (monthlySales.containsKey(i.toString())) {
+                  var y = monthlySales[i.toString()]! / tmp;
+                  flSpots.add(FlSpot(x.toDouble(), y));
+                } else {
+                  flSpots.add(FlSpot(x.toDouble(), 0));
+                }
+              }
+
+              return SizedBox(
+                height: 220,
+                child: LineChart(
+                  duration: const Duration(milliseconds: 250),
+                  LineChartData(
+                    lineTouchData: _lineTouchData(),
+                    titlesData: _titlesData(tmp),
+                    showingTooltipIndicators: [],
+                    minX: 0,
+                    maxX: 12,
+                    minY: 0,
+                    maxY: 5,
+                    // titlesData: LineTitles,
+                    gridData: const FlGridData(show: false),
+                    borderData: FlBorderData(show: false),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: [
+                          // const FlSpot(0, 5),
+
+                          ...flSpots,
+                        ],
+                        isCurved: false,
+                        isStrokeCapRound: true,
+                        color: const Color(0xff3DD598),
+                        barWidth: 5,
+                        dotData: const FlDotData(show: false),
+                        belowBarData: BarAreaData(
+                            show: true,
+                            color: const Color(0xff3DD598).withOpacity(0.3)),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            })
+        : Builder(builder: (context) {
+            int highestSale = getMaxSale(monthlySales);
+
+            int length = highestSale.toString().length;
+
+            double tmp = int.parse("1${"0" * length}") / 5;
+
+            // print(monthlySales.containsKey(1));
+
+            List<FlSpot> flSpots = [];
+
+            for (int i = 1; i < 12; i++) {
+              var x = i;
+
+              if (monthlySales.containsKey(i.toString())) {
+                var y = monthlySales[i.toString()]! / tmp;
+                flSpots.add(FlSpot(x.toDouble(), y));
+              } else {
+                flSpots.add(FlSpot(x.toDouble(), 0));
+              }
+            }
+            return SizedBox(
+                height: 220,
+                child: LineChart(
+                  duration: const Duration(milliseconds: 250),
+                  LineChartData(
+                    lineTouchData: _lineTouchData(),
+                    titlesData: _titlesData(tmp),
+                    showingTooltipIndicators: [],
+                    minX: 0,
+                    maxX: 12,
+                    minY: 0,
+                    maxY: 5,
+                    // titlesData: LineTitles,
+                    gridData: const FlGridData(show: false),
+                    borderData: FlBorderData(show: false),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: [
+                          // const FlSpot(0, 5),
+
+                          const FlSpot(0, 0),
+
+                          ...flSpots,
+
+                          // for (int i = 0; i < 12; i ++) ...[]
+                          // const FlSpot(2, 0.90),
+                          // const FlSpot(4, 3),
+                          // const FlSpot(6, 4),
+                          // const FlSpot(8, 4),
+                          // const FlSpot(11, 3),
+                          // const FlSpot(12, 3),
+                        ],
+                        isCurved: false,
+                        isStrokeCapRound: true,
+                        color: const Color(0xff3DD598),
+                        barWidth: 5,
+                        dotData: const FlDotData(show: false),
+                        belowBarData: BarAreaData(
+                            show: true,
+                            color: const Color(0xff3DD598).withOpacity(0.3)),
+                      )
+                    ],
+                  ),
+                ));
+          });
+  }
+
+  FlTitlesData _titlesData(double value) => FlTitlesData(
       bottomTitles: _bottomTitles(),
-      leftTitles: _leftTitles(),
+      leftTitles: _leftTitles(value),
       rightTitles: const AxisTitles(),
       topTitles: const AxisTitles());
 
-  AxisTitles _leftTitles() => AxisTitles(
+  AxisTitles _leftTitles(double tmp) => AxisTitles(
           sideTitles: SideTitles(
         showTitles: true,
         interval: 1,
@@ -72,25 +199,30 @@ class LineChartWidget extends StatelessWidget {
               text = '0';
               break;
             case 1:
-              text = '200';
+              text = (tmp * 1).toStringAsFixed(0);
               break;
             case 2:
-              text = '400';
+              text = (tmp * 2).toStringAsFixed(0);
               break;
             case 3:
-              text = '600';
+              text = (tmp * 3).toStringAsFixed(0);
               break;
             case 4:
-              text = '800';
+              text = (tmp * 4).toStringAsFixed(0);
               break;
             case 5:
-              text = '1k';
+              text = (tmp * 5).toStringAsFixed(0);
               break;
             default:
               return Container();
           }
 
-          return Text(text, style: style, textAlign: TextAlign.center);
+          return Text(
+            text,
+            style: style,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.clip,
+          );
         },
       ));
 
@@ -109,16 +241,16 @@ class LineChartWidget extends StatelessWidget {
           Widget text;
           switch (value.toInt()) {
             case 1:
-              text = const Text('MAY', style: style);
+              text = const Text('JAN', style: style);
               break;
             case 3:
-              text = const Text('JUN', style: style);
+              text = const Text('MAR', style: style);
               break;
             case 5:
-              text = const Text('JUL', style: style);
+              text = const Text('MAY', style: style);
               break;
             case 7:
-              text = const Text('AUG', style: style);
+              text = const Text('JULY', style: style);
               break;
             case 9:
               text = const Text('SEP', style: style);
@@ -149,7 +281,7 @@ class LineChartWidget extends StatelessWidget {
             return touchedSpots.map((LineBarSpot touchedSpot) {
               final flSpot = touchedSpot.bar.spots[touchedSpot.spotIndex];
               String tooltipLabel =
-                  'X: ${flSpot.x.toStringAsFixed(1)}, Y: ${flSpot.y.toStringAsFixed(1)} \n August';
+                  'X: ${flSpot.x.toInt()}, Y: ${flSpot.y.toStringAsFixed(1)} \n August';
               return LineTooltipItem(
                 tooltipLabel,
                 const TextStyle(

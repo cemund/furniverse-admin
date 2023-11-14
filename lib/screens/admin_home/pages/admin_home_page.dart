@@ -2,14 +2,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:furniverse_admin/models/analytics.dart';
 import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/models/products.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/pdf_preview_page.dart';
+import 'package:furniverse_admin/services/analytics_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/line_chart_widget.dart';
+import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:collection/collection.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -62,7 +67,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 Row(
                   children: [
                     const Text(
-                      "Show year:",
+                      "Show year: ",
                       style: TextStyle(
                         color: Color(0xFF92929D),
                         fontSize: 14,
@@ -73,7 +78,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     if (years.isNotEmpty)
                       DropdownButtonHideUnderline(
                         child: DropdownButton2<String>(
-                          alignment: Alignment.centerRight,
+                          // alignment: Alignment.centerRight,
                           isExpanded: true,
                           hint: Text(
                             selectedValue ?? years[0].toString(),
@@ -107,8 +112,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
                             width: 60,
                           ),
                           menuItemStyleData: const MenuItemStyleData(
-                            height: 20,
-                            padding: EdgeInsets.symmetric(horizontal: 5),
+                            height: 30,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
                           ),
                         ),
                       ),
@@ -147,7 +153,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 value: OrderService().streamOrdersByYear(
                     int.parse(selectedValue ?? years[0].toString())),
                 initialData: null,
-                child: const Analytics())
+                child: Analytics(
+                    years: years,
+                    year: int.parse(selectedValue ?? years[0].toString())))
             : const Center(child: Text("No data for analytics")),
       ],
     );
@@ -157,7 +165,11 @@ class _AdminHomePageState extends State<AdminHomePage> {
 class Analytics extends StatelessWidget {
   const Analytics({
     super.key,
+    required this.year,
+    required this.years,
   });
+  final int year;
+  final List<int> years;
 
   @override
   Widget build(BuildContext context) {
@@ -169,22 +181,49 @@ class Analytics extends StatelessWidget {
       );
     }
 
-    double sales = 0.0;
-    for (int i = 0; i < orders.length; i++) {
-      sales += orders[i].totalPrice;
+    // not cancelled orders
+    final fullOrders = orders.map(
+      (e) {
+        if (e.shippingStatus.toUpperCase() != 'CANCELLED') return e;
+      },
+    ).toList();
+
+    if (fullOrders[0] == null) {
+      return const Center(child: Text("No data for analysis"));
     }
 
+    // total revenue
+    double sales = 0.0;
+    List<double> amountPerTransaction = [];
+    for (int i = 0; i < fullOrders.length; i++) {
+      sales += fullOrders[i]!.totalPrice;
+      amountPerTransaction.add(fullOrders[i]!.totalPrice);
+    }
+
+    // monthly sales
+    Map<String, int> monthlySales = {};
+    for (var order in fullOrders) {
+      // final month = DateFormat('MMMM')
+      //     .format(DateTime(0, order?.orderDate.toDate().month ?? 0));
+      final month = order!.orderDate.toDate().month.toString();
+      monthlySales.putIfAbsent(month, () => 0);
+      monthlySales[month] = monthlySales[month]! + 1;
+    }
+
+    // print(monthlySales);
+
+    // all products
     Map<String, int> products = {};
-    for (int i = 0; i < orders.length; i++) {
-      for (int j = 0; j < orders[i].products.length; j++) {
-        products.putIfAbsent(orders[i].products[j]['productId'], () => 0);
-        products[orders[i].products[j]['productId']] =
-            (products[orders[i].products[j]['productId']]! +
-                orders[i].products[j]['quantity'] as int);
+    for (int i = 0; i < fullOrders.length; i++) {
+      for (int j = 0; j < fullOrders[i]!.products.length; j++) {
+        products.putIfAbsent(fullOrders[i]!.products[j]['productId'], () => 0);
+        products[fullOrders[i]!.products[j]['productId']] =
+            (products[fullOrders[i]!.products[j]['productId']]! +
+                fullOrders[i]!.products[j]['quantity'] as int);
       }
     }
 
-    //sorting
+    //sorting top products
     if (products.isNotEmpty) {
       // Convert the map to a list of entries
       List<MapEntry<String, int>> sortedEntries = products.entries.toList();
@@ -196,10 +235,20 @@ class Analytics extends StatelessWidget {
       products = Map.fromEntries(sortedEntries);
     }
 
+    AnalyticsServices().updateAnalytics(
+        year,
+        AnalyticsModel(
+            year: year,
+            totalRevenue: sales,
+            averageOrderValue: amountPerTransaction.average,
+            topProducts: products,
+            monthlySales: monthlySales));
+
     return Column(
       children: [
         SizedBox(
-          height: 250,
+          // height: 250,
+          height: 125,
           child: GridView.count(
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
@@ -208,29 +257,33 @@ class Analytics extends StatelessWidget {
             mainAxisSpacing: 14,
             children: [
               Report(
-                title: 'Sales',
+                title: 'Total Revenue',
                 previous: 21340,
                 percent: 2.5,
                 price: sales,
+                hasPrevious: years.contains(year - 1),
+                year: year,
               ),
-              const Report(
-                title: 'Purchase',
+              AOVReport(
+                title: 'Average Order Value',
                 previous: 21340,
                 percent: 2.5,
-                price: 60289,
+                price: amountPerTransaction.average,
+                hasPrevious: years.contains(year - 1),
+                year: year,
               ),
-              const Report(
-                title: 'Return',
-                previous: 21340,
-                percent: 2.5,
-                price: 60289,
-              ),
-              const Report(
-                title: 'Marketing',
-                previous: 21340,
-                percent: 2.5,
-                price: 60289,
-              ),
+              // const Report(
+              //   title: 'Return',
+              //   previous: 21340,
+              //   percent: 2.5,
+              //   price: 60289,
+              // ),
+              // const Report(
+              //   title: 'Marketing',
+              //   previous: 21340,
+              //   percent: 2.5,
+              //   price: 60289,
+              // ),
             ],
           ),
         ),
@@ -251,7 +304,11 @@ class Analytics extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              LineChartWidget(),
+              LineChartWidget(
+                monthlySales: monthlySales,
+                year: year,
+                hasPrevious: years.contains(year - 1),
+              ),
             ],
           ),
         ),
@@ -278,20 +335,20 @@ class Analytics extends StatelessWidget {
                     quantity: products.values.elementAt(i),
                     index: i)
               ],
-              Align(
-                alignment: Alignment.center,
-                child: TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'VIEW MORE PRODUCTS',
-                      style: TextStyle(
-                        color: Color(0xFFF6BE2C),
-                        fontSize: 12,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )),
-              )
+              // Align(
+              //   alignment: Alignment.center,
+              //   child: TextButton(
+              //       onPressed: () {},
+              //       child: const Text(
+              //         'VIEW MORE PRODUCTS',
+              //         style: TextStyle(
+              //           color: Color(0xFFF6BE2C),
+              //           fontSize: 12,
+              //           fontFamily: 'Inter',
+              //           fontWeight: FontWeight.w500,
+              //         ),
+              //       )),
+              // )
             ],
           ),
         )
@@ -377,6 +434,8 @@ class Report extends StatelessWidget {
   final double price;
   final int previous;
   final double percent;
+  final bool hasPrevious;
+  final int year;
 
   const Report({
     super.key,
@@ -384,6 +443,8 @@ class Report extends StatelessWidget {
     required this.price,
     required this.previous,
     required this.percent,
+    required this.hasPrevious,
+    required this.year,
   });
 
   @override
@@ -415,20 +476,99 @@ class Report extends StatelessWidget {
               const SizedBox(
                 width: 8,
               ),
+              // Text(
+              //   '+$percent%',
+              //   style: const TextStyle(
+              //     color: Color(0xFF3DD598),
+              //     fontSize: 12,
+              //     fontFamily: 'Inter',
+              //     fontWeight: FontWeight.w600,
+              //     height: 0,
+              //   ),
+              // ),
+              // const Icon(
+              //   Icons.arrow_upward_rounded,
+              //   size: 12,
+              //   color: Color(0xFF3DD598),
+              // ),
+            ],
+          ),
+          Text(
+            '₱${price.toStringAsFixed(2)}',
+            style: const TextStyle(
+              color: Color(0xFF171725),
+              fontSize: 22,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          hasPrevious
+              ? FutureBuilder<double>(
+                  future: AnalyticsServices().getTotalRevenue(year - 1),
+                  builder: (context, snapshot) {
+                    return Text(
+                      'Compared to \n(₱${snapshot.data?.toStringAsFixed(2) ?? 0.0} last year)',
+                      style: const TextStyle(
+                        color: Color(0xFF92929D),
+                        fontSize: 12,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    );
+                  })
+              : const Gap(10),
+        ],
+      ),
+    );
+  }
+}
+
+class AOVReport extends StatelessWidget {
+  final String title;
+  final double price;
+  final int previous;
+  final double percent;
+  final bool hasPrevious;
+  final int year;
+
+  const AOVReport({
+    super.key,
+    required this.title,
+    required this.price,
+    required this.previous,
+    required this.percent,
+    required this.hasPrevious,
+    required this.year,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 123,
+      padding: const EdgeInsets.all(14.0),
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
               Text(
-                '+$percent%',
+                title,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color: Color(0xFF3DD598),
+                  color: Color(0xFF171725),
                   fontSize: 12,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w600,
-                  height: 0,
                 ),
               ),
-              const Icon(
-                Icons.arrow_upward_rounded,
-                size: 12,
-                color: Color(0xFF3DD598),
+              const SizedBox(
+                width: 8,
               ),
             ],
           ),
@@ -441,15 +581,21 @@ class Report extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          Text(
-            'Compared to \n(₱$previous last year)',
-            style: const TextStyle(
-              color: Color(0xFF92929D),
-              fontSize: 12,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w400,
-            ),
-          )
+          hasPrevious
+              ? FutureBuilder<double>(
+                  future: AnalyticsServices().getAOV(year - 1),
+                  builder: (context, snapshot) {
+                    return Text(
+                      'Compared to \n(₱${snapshot.data?.toStringAsFixed(2) ?? 0.0} last year)',
+                      style: const TextStyle(
+                        color: Color(0xFF92929D),
+                        fontSize: 12,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    );
+                  })
+              : const Gap(10),
         ],
       ),
     );
