@@ -3,7 +3,8 @@ import 'package:furniverse_admin/pdf_export.dart';
 import 'package:printing/printing.dart';
 
 class PdfPreviewPage extends StatelessWidget {
-  const PdfPreviewPage({super.key});
+  const PdfPreviewPage({super.key, required this.ordersPerProvince});
+  final Map<String, dynamic> ordersPerProvince;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class PdfPreviewPage extends StatelessWidget {
         canDebug: false,
 
         // pdfPreviewPageDecoration: const BoxDecoration(color: Colors.white),
-        build: (context) => makePDF(),
+        build: (context) => makePDF(ordersPerProvince),
         pdfPreviewPageDecoration: const BoxDecoration(color: Colors.white),
       ),
     );

@@ -282,16 +282,14 @@ class LineChartWidget extends StatelessWidget {
             return touchedSpots.map((LineBarSpot touchedSpot) {
               final flSpot = touchedSpot.bar.spots[touchedSpot.spotIndex];
               String tooltipLabel =
-                  '₱${(flSpot.y * value).toStringAsFixed(2)} \n${(flSpot.x == 0.0) ? "Last Year" : DateFormat('MMMM').format(DateTime(0, flSpot.x.toInt()))}';
+                  '₱${(flSpot.y * value).toStringAsFixed(0)} \n${(flSpot.x == 0.0) ? "Last Year" : DateFormat('MMMM').format(DateTime(0, flSpot.x.toInt()))}';
               return LineTooltipItem(
                 tooltipLabel,
                 const TextStyle(
                   color: Color(0xFF171625),
-                  fontSize: 14,
+                  fontSize: 12,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w600,
-                  height: 0,
-                  letterSpacing: 0.10,
                 ),
               );
             }).toList();

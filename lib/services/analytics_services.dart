@@ -86,9 +86,32 @@ class AnalyticsServices {
             analyticsDoc.data() as Map<String, dynamic>;
 
         // Retrieve the image URL from the product data
-        Map<String, dynamic> totalRevenue = analyticsData['monthlySales'];
+        Map<String, dynamic> monthlyRevenue = analyticsData['monthlySales'];
 
-        return totalRevenue;
+        return monthlyRevenue;
+      }
+
+      return {};
+    } catch (e) {
+      print('Error adding product to cart: $e');
+      return {};
+    }
+  }
+
+  Future<Map<String, dynamic>> getOrdersPerProvince(int year) async {
+    try {
+      DocumentSnapshot analyticsDoc =
+          await _db.collection('analytics').doc(year.toString()).get();
+      if (analyticsDoc.exists) {
+        // Check if the product document exists
+        Map<String, dynamic> analyticsData =
+            analyticsDoc.data() as Map<String, dynamic>;
+
+        // Retrieve the image URL from the product data
+        Map<String, dynamic> ordersPerProvince =
+            analyticsData['ordersPerProvince'];
+
+        return ordersPerProvince;
       }
 
       return {};

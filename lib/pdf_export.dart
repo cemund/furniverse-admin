@@ -1,36 +1,38 @@
 import 'dart:typed_data';
 
 import 'package:furniverse_admin/models/sales_analytics.dart';
+import 'package:furniverse_admin/shared/company_info.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 
-Future<Uint8List> makePDF() async {
+Future<Uint8List> makePDF(Map<String, dynamic> ordersPerProvince) async {
   final pdf = Document();
+  print(ordersPerProvince);
 
   List<Widget> widgets = [];
 
   // company name
-  var companyName = Container(
+  var companyInfo = Container(
     decoration: const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
     padding: const EdgeInsets.all(10),
     child: Column(
       children: [
         Text(
-          "A.C.Q WOOD WORKS",
+          companyName,
           style: const TextStyle(
             color: PdfColor.fromInt(0xFFFFFFFF),
             fontSize: 24,
           ),
         ),
         Text(
-          "Malolos, Bulacan",
+          companyAddress,
           style: const TextStyle(
             color: PdfColor.fromInt(0xFFFFFFFF),
             fontSize: 18,
           ),
         ),
         Text(
-          "www.facebook.com/ACQWoodWorks",
+          companyLink,
           style: const TextStyle(
             color: PdfColor.fromInt(0xFFFFFFFF),
             fontSize: 16,
@@ -40,13 +42,13 @@ Future<Uint8List> makePDF() async {
       crossAxisAlignment: CrossAxisAlignment.start,
     ),
   );
-  widgets.add(companyName);
+  widgets.add(companyInfo);
 
   // sized box
   widgets.add(SizedBox(height: 20));
 
   // location table
-  widgets.add(_buildCityTable());
+  widgets.add(_buildCityTable(ordersPerProvince));
 
   // sized box
   widgets.add(SizedBox(height: 20));
@@ -102,10 +104,10 @@ Future<Uint8List> makePDF() async {
         ),
 
         // total
-        _buildCityRow("Total"),
+        // _buildCityRow("Total"),
 
-        // loop
-        for (int i = 0; i < 20; i++) _buildCityRow("Coffee Table")
+        // // loop
+        // for (int i = 0; i < 20; i++) _buildCityRow("Coffee Table")
       ],
     ),
   );
@@ -116,24 +118,38 @@ Future<Uint8List> makePDF() async {
   return pdf.save();
 }
 
-Table _buildCityTable() {
+Table _buildCityTable(Map<String, dynamic> ordersPerProvince) {
+  final provinces = ordersPerProvince.keys.toList();
+
   return Table(children: [
     TableRow(children: [
       Expanded(
         child: Text(""),
       ),
-      _buildHeader(title: "Population"),
-      _buildHeader(title: "Total Retail Sales"),
-      _buildHeader(title: "Per Capita Income"),
-      _buildHeader(title: "Trade Area Capture"),
-      _buildHeader(title: "Total Sales Pull Factor"),
+      _buildHeader(title: "No. of Customers"),
+      _buildHeader(title: "No. of Orders"),
+      _buildHeader(title: "Total Revenue"),
+      // _buildHeader(title: "Trade Area Capture"),
+      // _buildHeader(title: "Total Sales Pull Factor"),
     ]),
-    _buildCityRow("Malolos"),
-    _buildCityRow("Hagonoy"),
+    for (var province in provinces) ...[
+      _buildCityRow(
+          title: province,
+          noOfUsers: ordersPerProvince[province]['users'].length,
+          quantity: ordersPerProvince[province]['quantity'],
+          totalRevenue: ordersPerProvince[province]['total'])
+    ],
+    // _buildCityRow("Malolos"),
+    // _buildCityRow("Hagonoy"),
   ]);
 }
 
-TableRow _buildCityRow(String title) {
+TableRow _buildCityRow(
+    {required String title,
+    required int noOfUsers,
+    required int quantity,
+    required double totalRevenue}) {
+  print(noOfUsers);
   return TableRow(
       decoration: const BoxDecoration(
           border: TableBorder(bottom: BorderSide(color: PdfColors.black))),
@@ -153,11 +169,11 @@ TableRow _buildCityRow(String title) {
                 ),
               )),
         ),
-        _buildNextCell(value: 2000000),
-        _buildNextCell(value: 2000000),
-        _buildNextCell(value: 2000000),
-        _buildNextCell(value: 2000000),
-        _buildNextCell(value: 2000000),
+        _buildNextCell(value: noOfUsers),
+        _buildNextCell(value: quantity),
+        _buildNextCell(value: totalRevenue),
+        // _buildNextCell(value: 2000000),
+        // _buildNextCell(value: 2000000),
       ]);
 }
 
@@ -179,7 +195,7 @@ Container _buildHeader({required String title}) {
   );
 }
 
-Container _buildNextCell({required int? value}) {
+Container _buildNextCell({required dynamic value}) {
   return Container(
     width: 90,
     height: 25,

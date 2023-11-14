@@ -125,13 +125,21 @@ class _AdminHomePageState extends State<AdminHomePage> {
             Row(
               children: [
                 GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const PdfPreviewPage(),
-                      ),
-                    );
+                  onTap: () async {
+                    final ordersPerProvince = await AnalyticsServices()
+                        .getOrdersPerProvince(
+                            int.parse(selectedValue ?? years[0].toString()));
+
+                    if (context.mounted) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PdfPreviewPage(
+                            ordersPerProvince: ordersPerProvince,
+                          ),
+                        ),
+                      );
+                    }
                   },
                   child: Container(
                       height: 32,
@@ -223,6 +231,27 @@ class Analytics extends StatelessWidget {
       }
     }
 
+    Map<String, dynamic> ordersPerProvince = {};
+    for (var order in fullOrders) {
+      final province =
+          order!.shippingProvince == "" ? 'Others' : order.shippingProvince;
+      ordersPerProvince.putIfAbsent(
+          province, () => {"users": [], "quantity": 0, "total": 0});
+
+      // add users
+      if (!ordersPerProvince[province]['users'].contains(order.userId)) {
+        ordersPerProvince[province]['users'].add(order.userId);
+      }
+
+      // increment quantity
+      ordersPerProvince[province]['quantity'] =
+          ordersPerProvince[province]['quantity'] + 1;
+
+      // add total
+      ordersPerProvince[province]['total'] =
+          ordersPerProvince[province]['total'] + order.totalPrice;
+    }
+
     //sorting top products
     if (products.isNotEmpty) {
       // Convert the map to a list of entries
@@ -236,13 +265,16 @@ class Analytics extends StatelessWidget {
     }
 
     AnalyticsServices().updateAnalytics(
-        year,
-        AnalyticsModel(
-            year: year,
-            totalRevenue: sales,
-            averageOrderValue: amountPerTransaction.average,
-            topProducts: products,
-            monthlySales: monthlySales));
+      year,
+      AnalyticsModel(
+        year: year,
+        totalRevenue: sales,
+        averageOrderValue: amountPerTransaction.average,
+        topProducts: products,
+        monthlySales: monthlySales,
+        ordersPerProvince: ordersPerProvince,
+      ),
+    );
 
     return Column(
       children: [
