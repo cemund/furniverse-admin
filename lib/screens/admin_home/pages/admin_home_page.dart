@@ -129,6 +129,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     final ordersPerProvince = await AnalyticsServices()
                         .getOrdersPerProvince(
                             int.parse(selectedValue ?? years[0].toString()));
+                    final ordersPerProduct = await AnalyticsServices()
+                        .getOrdersPerProduct(
+                            int.parse(selectedValue ?? years[0].toString()));
 
                     if (context.mounted) {
                       Navigator.push(
@@ -136,6 +139,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
                         MaterialPageRoute(
                           builder: (context) => PdfPreviewPage(
                             ordersPerProvince: ordersPerProvince,
+                            ordersPerProduct: ordersPerProduct,
+                            year:
+                                int.parse(selectedValue ?? years[0].toString()),
                           ),
                         ),
                       );
@@ -218,8 +224,6 @@ class Analytics extends StatelessWidget {
       monthlySales[month] = monthlySales[month]! + order.totalPrice;
     }
 
-    // print(monthlySales);
-
     // all products
     Map<String, int> products = {};
     for (int i = 0; i < fullOrders.length; i++) {
@@ -252,6 +256,30 @@ class Analytics extends StatelessWidget {
           ordersPerProvince[province]['total'] + order.totalPrice;
     }
 
+    // products
+    int totalQuantity = 0;
+    Map<String, dynamic> ordersPerProduct = {};
+    for (var order in fullOrders) {
+      if (order?.products != null) {
+        for (var product in order!.products) {
+          final productId = product['productId'];
+          ordersPerProduct.putIfAbsent(
+              productId, () => {"quantity": 0, "total": 0.0});
+
+          // add quantity
+          ordersPerProduct[productId]['quantity'] =
+              ordersPerProduct[productId]['quantity'] + product['quantity'];
+
+          // add total quantity
+          totalQuantity = totalQuantity + product['quantity'] as int;
+
+          // add total
+          ordersPerProduct[productId]['total'] =
+              ordersPerProduct[productId]['total'] + product['totalPrice'];
+        }
+      }
+    }
+
     //sorting top products
     if (products.isNotEmpty) {
       // Convert the map to a list of entries
@@ -267,12 +295,14 @@ class Analytics extends StatelessWidget {
     AnalyticsServices().updateAnalytics(
       year,
       AnalyticsModel(
+        totalQuantity: totalQuantity,
         year: year,
         totalRevenue: sales,
         averageOrderValue: amountPerTransaction.average,
         topProducts: products,
         monthlySales: monthlySales,
         ordersPerProvince: ordersPerProvince,
+        ordersPerProduct: ordersPerProduct,
       ),
     );
 
