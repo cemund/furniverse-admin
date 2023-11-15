@@ -5,7 +5,7 @@ import 'package:furniverse_admin/shared/company_info.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 
-Future<Uint8List> makePDF(Map<String, dynamic> ordersPerProvince,
+Future<Uint8List> makePDF(Map<String, dynamic> ordersPerCity,
     Map<String, dynamic> ordersPerProduct, int year) async {
   final pdf = Document();
 
@@ -58,7 +58,7 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerProvince,
   widgets.add(SizedBox(height: 20));
 
   // location table
-  widgets.add(_buildCityTable(ordersPerProvince));
+  widgets.add(_buildCityTable(ordersPerCity));
 
   // sized box
   widgets.add(SizedBox(height: 20));
@@ -149,8 +149,8 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerProvince,
   return pdf.save();
 }
 
-Table _buildCityTable(Map<String, dynamic> ordersPerProvince) {
-  final provinces = ordersPerProvince.keys.toList();
+Table _buildCityTable(Map<String, dynamic> ordersPerCity) {
+  final provinces = ordersPerCity.keys.toList();
 
   return Table(children: [
     TableRow(children: [
@@ -166,9 +166,9 @@ Table _buildCityTable(Map<String, dynamic> ordersPerProvince) {
     for (var province in provinces) ...[
       _buildCityRow(
           title: province,
-          noOfUsers: ordersPerProvince[province]['users'].length,
-          quantity: ordersPerProvince[province]['quantity'],
-          totalRevenue: ordersPerProvince[province]['total'])
+          noOfUsers: ordersPerCity[province]['users'].length,
+          quantity: ordersPerCity[province]['quantity'],
+          totalRevenue: ordersPerCity[province]['total'])
     ],
     // _buildCityRow("Malolos"),
     // _buildCityRow("Hagonoy"),

@@ -126,8 +126,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    final ordersPerProvince = await AnalyticsServices()
-                        .getOrdersPerProvince(
+                    final ordersPerCity = await AnalyticsServices()
+                        .getOrdersPerCity(
                             int.parse(selectedValue ?? years[0].toString()));
                     final ordersPerProduct = await AnalyticsServices()
                         .getOrdersPerProduct(
@@ -138,7 +138,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => PdfPreviewPage(
-                            ordersPerProvince: ordersPerProvince,
+                            ordersPerCity: ordersPerCity,
                             ordersPerProduct: ordersPerProduct,
                             year:
                                 int.parse(selectedValue ?? years[0].toString()),
@@ -235,25 +235,25 @@ class Analytics extends StatelessWidget {
       }
     }
 
-    Map<String, dynamic> ordersPerProvince = {};
+    Map<String, dynamic> ordersPerCity = {};
     for (var order in fullOrders) {
       final province =
-          order!.shippingProvince == "" ? 'Others' : order.shippingProvince;
-      ordersPerProvince.putIfAbsent(
+          order!.shippingCity == "" ? 'Others' : order.shippingCity;
+      ordersPerCity.putIfAbsent(
           province, () => {"users": [], "quantity": 0, "total": 0});
 
       // add users
-      if (!ordersPerProvince[province]['users'].contains(order.userId)) {
-        ordersPerProvince[province]['users'].add(order.userId);
+      if (!ordersPerCity[province]['users'].contains(order.userId)) {
+        ordersPerCity[province]['users'].add(order.userId);
       }
 
       // increment quantity
-      ordersPerProvince[province]['quantity'] =
-          ordersPerProvince[province]['quantity'] + 1;
+      ordersPerCity[province]['quantity'] =
+          ordersPerCity[province]['quantity'] + 1;
 
       // add total
-      ordersPerProvince[province]['total'] =
-          ordersPerProvince[province]['total'] + order.totalPrice;
+      ordersPerCity[province]['total'] =
+          ordersPerCity[province]['total'] + order.totalPrice;
     }
 
     // products
@@ -301,7 +301,7 @@ class Analytics extends StatelessWidget {
         averageOrderValue: amountPerTransaction.average,
         topProducts: products,
         monthlySales: monthlySales,
-        ordersPerProvince: ordersPerProvince,
+        ordersPerCity: ordersPerCity,
         ordersPerProduct: ordersPerProduct,
       ),
     );
