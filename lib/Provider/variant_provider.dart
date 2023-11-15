@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:furniverse_admin/models/edit_product_variants_model.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/services/upload_image_services.dart';
 import 'package:furniverse_admin/services/upload_model_services.dart';
@@ -9,11 +10,17 @@ import 'package:flutter/material.dart';
 class VariantsProvider extends ChangeNotifier {
   final List<ProductVariants> _variant = [];
   List<ProductVariants> get variant => _variant;
+  final List<EditProductVariants> _oldvariants = [];
+  List<EditProductVariants> get oldvariants => _oldvariants;
 
   void addVariant(ProductVariants productVariants) {
     _variant.add(productVariants);
 
     notifyListeners();
+  }
+
+  void oldvariant(EditProductVariants editProductVariants){
+    _oldvariants.add(editProductVariants);
   }
 
   void removeVariant(ProductVariants productVariants) {
@@ -88,6 +95,21 @@ class VariantsProvider extends ChangeNotifier {
         'image': imageReference,
         'model': modelReference,
         'id': product.id,
+      });
+    }
+
+    for (EditProductVariants products in _oldvariants) {
+
+      productMaps.add({
+        'variant_name': products.variantName,
+        'material': products.material,
+        'size': products.size,
+        'color': products.color,
+        'price': products.price,
+        'stocks': products.stocks,
+        'image': products.image,
+        'model': products.model,
+        'id': products.id,
       });
     }
 

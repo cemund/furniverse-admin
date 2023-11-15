@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
+import 'package:furniverse_admin/models/edit_product_variants_model.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/models/products.dart';
 import 'package:furniverse_admin/services/product_services.dart';
@@ -93,14 +93,18 @@ class _EditProductState extends State<EditProduct> {
   }
 
   Future<List<String>> uploadSelectedImages() async {
-    List<String> images = [];
+    productImages = [];
     for (int i = 0; i < listSelectedImage.length; i++) {
       String? downloadUrl = await uploadImageToFirebase(listSelectedImage[i]);
       imageUrl = downloadUrl;
-      images.add(downloadUrl!);
+      productImages.add(downloadUrl!);
+    }
+
+    for (int i = 0; i < widget.product!.images.length; i++) {
+      productImages.add(widget.product!.images[i]);
     }
     
-    return images;
+    return productImages;
     
   }
 
@@ -109,11 +113,15 @@ class _EditProductState extends State<EditProduct> {
     super.initState();
 
     _productnameController.text = widget.product!.name;
-    categoryHintText = widget.product!.category;
+    selectedCategory = widget.product!.category;
     _descriptionController.text = widget.product!.description;
+    
+    for (int i = 0; i < widget.product!.images.length; i++) {
+      productImages.add(widget.product!.images[i]);
+    }
 
     for (int i = 0; i < widget.product!.images.length; i++) {
-      print(widget.product!.images[i]);
+      // print(widget.product!.images[i]);
       
       listItems.add({
         'widget': Stack(
@@ -153,12 +161,6 @@ class _EditProductState extends State<EditProduct> {
           ],
         )
       });
-    }
-
-    for (int i = 0; i < widget.product!.variants.length; i++) {
-      // final provider = Provider.of<VariantsProvider>();
-      // final variants = provider.variant;
-
     }
 
     listItems.add({
@@ -308,7 +310,7 @@ class _EditProductState extends State<EditProduct> {
                             padding: EdgeInsets.only(right: 8),
                           ),
                           hint: Text(
-                            categoryHintText,
+                            selectedCategory!,
                             style: const TextStyle(fontSize: 16),
                           ),
                           iconStyleData: const IconStyleData(
@@ -425,6 +427,18 @@ class _EditProductState extends State<EditProduct> {
                             itemCount: widget.product!.variants.length,
                             itemBuilder: (context, index) {
                               final variant = widget.product!.variants[index];
+                              final oldvariants = EditProductVariants(
+                                variantName: widget.product?.variants[index]['variant_name'],
+                                material: widget.product?.variants[index]['material'],
+                                color: widget.product?.variants[index]['color'],
+                                image: widget.product?.variants[index]['image'],
+                                size: widget.product?.variants[index]['size'],
+                                model: widget.product?.variants[index]['model'],
+                                price: widget.product?.variants[index]['price'],
+                                stocks: widget.product?.variants[index]['stocks'],
+                                id: widget.product?.variants[index]['id']);
+                              final provider = Provider.of<VariantsProvider>(context, listen: false);
+                              provider.oldvariant(oldvariants);
         
                               return Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,18 +451,18 @@ class _EditProductState extends State<EditProduct> {
                                         height: 80,
                                         clipBehavior: Clip.hardEdge,
                                         decoration: ShapeDecoration(
-                image: DecorationImage(
-                  // image: AssetImage(widget.product.image),
-                  image: CachedNetworkImageProvider(
-                    widget.product?.variants[index]['image'] ??
-                        "http://via.placeholder.com/350x150",
-                  ),
-                  fit: BoxFit.cover,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
+                                          image: DecorationImage(
+                                            // image: AssetImage(widget.product.image),
+                                            image: CachedNetworkImageProvider(
+                                              widget.product?.variants[index]['image'] ??
+                                                  "http://via.placeholder.com/350x150",
+                                            ),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
                                       ),
                                       const Gap(10),
                                       Column(
@@ -482,21 +496,164 @@ class _EditProductState extends State<EditProduct> {
                                               fontWeight: FontWeight.w400,
                                             ),
                                           ),
-                                          // Text(
-                                          //   "3D Model: ${basename(widget.product?.variants[index]['model'].path)}",
-                                          //   style: const TextStyle(
-                                          //     color: foregroundColor,
-                                          //     fontSize: 12,
-                                          //     fontFamily: 'Nunito Sans',
-                                          //     fontWeight: FontWeight.w400,
-                                          //   ),
-                                          //   maxLines: 1,
-                                          //   overflow: TextOverflow.ellipsis,
-                                          // ),
+                                          SizedBox(
+                                            width: 200,
+                                            child: Text(
+                                              "3D Model: ${widget.product?.variants[index]['model']}",
+                                              style: const TextStyle(
+                                                color: foregroundColor,
+                                                fontSize: 12,
+                                                fontFamily: 'Nunito Sans',
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
                                           SizedBox(
                                             width: 200,
                                             child: ReadMoreText(
-                                              "Size: ${widget.product?.variants[index]['size']}; Color: ${widget.product?.variants[index]['color']}; Material: ${widget.product?.variants[index]['material']}; ",
+                                              "Size: ${widget.product?.variants[index]['size']}, Color: ${widget.product?.variants[index]['color']}, Material: ${widget.product?.variants[index]['material']} ",
+                                              style: const TextStyle(
+                                                color: foregroundColor,
+                                                fontSize: 12,
+                                                fontFamily: 'Nunito Sans',
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              trimLines: 1,
+                                              trimMode: TrimMode.Line,
+                                              trimCollapsedText: 'More',
+                                              trimExpandedText: ' Less',
+                                              moreStyle: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold),
+                                              lessStyle: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  // Row(
+                                  //   children: [
+                                  //     IconButton(
+                                  //         padding: EdgeInsets.zero,
+                                  //         constraints: const BoxConstraints(),
+                                  //         onPressed: () {
+                                  //           showDialog(
+                                  //               builder: (context) =>
+                                  //                   EditVariantWidget(
+                                  //                     productVariants: variant[index],
+                                  //                   ),
+                                  //               context: context,
+                                  //               barrierDismissible: false);
+                                  //         },
+                                  //         icon: const Icon(
+                                  //           Icons.edit,
+                                  //           color: foregroundColor,
+                                  //         )),
+                                  //     IconButton(
+                                  //         padding: EdgeInsets.zero,
+                                  //         constraints: const BoxConstraints(),
+                                  //         onPressed: () {
+                                  //           final provider =
+                                  //               Provider.of<VariantsProvider>(
+                                  //                   context,
+                                  //                   listen: false);
+                                  //           provider.removeVariant(variant);
+                                  //         },
+                                  //         icon: const Icon(
+                                  //           Icons.delete,
+                                  //           color: foregroundColor,
+                                  //         ))
+                                  //   ],
+                                  // ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
+
+                        const Gap(10),
+
+                        if (variants.isNotEmpty)
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            separatorBuilder: (context, index) =>
+                                Container(height: 8),
+                            itemCount: variants.length,
+                            itemBuilder: (context, index) {
+                              final variant = variants[index];
+        
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 80,
+                                        height: 80,
+                                        clipBehavior: Clip.hardEdge,
+                                        decoration: BoxDecoration(
+                                          color: foregroundColor,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Image.file(
+                                          File(variant.image.path),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      const Gap(10),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            variant.variantName,
+                                            style: const TextStyle(
+                                              color: foregroundColor,
+                                              fontSize: 16,
+                                              fontFamily: 'Nunito Sans',
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Price: ₱${variant.price.toStringAsFixed(2)}",
+                                            style: const TextStyle(
+                                              color: foregroundColor,
+                                              fontSize: 12,
+                                              fontFamily: 'Nunito Sans',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Stocks: ${variant.stocks}",
+                                            style: const TextStyle(
+                                              color: foregroundColor,
+                                              fontSize: 12,
+                                              fontFamily: 'Nunito Sans',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          Text(
+                                            "3D Model: ${basename(variant.model.path)}",
+                                            style: const TextStyle(
+                                              color: foregroundColor,
+                                              fontSize: 12,
+                                              fontFamily: 'Nunito Sans',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(
+                                            width: 200,
+                                            child: ReadMoreText(
+                                              "Size: ${variant.size}; Color: ${variant.color}; Material: ${variant.material}; ",
                                               style: const TextStyle(
                                                 color: foregroundColor,
                                                 fontSize: 12,
@@ -528,7 +685,7 @@ class _EditProductState extends State<EditProduct> {
                                             showDialog(
                                                 builder: (context) =>
                                                     EditVariantWidget(
-                                                      productVariants: variant[index],
+                                                      productVariants: variant,
                                                     ),
                                                 context: context,
                                                 barrierDismissible: false);
@@ -557,147 +714,7 @@ class _EditProductState extends State<EditProduct> {
                               );
                             },
                           ),
-                        ],
-
                         const Gap(10),
-
-                        // if (variants.isNotEmpty)
-                        //   ListView.separated(
-                        //     shrinkWrap: true,
-                        //     physics: const BouncingScrollPhysics(),
-                        //     separatorBuilder: (context, index) =>
-                        //         Container(height: 8),
-                        //     itemCount: variants.length,
-                        //     itemBuilder: (context, index) {
-                        //       final variant = variants[index];
-        
-                        //       return Row(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //         children: [
-                        //           Row(
-                        //             children: [
-                        //               Container(
-                        //                 width: 80,
-                        //                 height: 80,
-                        //                 clipBehavior: Clip.hardEdge,
-                        //                 decoration: BoxDecoration(
-                        //                   color: foregroundColor,
-                        //                   borderRadius: BorderRadius.circular(8),
-                        //                 ),
-                        //                 child: Image.file(
-                        //                   File(variant.image.path),
-                        //                   fit: BoxFit.cover,
-                        //                 ),
-                        //               ),
-                        //               const Gap(10),
-                        //               Column(
-                        //                 crossAxisAlignment:
-                        //                     CrossAxisAlignment.start,
-                        //                 children: [
-                        //                   Text(
-                        //                     variant.variantName,
-                        //                     style: const TextStyle(
-                        //                       color: foregroundColor,
-                        //                       fontSize: 16,
-                        //                       fontFamily: 'Nunito Sans',
-                        //                       fontWeight: FontWeight.w800,
-                        //                     ),
-                        //                   ),
-                        //                   Text(
-                        //                     "Price: ₱${variant.price.toStringAsFixed(2)}",
-                        //                     style: const TextStyle(
-                        //                       color: foregroundColor,
-                        //                       fontSize: 12,
-                        //                       fontFamily: 'Nunito Sans',
-                        //                       fontWeight: FontWeight.w400,
-                        //                     ),
-                        //                   ),
-                        //                   Text(
-                        //                     "Stocks: ${variant.stocks}",
-                        //                     style: const TextStyle(
-                        //                       color: foregroundColor,
-                        //                       fontSize: 12,
-                        //                       fontFamily: 'Nunito Sans',
-                        //                       fontWeight: FontWeight.w400,
-                        //                     ),
-                        //                   ),
-                        //                   Text(
-                        //                     "3D Model: ${basename(variant.model.path)}",
-                        //                     style: const TextStyle(
-                        //                       color: foregroundColor,
-                        //                       fontSize: 12,
-                        //                       fontFamily: 'Nunito Sans',
-                        //                       fontWeight: FontWeight.w400,
-                        //                     ),
-                        //                     maxLines: 1,
-                        //                     overflow: TextOverflow.ellipsis,
-                        //                   ),
-                        //                   SizedBox(
-                        //                     width: 200,
-                        //                     child: ReadMoreText(
-                        //                       "Size: ${variant.size}; Color: ${variant.color}; Material: ${variant.material}; ",
-                        //                       style: const TextStyle(
-                        //                         color: foregroundColor,
-                        //                         fontSize: 12,
-                        //                         fontFamily: 'Nunito Sans',
-                        //                         fontWeight: FontWeight.w400,
-                        //                       ),
-                        //                       trimLines: 1,
-                        //                       trimMode: TrimMode.Line,
-                        //                       trimCollapsedText: 'More',
-                        //                       trimExpandedText: ' Less',
-                        //                       moreStyle: const TextStyle(
-                        //                           fontSize: 12,
-                        //                           fontWeight: FontWeight.bold),
-                        //                       lessStyle: const TextStyle(
-                        //                           fontSize: 12,
-                        //                           fontWeight: FontWeight.bold),
-                        //                     ),
-                        //                   ),
-                        //                 ],
-                        //               )
-                        //             ],
-                        //           ),
-                        //           Row(
-                        //             children: [
-                        //               IconButton(
-                        //                   padding: EdgeInsets.zero,
-                        //                   constraints: const BoxConstraints(),
-                        //                   onPressed: () {
-                        //                     showDialog(
-                        //                         builder: (context) =>
-                        //                             EditVariantWidget(
-                        //                               productVariants: variant,
-                        //                             ),
-                        //                         context: context,
-                        //                         barrierDismissible: false);
-                        //                   },
-                        //                   icon: const Icon(
-                        //                     Icons.edit,
-                        //                     color: foregroundColor,
-                        //                   )),
-                        //               IconButton(
-                        //                   padding: EdgeInsets.zero,
-                        //                   constraints: const BoxConstraints(),
-                        //                   onPressed: () {
-                        //                     final provider =
-                        //                         Provider.of<VariantsProvider>(
-                        //                             context,
-                        //                             listen: false);
-                        //                     provider.removeVariant(variant);
-                        //                   },
-                        //                   icon: const Icon(
-                        //                     Icons.delete,
-                        //                     color: foregroundColor,
-                        //                   ))
-                        //             ],
-                        //           ),
-                        //         ],
-                        //       );
-                        //     },
-                        //   ),
-                        // const Gap(10),
 
                         const AddVariantButton(),
               
@@ -707,6 +724,9 @@ class _EditProductState extends State<EditProduct> {
                           height: 60,
                           child: ElevatedButton(
                             onPressed: () {
+
+                              // print(oldvariants);
+
                               setState(() {
                                 // isSaving = true;
                               });
@@ -772,7 +792,7 @@ class _EditProductState extends State<EditProduct> {
     };
 
     // Add the product to Firestore
-    await productService.addProduct(productData);
+    await productService.updateProduct(productData, widget.id);
     // await productService.addProduct(productData, productMaps);
 
     provider.clearVariant();
