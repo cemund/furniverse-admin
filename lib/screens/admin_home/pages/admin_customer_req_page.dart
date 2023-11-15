@@ -104,6 +104,26 @@ class CustomerCard extends StatelessWidget {
     if (user == null) return const Gap(36);
 
     return ListTile(
+      onTap: () async {
+        final productName =
+            await ProductService().getProductName(request.productId);
+
+        if (context.mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return RequestDetailPage(
+                  request: request,
+                  userName: user.name,
+                  contactNumber: user.contactNumber,
+                  productName: productName ?? "",
+                );
+              },
+            ),
+          );
+        }
+      },
       contentPadding: EdgeInsets.zero,
       leading: const SizedBox(
         height: 36,
