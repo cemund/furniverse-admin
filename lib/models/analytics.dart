@@ -5,7 +5,7 @@ class AnalyticsModel {
   final double averageOrderValue;
   final Map<String, int> topProducts;
   final Map<String, dynamic> monthlySales;
-  final Map<String, dynamic> ordersPerProvince;
+  final Map<String, dynamic> ordersPerCity;
   final Map<String, dynamic> ordersPerProduct;
 
   AnalyticsModel({
@@ -14,7 +14,7 @@ class AnalyticsModel {
     required this.averageOrderValue,
     required this.topProducts,
     required this.monthlySales,
-    required this.ordersPerProvince,
+    required this.ordersPerCity,
     required this.ordersPerProduct,
     required this.totalQuantity,
   });
@@ -26,7 +26,7 @@ class AnalyticsModel {
       'averageOrderValue': averageOrderValue,
       'topProducts': topProducts,
       'monthlySales': monthlySales,
-      'ordersPerProvince': ordersPerProvince,
+      'ordersPerCity': ordersPerCity,
       'ordersPerProduct': ordersPerProduct,
       'totalQuantity': totalQuantity,
     };

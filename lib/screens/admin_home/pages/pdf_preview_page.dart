@@ -5,10 +5,10 @@ import 'package:printing/printing.dart';
 class PdfPreviewPage extends StatelessWidget {
   const PdfPreviewPage(
       {super.key,
-      required this.ordersPerProvince,
+      required this.ordersPerCity,
       required this.ordersPerProduct,
       required this.year});
-  final Map<String, dynamic> ordersPerProvince;
+  final Map<String, dynamic> ordersPerCity;
   final Map<String, dynamic> ordersPerProduct;
   final int year;
 
@@ -37,7 +37,7 @@ class PdfPreviewPage extends StatelessWidget {
         canDebug: false,
 
         // pdfPreviewPageDecoration: const BoxDecoration(color: Colors.white),
-        build: (context) => makePDF(ordersPerProvince, ordersPerProduct, year),
+        build: (context) => makePDF(ordersPerCity, ordersPerProduct, year),
         pdfPreviewPageDecoration: const BoxDecoration(color: Colors.white),
       ),
     );

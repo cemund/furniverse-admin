@@ -7,24 +7,31 @@ class OrderModel {
   final List<dynamic> products;
   final double totalPrice;
   final String shippingAddress;
+  final String shippingProvince;
   final String shippingMethod;
   final String shippingStatus;
   final Timestamp completedDate;
   final dynamic requestDetails;
-  final String shippingProvince;
+  final String shippingCity;
+  final String shippingStreet;
+  final String shippingZipCode;
 
-  OrderModel(
-      {required this.userId,
-      required this.orderDate,
-      required this.products,
-      required this.totalPrice,
-      required this.shippingAddress,
-      required this.shippingMethod,
-      required this.completedDate,
-      required this.shippingStatus,
-      required this.orderId,
-      required this.requestDetails,
-      required this.shippingProvince});
+  OrderModel({
+    required this.userId,
+    required this.orderDate,
+    required this.products,
+    required this.totalPrice,
+    required this.shippingAddress,
+    required this.shippingMethod,
+    required this.completedDate,
+    required this.shippingStatus,
+    required this.orderId,
+    required this.requestDetails,
+    required this.shippingProvince,
+    required this.shippingCity,
+    required this.shippingStreet,
+    required this.shippingZipCode,
+  });
 
   factory OrderModel.fromMap(Map data, String orderId) {
     return OrderModel(
@@ -39,6 +46,9 @@ class OrderModel {
       products: data['products'] ?? [],
       requestDetails: data['requestDetails'] ?? {},
       shippingProvince: data['shippingProvince'] ?? "",
+      shippingCity: data['shippingCity'] ?? '',
+      shippingStreet: data['shippingStreet'] ?? '',
+      shippingZipCode: data['shippingZipCode'] ?? '',
     );
   }
 
@@ -57,6 +67,9 @@ class OrderModel {
       products: data['products'] ?? [],
       requestDetails: data['requestDetails'] ?? {},
       shippingProvince: data['shippingProvince'] ?? "",
+      shippingCity: data['shippingCity'] ?? '',
+      shippingStreet: data['shippingStreet'] ?? '',
+      shippingZipCode: data['shippingZipCode'] ?? '',
     );
   }
 }

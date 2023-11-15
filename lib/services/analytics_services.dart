@@ -143,6 +143,28 @@ class AnalyticsServices {
     }
   }
 
+  Future<Map<String, dynamic>> getOrdersPerCity(int year) async {
+    try {
+      DocumentSnapshot analyticsDoc =
+          await _db.collection('analytics').doc(year.toString()).get();
+      if (analyticsDoc.exists) {
+        // Check if the product document exists
+        Map<String, dynamic> analyticsData =
+            analyticsDoc.data() as Map<String, dynamic>;
+
+        // Retrieve the image URL from the product data
+        Map<String, dynamic> ordersPerCity = analyticsData['ordersPerCity'];
+
+        return ordersPerCity;
+      }
+
+      return {};
+    } catch (e) {
+      print('Error adding product to cart: $e');
+      return {};
+    }
+  }
+
   Future<Map<String, dynamic>> getOrdersPerProduct(int year) async {
     try {
       DocumentSnapshot analyticsDoc =
