@@ -167,75 +167,6 @@ class _AddProductState extends State<AddProduct> {
               )
             });
           });
-
-          // if (!imageIsUploaded) {
-          //   setState(() {
-          //     listItems.insert(0, {
-          //       "loadingID": loadingID,
-          //       "widget": const SizedBox(
-          //           width: 80,
-          //           // decoration: BoxDecoration(
-          //           //   border:
-          //           //       Border.all(width: 2, color: const Color(0xFFA9ADB2)),
-          //           //   borderRadius: BorderRadius.circular(8),
-          //           // ),
-          //           child: Padding(
-          //             padding: EdgeInsets.all(20.0),
-          //             child: CircularProgressIndicator(),
-          //           )),
-          //     });
-          //   });
-          //   await uploadSelectedImage();
-          // }
-
-          // setState(() {
-          //   final image = imageUrl!;
-          //   listItems.removeWhere((element) {
-          //     return element['loadingID'] == loadingID;
-          //   });
-          //   productImages.add(image);
-
-          //   listItems.insert(
-          //     0,
-          //     {
-          //       "imageID": id,
-          //       "widget": Stack(children: [
-          //         Container(
-          //           width: 80,
-          //           decoration: BoxDecoration(
-          //             borderRadius: BorderRadius.circular(8),
-          //             image: DecorationImage(
-          //               image: CachedNetworkImageProvider(
-          //                 image,
-          //               ),
-          //               fit: BoxFit.cover,
-          //             ),
-          //           ),
-          //         ),
-          //         Positioned(
-          //           top: 5,
-          //           right: 5,
-          //           child: GestureDetector(
-          //             onTap: () async {
-          //               setState(() {
-          //                 listItems.removeWhere((element) {
-          //                   return element['imageID'] == id;
-          //                 });
-          //               });
-          //               await deleteImageFromFirebase(image);
-          //             },
-          //             child: const Icon(
-          //               Icons.close,
-          //               size: 18,
-          //               color: backgroundColor,
-          //             ),
-          //           ),
-          //         ),
-          //       ])
-          //     },
-          //   );
-          //   imageIsUploaded = false;
-          // });
         },
         child: Container(
           width: 80,
@@ -268,83 +199,11 @@ class _AddProductState extends State<AddProduct> {
 
   @override
   Widget build(BuildContext context) {
-    // final products = [Container(), Container(),];
-
     var fileName = file != null ? basename(file!.path) : "Upload 3D Model";
     _fileController.text = fileName;
 
     final provider = Provider.of<VariantsProvider>(context);
     final variants = provider.variant;
-
-    // return variant.isEmpty
-    //     ? Column(
-    //       children: [
-    //         Center(
-    //             child: Text(
-    //               'No todos.',
-    //               style: TextStyle(fontSize: 20),
-    //             ),
-    //           ),
-
-    //           SizedBox(
-    //               width: double.infinity,
-    //               height: 50,
-    //               child: ElevatedButton(
-    //                 onPressed:(){showDialog(builder: (context) => const AddProductWidget(), context: context, barrierDismissible: false);},
-    //                 style: ElevatedButton.styleFrom(
-    //                   backgroundColor: Colors.black,
-    //                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
-    //                 ),
-    //                 child: const Text("Add Product",
-    //                   style: TextStyle(
-    //                     color: Colors.white,
-    //                     fontSize: 18,
-    //                     fontFamily: 'Nunito Sans',
-    //                     fontWeight: FontWeight.w600,
-    //                     height: 0,
-    //                   ),
-    //                 ),
-    //               ),
-    //             ),
-    //       ],
-    //     )
-    //     : ListView.separated(
-    //         physics: BouncingScrollPhysics(),
-    //         padding: EdgeInsets.all(16),
-    //         separatorBuilder: (context, index) => Container(height: 8),
-    //         itemCount: variant.length,
-    //         itemBuilder: (context, index) {
-    //           final variants = variant[index];
-
-    //           return Column(
-    //             children: [
-    //               Text(variants.productname),
-    //               Text(variants.material),
-    //               SizedBox(
-    //               width: double.infinity,
-    //               height: 50,
-    //               child: ElevatedButton(
-    //                 onPressed:(){showDialog(builder: (context) => const AddProductWidget(), context: context, barrierDismissible: false);},
-    //                 style: ElevatedButton.styleFrom(
-    //                   backgroundColor: Colors.black,
-    //                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
-    //                 ),
-    //                 child: const Text("Add Product",
-    //                   style: TextStyle(
-    //                     color: Colors.white,
-    //                     fontSize: 18,
-    //                     fontFamily: 'Nunito Sans',
-    //                     fontWeight: FontWeight.w600,
-    //                     height: 0,
-    //                   ),
-    //                 ),
-    //               ),
-    //             ),
-
-    //             ],
-    //           );
-    //         },
-    //       );
 
     return isSaving
         ? const Loading()
@@ -355,7 +214,6 @@ class _AddProductState extends State<AddProduct> {
                 centerTitle: true,
                 title: const Text(
                   "ADD PRODUCT",
-                  // style: TextStyle(color: Colors.black),
                 ),
                 titleTextStyle: const TextStyle(
                   color: Color(0xFF303030),
@@ -917,6 +775,9 @@ class _AddProductState extends State<AddProduct> {
     // await productService.addProduct(productData, productMaps);
 
     provider.clearVariant();
+    // for insurance
+    provider.clearOldVariant();
+
     // if (file == null) return;
     // if (file != null) {
     //   final fileName = basename(file!.path);

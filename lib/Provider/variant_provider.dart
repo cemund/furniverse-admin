@@ -19,8 +19,10 @@ class VariantsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void oldvariant(EditProductVariants editProductVariants){
+  void oldvariant(EditProductVariants editProductVariants) {
+    print("hello");
     _oldvariants.add(editProductVariants);
+    print(_oldvariants.length);
   }
 
   void removeVariant(ProductVariants productVariants) {
@@ -31,6 +33,10 @@ class VariantsProvider extends ChangeNotifier {
 
   void clearVariant() {
     _variant.clear();
+  }
+
+  void clearOldVariant() {
+    _oldvariants.clear();
   }
 
   void updateVariant(
@@ -62,17 +68,39 @@ class VariantsProvider extends ChangeNotifier {
   Future<List<Map<String, dynamic>>> getMap() async {
     List<Map<String, dynamic>> productMaps = [];
 
+    print("oldvariants.lengh");
+    print(_oldvariants.length);
+
+    for (EditProductVariants products in _oldvariants) {
+      productMaps.add({
+        'variant_name': products.variantName,
+        'material': products.material,
+        'size': products.size,
+        'color': products.color,
+        'price': products.price,
+        'stocks': products.stocks,
+        'image': products.image,
+        'model': products.model,
+        'id': products.id,
+      });
+    }
+
     for (ProductVariants product in _variant) {
+      print("oldvariants.lengh");
+      print(_oldvariants.length);
+
       String? imageReference = '';
       String? modelReference = '';
 
       imageReference = await uploadVariantImageToFirebase(product.image);
+
       // final imageFile = product.image!;
       // final imageFileName = DateTime.now().millisecondsSinceEpoch.toString();
       // final imageTask = storage.ref().child('images/$imageFileName').putFile(imageFile);
       // await imageTask.whenComplete(() async {
       //   imageReference = await imageTask.snapshot.ref.getDownloadURL();
       // });
+
       modelReference = await uploadModelToFirebase(product.model);
 
       // if (product.modelFile != null) {
@@ -95,21 +123,6 @@ class VariantsProvider extends ChangeNotifier {
         'image': imageReference,
         'model': modelReference,
         'id': product.id,
-      });
-    }
-
-    for (EditProductVariants products in _oldvariants) {
-
-      productMaps.add({
-        'variant_name': products.variantName,
-        'material': products.material,
-        'size': products.size,
-        'color': products.color,
-        'price': products.price,
-        'stocks': products.stocks,
-        'image': products.image,
-        'model': products.model,
-        'id': products.id,
       });
     }
 
