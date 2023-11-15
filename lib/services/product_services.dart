@@ -33,18 +33,19 @@ class ProductService {
   }
 
   Stream<DocumentSnapshot<Object?>> editProduct(String productId) {
-      // delete file in firestorage
-      return _productsCollection.doc(productId).snapshots();
+    // delete file in firestorage
+    return _productsCollection.doc(productId).snapshots();
   }
 
-  Future<void> updateProduct(Map<String, dynamic> productData, String productId) async {
+  Future<void> updateProduct(
+      Map<String, dynamic> productData, String productId) async {
     try {
       final productTimestamp =
           FieldValue.serverTimestamp(); // Get a server-side timestamp
       productData['timestamp'] =
           productTimestamp; // Add the timestamp to your data
 
-          await _productsCollection.doc(productId).set(productData, SetOptions(merge: true));
+      await _productsCollection.doc(productId).set(productData);
 
       // for (int i = 0; i < productVariations.length; i++) {
       //   await productDocRef.collection('variants').add(productVariations[i]);
@@ -64,7 +65,7 @@ class ProductService {
         .collection('variations')
         .snapshots();
   }
-  
+
   // Query a subcollection
   Stream<List<Product>> streamProducts() {
     return _productsCollection.orderBy('product_name').snapshots().map(

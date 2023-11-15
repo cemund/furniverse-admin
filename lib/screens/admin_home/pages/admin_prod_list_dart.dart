@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/products.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_add_product.dart';
 import 'package:furniverse_admin/services/product_services.dart';
@@ -139,6 +140,10 @@ class _AdminProdListState extends State<AdminProdList> {
                     const SizedBox(width: 10),
                     GestureDetector(
                       onTap: () {
+                        final provider = Provider.of<VariantsProvider>(context,
+                            listen: false);
+                        provider.clearOldVariant();
+                        provider.clearVariant();
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
                             return const AddProduct();
@@ -576,10 +581,17 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                 ProductService().deleteProduct(widget.product.id);
               }
               if (value == 2) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => EditProduct(id : widget.product.id.toString(), product : widget.product)));
+                final provider =
+                    Provider.of<VariantsProvider>(context, listen: false);
+                provider.clearOldVariant();
+                provider.clearVariant();
+
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditProduct(
+                            id: widget.product.id.toString(),
+                            product: widget.product)));
               }
             },
             padding: EdgeInsets.zero,
