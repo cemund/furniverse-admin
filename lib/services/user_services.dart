@@ -27,6 +27,17 @@ class UserService {
     }
   }
 
+  Future<String> getUserAvatar(String id) async {
+    try {
+      // String userName = "";
+      var user = await _db.collection('users').doc(id).get();
+      return (user.data()?['avatar']);
+    } on Exception catch (e) {
+      print(e);
+      return "";
+    }
+  }
+
   Stream<UserModel> streamUser(String? id) {
     return _db
         .collection('users')

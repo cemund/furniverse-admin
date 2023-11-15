@@ -1,11 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:furniverse_admin/models/order.dart';
+import 'package:furniverse_admin/models/user.dart';
 import 'package:furniverse_admin/services/analytics_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/user_services.dart';
+import 'package:furniverse_admin/shared/functions.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class BusinessPerformancePage extends StatefulWidget {
   const BusinessPerformancePage({super.key});
@@ -229,50 +233,78 @@ class CustomersTile extends StatelessWidget {
   });
   final OrderModel order;
 
+  String getInitials(String name) => name.isNotEmpty
+      ? name.trim().split(' ').map((l) => l[0]).take(2).join()
+      : '';
+
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: const CircleAvatar(
-        // backgroundImage: AssetImage('assets/images/layla.jpeg'),
-        backgroundColor: Colors.grey,
-      ),
-      title: FutureBuilder<String?>(
-          future: UserService().getUserName(order.userId),
-          initialData: "",
-          builder: (context, snapshot) {
-            return Text(
-              snapshot.data ?? "",
-              style: const TextStyle(
-                color: Color(0xFF171625),
-                fontSize: 14,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w600,
+    return StreamProvider.value(
+        value: UserService().streamUser(order.userId),
+        initialData: null,
+        builder: (context, child) {
+          return Builder(builder: (context) {
+            final user = Provider.of<UserModel?>(context);
+            return ListTile(
+              leading: FutureBuilder<bool>(
+                  future: doesImageExist(user?.avatar ?? ""),
+                  builder: (context, snapshot) {
+                    return CircleAvatar(
+                      backgroundColor: Colors.grey[300],
+                      backgroundImage:
+                          snapshot.data != false && user?.avatar != ""
+                              ? CachedNetworkImageProvider(
+                                  user?.avatar ??
+                                      "http://via.placeholder.com/350x150",
+                                )
+                              : null,
+                      child: snapshot.data == false || user?.avatar == ""
+                          ? Text(
+                              user?.getInitials() ?? "",
+                              style: const TextStyle(
+                                color: Color(0xFF171625),
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
+                          : null,
+                    );
+                  }),
+              title: Text(
+                user?.name ?? "",
+                style: const TextStyle(
+                  color: Color(0xFF171625),
+                  fontSize: 14,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              subtitle: Text(
+                'ID #${order.userId.toUpperCase()}',
+                style: const TextStyle(
+                  color: Color(0xFF92929D),
+                  fontSize: 12,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w400,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+              trailing: Text(
+                order.shippingStatus,
+                style: TextStyle(
+                  color: order.shippingStatus.toUpperCase() == "CANCELLED"
+                      ? Colors.redAccent
+                      : const Color(0xFF3CD598),
+                  fontSize: 14,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             );
-          }),
-      subtitle: Text(
-        'ID #${order.userId.toUpperCase()}',
-        style: const TextStyle(
-          color: Color(0xFF92929D),
-          fontSize: 12,
-          fontFamily: 'Inter',
-          fontWeight: FontWeight.w400,
-        ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-      ),
-      trailing: Text(
-        order.shippingStatus,
-        style: TextStyle(
-          color: order.shippingStatus.toUpperCase() == "CANCELLED"
-              ? Colors.redAccent
-              : const Color(0xFF3CD598),
-          fontSize: 14,
-          fontFamily: 'Inter',
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-    );
+          });
+        });
   }
 }
 

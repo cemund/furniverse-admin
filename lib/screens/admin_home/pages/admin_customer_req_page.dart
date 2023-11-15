@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:furniverse_admin/models/request.dart';
 import 'package:furniverse_admin/models/user.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/request_detail_page.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/user_services.dart';
+import 'package:furniverse_admin/shared/functions.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -125,13 +127,32 @@ class CustomerCard extends StatelessWidget {
         }
       },
       contentPadding: EdgeInsets.zero,
-      leading: const SizedBox(
+      leading: SizedBox(
         height: 36,
         width: 36,
-        child: CircleAvatar(
-          // backgroundImage: AssetImage("assets/images/juan.jpeg"),
-          backgroundColor: Colors.grey,
-        ),
+        child: FutureBuilder<bool>(
+            future: doesImageExist(user.avatar),
+            builder: (context, snapshot) {
+              return CircleAvatar(
+                backgroundColor: Colors.grey[300],
+                backgroundImage: snapshot.data != false && user.avatar != ""
+                    ? CachedNetworkImageProvider(
+                        user.avatar,
+                      )
+                    : null,
+                child: snapshot.data == false || user.avatar == ""
+                    ? Text(
+                        user.getInitials(),
+                        style: const TextStyle(
+                          color: Color(0xFF171625),
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      )
+                    : null,
+              );
+            }),
       ),
       minLeadingWidth: 10,
       title: Text(
