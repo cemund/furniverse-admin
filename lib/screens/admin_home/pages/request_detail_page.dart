@@ -106,6 +106,16 @@ class Body extends StatelessWidget {
       );
     }
 
+    _sizeController.text = request.size;
+    _colorController.text = request.color;
+    _quantityController.text = request.reqquantity.toString();
+    _materialController.text = request.material;
+    _othersController.text = request.others;
+
+    if (request.price != null) {
+      _priceController.text = request.price?.toStringAsFixed(2) ?? "";
+    }
+
     return SingleChildScrollView(
         child: Padding(
       padding: const EdgeInsets.all(20.0),

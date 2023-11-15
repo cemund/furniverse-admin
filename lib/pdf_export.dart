@@ -1,36 +1,48 @@
 import 'dart:typed_data';
-
-import 'package:furniverse_admin/models/sales_analytics.dart';
+import 'package:furniverse_admin/services/analytics_services.dart';
+import 'package:furniverse_admin/services/product_services.dart';
+import 'package:furniverse_admin/shared/company_info.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 
-Future<Uint8List> makePDF() async {
+Future<Uint8List> makePDF(Map<String, dynamic> ordersPerProvince,
+    Map<String, dynamic> ordersPerProduct, int year) async {
   final pdf = Document();
 
   List<Widget> widgets = [];
 
+  final totalQuantity = await AnalyticsServices().getTotalQuantity(year);
+  final totalRevenue = await AnalyticsServices().getTotalRevenue(year);
+
+  Map<String, dynamic> ordersWithName = ordersPerProduct;
+
+  await Future.forEach(ordersWithName.keys, (key) async {
+    ordersWithName[key]['productName'] =
+        await ProductService().getProductName(key);
+  });
+
   // company name
-  var companyName = Container(
+  var companyInfo = Container(
     decoration: const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
     padding: const EdgeInsets.all(10),
     child: Column(
       children: [
         Text(
-          "A.C.Q WOOD WORKS",
+          companyName,
           style: const TextStyle(
             color: PdfColor.fromInt(0xFFFFFFFF),
             fontSize: 24,
           ),
         ),
         Text(
-          "Malolos, Bulacan",
+          companyAddress,
           style: const TextStyle(
             color: PdfColor.fromInt(0xFFFFFFFF),
             fontSize: 18,
           ),
         ),
         Text(
-          "www.facebook.com/ACQWoodWorks",
+          companyLink,
           style: const TextStyle(
             color: PdfColor.fromInt(0xFFFFFFFF),
             fontSize: 16,
@@ -40,13 +52,13 @@ Future<Uint8List> makePDF() async {
       crossAxisAlignment: CrossAxisAlignment.start,
     ),
   );
-  widgets.add(companyName);
+  widgets.add(companyInfo);
 
   // sized box
   widgets.add(SizedBox(height: 20));
 
   // location table
-  widgets.add(_buildCityTable());
+  widgets.add(_buildCityTable(ordersPerProvince));
 
   // sized box
   widgets.add(SizedBox(height: 20));
@@ -84,59 +96,96 @@ Future<Uint8List> makePDF() async {
   );
 
   // product table
-  widgets.add(
-    Table(
-      children: [
-        // Headers
-        TableRow(
-          children: [
-            Expanded(
-              child: _buildHeader(title: "Furniture"),
-            ),
-            _buildHeader(title: "Total Retail Sales"),
-            _buildHeader(title: "Potential Retail Sales"),
-            _buildHeader(title: "Surplus/Leakage"),
-            _buildHeader(title: "Trade Area Capture"),
-            _buildHeader(title: "Pull Factor"),
-          ],
-        ),
+  widgets.add(Builder(
+    builder: (context) {
+      final productIds = ordersWithName.keys.toList();
 
-        // total
-        _buildCityRow("Total"),
+      return Table(
+        children: [
+          // Headers
+          TableRow(
+            children: [
+              _buildIdHeader(title: "Product ID"),
 
-        // loop
-        for (int i = 0; i < 20; i++) _buildCityRow("Coffee Table")
-      ],
-    ),
-  );
+              Expanded(
+                child: _buildHeader(title: "Furniture"),
+              ),
+
+              _buildHeader(title: "No. of Orders"),
+              _buildHeader(title: "Total Revenue"),
+              // _buildHeader(title: "Surplus/Leakage"),
+              // _buildHeader(title: "Trade Area Capture"),
+              // _buildHeader(title: "Pull Factor"),
+            ],
+          ),
+
+          // total
+          // _buildCityRow("Total"),
+          _buildTotalRow(
+            title: "Total",
+            totalQuantity: totalQuantity,
+            totalRevenue: totalRevenue,
+          ),
+
+          for (var productId in productIds) ...[
+            _buildProductRow(
+                productId: productId,
+                productName: ordersWithName[productId]['productName'] ?? "",
+                quantity: ordersWithName[productId]['quantity'] ?? 0,
+                revenue: ordersWithName[productId]['total'] ?? 0.0),
+          ]
+
+          // loop
+          // for (int i = 0; i < 20; i++) _buildCityRow("Coffee Table")
+        ],
+      );
+    },
+  ));
 
   pdf.addPage(MultiPage(
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
       build: (context) => widgets));
+
   return pdf.save();
 }
 
-Table _buildCityTable() {
+Table _buildCityTable(Map<String, dynamic> ordersPerProvince) {
+  final provinces = ordersPerProvince.keys.toList();
+
   return Table(children: [
     TableRow(children: [
       Expanded(
         child: Text(""),
       ),
-      _buildHeader(title: "Population"),
-      _buildHeader(title: "Total Retail Sales"),
-      _buildHeader(title: "Per Capita Income"),
-      _buildHeader(title: "Trade Area Capture"),
-      _buildHeader(title: "Total Sales Pull Factor"),
+      _buildHeader(title: "No. of Customers"),
+      _buildHeader(title: "No. of Orders"),
+      _buildHeader(title: "Total Revenue"),
+      // _buildHeader(title: "Trade Area Capture"),
+      // _buildHeader(title: "Total Sales Pull Factor"),
     ]),
-    _buildCityRow("Malolos"),
-    _buildCityRow("Hagonoy"),
+    for (var province in provinces) ...[
+      _buildCityRow(
+          title: province,
+          noOfUsers: ordersPerProvince[province]['users'].length,
+          quantity: ordersPerProvince[province]['quantity'],
+          totalRevenue: ordersPerProvince[province]['total'])
+    ],
+    // _buildCityRow("Malolos"),
+    // _buildCityRow("Hagonoy"),
   ]);
 }
 
-TableRow _buildCityRow(String title) {
+TableRow _buildCityRow(
+    {required String title,
+    required int noOfUsers,
+    required int quantity,
+    required double totalRevenue}) {
   return TableRow(
       decoration: const BoxDecoration(
-          border: TableBorder(bottom: BorderSide(color: PdfColors.black))),
+        border: TableBorder(
+          bottom: BorderSide(color: PdfColors.black),
+        ),
+      ),
       children: [
         Expanded(
           child: Container(
@@ -153,11 +202,100 @@ TableRow _buildCityRow(String title) {
                 ),
               )),
         ),
-        _buildNextCell(value: 2000000),
-        _buildNextCell(value: 2000000),
-        _buildNextCell(value: 2000000),
-        _buildNextCell(value: 2000000),
-        _buildNextCell(value: 2000000),
+        _buildNextCell(value: noOfUsers),
+        _buildNextCell(value: quantity),
+        _buildNextCell(value: totalRevenue),
+        // _buildNextCell(value: 2000000),
+        // _buildNextCell(value: 2000000),
+      ]);
+}
+
+TableRow _buildProductRow(
+    {required String productId,
+    required String productName,
+    required int quantity,
+    required double revenue}) {
+  return TableRow(
+      decoration: const BoxDecoration(
+        border: TableBorder(
+          bottom: BorderSide(color: PdfColors.black),
+        ),
+      ),
+      children: [
+        // _buildNextCell(value: productId),
+        Container(
+          height: 25,
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              productId,
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: PdfColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ),
+
+        Expanded(
+          child: Container(
+            height: 25,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                productName,
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  color: PdfColors.black,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ),
+        ),
+        _buildNextCell(value: quantity),
+        _buildNextCell(value: revenue),
+        // _buildNextCell(value: 2000000),
+        // _buildNextCell(value: 2000000),
+      ]);
+}
+
+TableRow _buildTotalRow({
+  required String title,
+  required double totalRevenue,
+  required int totalQuantity,
+}) {
+  return TableRow(
+      decoration: const BoxDecoration(
+        border: TableBorder(
+          bottom: BorderSide(color: PdfColors.black),
+        ),
+      ),
+      children: [
+        Container(
+          height: 25,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              title,
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: PdfColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ),
+        _buildNextCell(value: ""),
+        _buildNextCell(value: totalQuantity),
+        _buildNextCell(value: totalRevenue),
+        // _buildNextCell(value: quantity),
+        // _buildNextCell(value: totalRevenue),
+        // _buildNextCell(value: 2000000),
+        // _buildNextCell(value: 2000000),
       ]);
 }
 
@@ -168,24 +306,54 @@ Container _buildHeader({required String title}) {
     height: 50,
     padding: const EdgeInsets.all(10),
     decoration: const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
-    child: Text(
-      title,
-      textAlign: TextAlign.center,
-      style: const TextStyle(
-        color: PdfColor.fromInt(0xFFFFFFFF),
-        fontSize: 12,
+    child: Align(
+      alignment: Alignment.center,
+      child: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          color: PdfColor.fromInt(0xFFFFFFFF),
+          fontSize: 14,
+        ),
       ),
     ),
   );
 }
 
-Container _buildNextCell({required int? value}) {
+Container _buildIdHeader({required String title}) {
+  return Container(
+    margin: const EdgeInsets.symmetric(horizontal: 1),
+    width: 170,
+    height: 50,
+    padding: const EdgeInsets.all(10),
+    decoration: const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+    child: Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          color: PdfColor.fromInt(0xFFFFFFFF),
+          fontSize: 14,
+        ),
+      ),
+    ),
+  );
+}
+
+Container _buildNextCell({required dynamic value}) {
+  String text = "";
+  if (value.runtimeType == double) {
+    text = (value as double).toStringAsFixed(0);
+  } else {
+    text = value.toString();
+  }
   return Container(
     width: 90,
     height: 25,
     padding: const EdgeInsets.all(5),
     child: Text(
-      value.toString(),
+      text,
       textAlign: TextAlign.center,
       style: const TextStyle(
         color: PdfColors.black,
