@@ -1,5 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/services/analytics_services.dart';
+import 'package:furniverse_admin/services/order_services.dart';
+import 'package:furniverse_admin/services/user_services.dart';
+import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class BusinessPerformancePage extends StatefulWidget {
   const BusinessPerformancePage({super.key});
@@ -14,219 +20,256 @@ class _BusinessPerformancePageState extends State<BusinessPerformancePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        const Text(
-          'Administration',
-          style: TextStyle(
-            color: Color(0xFF171725),
-            fontSize: 18,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedIndex = 0;
-                });
-              },
-              child: Container(
-                width: 94,
-                height: 28,
-                alignment: Alignment.center,
-                decoration: ShapeDecoration(
-                  color: selectedIndex == 0
-                      ? const Color(0xFFF6BE2C)
-                      : Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                child: Text(
-                  '1 year',
-                  style: TextStyle(
-                    color: selectedIndex == 0 ? Colors.white : Colors.black,
-                    fontSize: 14,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedIndex = 1;
-                });
-              },
-              child: Container(
-                width: 94,
-                height: 28,
-                alignment: Alignment.center,
-                decoration: ShapeDecoration(
-                  color: selectedIndex == 1
-                      ? const Color(0xFFF6BE2C)
-                      : Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                child: Text(
-                  '2 year',
-                  style: TextStyle(
-                    color: selectedIndex == 1 ? Colors.white : Colors.black,
-                    fontSize: 14,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedIndex = 2;
-                });
-              },
-              child: Container(
-                width: 94,
-                height: 28,
-                alignment: Alignment.center,
-                decoration: ShapeDecoration(
-                  color: selectedIndex == 2
-                      ? const Color(0xFFF6BE2C)
-                      : Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                child: Text(
-                  '5 year',
-                  style: TextStyle(
-                    color: selectedIndex == 2 ? Colors.white : Colors.black,
-                    fontSize: 14,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        SizedBox(
-          height: 125,
-          child: GridView.count(
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            childAspectRatio: (1 / .7),
-            crossAxisSpacing: 14,
-            mainAxisSpacing: 14,
+    return StreamProvider.value(
+        value: OrderService().streamOrders(),
+        initialData: null,
+        builder: (context, snapshot) {
+          return ListView(
             children: [
-              FutureBuilder<double>(
-                  future: AnalyticsServices()
-                      .getTotalRevenuePerPeriod(selectedIndex + 1),
-                  builder: (context, snapshot) {
-                    return Report(
-                      title: 'Total Revenue',
-                      previous: 21340,
-                      percent: 2.5,
-                      price: (snapshot.data ?? 0.0).toInt(),
-                    );
-                  }),
-              FutureBuilder<double>(
-                  future:
-                      AnalyticsServices().getAOVPerPeriod(selectedIndex + 1),
-                  builder: (context, snapshot) {
-                    return Report(
-                      title: 'Average Order Value',
-                      previous: 21340,
-                      percent: 2.5,
-                      price: (snapshot.data ?? 0.0).toInt(),
-                    );
-                  }),
+              const Text(
+                'Administration',
+                style: TextStyle(
+                  color: Color(0xFF171725),
+                  fontSize: 18,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedIndex = 0;
+                      });
+                    },
+                    child: Container(
+                      width: 94,
+                      height: 28,
+                      alignment: Alignment.center,
+                      decoration: ShapeDecoration(
+                        color: selectedIndex == 0
+                            ? const Color(0xFFF6BE2C)
+                            : Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: Text(
+                        '1 year',
+                        style: TextStyle(
+                          color:
+                              selectedIndex == 0 ? Colors.white : Colors.black,
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedIndex = 1;
+                      });
+                    },
+                    child: Container(
+                      width: 94,
+                      height: 28,
+                      alignment: Alignment.center,
+                      decoration: ShapeDecoration(
+                        color: selectedIndex == 1
+                            ? const Color(0xFFF6BE2C)
+                            : Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: Text(
+                        '2 year',
+                        style: TextStyle(
+                          color:
+                              selectedIndex == 1 ? Colors.white : Colors.black,
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedIndex = 2;
+                      });
+                    },
+                    child: Container(
+                      width: 94,
+                      height: 28,
+                      alignment: Alignment.center,
+                      decoration: ShapeDecoration(
+                        color: selectedIndex == 2
+                            ? const Color(0xFFF6BE2C)
+                            : Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: Text(
+                        '5 year',
+                        style: TextStyle(
+                          color:
+                              selectedIndex == 2 ? Colors.white : Colors.black,
+                          fontSize: 14,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 125,
+                child: GridView.count(
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: 2,
+                  childAspectRatio: (1 / .7),
+                  crossAxisSpacing: 14,
+                  mainAxisSpacing: 14,
+                  children: [
+                    FutureBuilder<double>(
+                        future: AnalyticsServices()
+                            .getTotalRevenuePerPeriod(selectedIndex + 1),
+                        builder: (context, snapshot) {
+                          return Report(
+                            title: 'Total Revenue',
+                            previous: 21340,
+                            percent: 2.5,
+                            price: (snapshot.data ?? 0.0).toInt(),
+                          );
+                        }),
+                    FutureBuilder<double>(
+                        future: AnalyticsServices()
+                            .getAOVPerPeriod(selectedIndex + 1),
+                        builder: (context, snapshot) {
+                          return Report(
+                            title: 'Average Order Value',
+                            previous: 21340,
+                            percent: 2.5,
+                            price: (snapshot.data ?? 0.0).toInt(),
+                          );
+                        }),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              // const Text(
+              //   'TRANSACTION HISTORY',
+              //   style: TextStyle(
+              //     color: Color(0xFF171625),
+              //     fontSize: 16,
+              //     fontFamily: 'Inter',
+              //     fontWeight: FontWeight.w600,
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 5,
+              // ),
+              // const TransactionCard(),
+              // const TransactionCard(),
+              // const TransactionCard(),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              const Text(
+                'RECENT CUSTOMERS',
+                style: TextStyle(
+                  color: Color(0xFF171625),
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(
+                height: 14,
+              ),
+              Builder(builder: (context) {
+                final orders = Provider.of<List<OrderModel>?>(context);
+                if (orders == null) {
+                  return const Gap(10);
+                }
+                List<String> userIds = [];
+                List<OrderModel> recentCustomers = [];
+                for (OrderModel order in orders) {
+                  if (!userIds.contains(order.userId)) {
+                    recentCustomers.add(order);
+                  }
+                }
+                return Column(
+                  children: [
+                    for (OrderModel order in recentCustomers) ...[
+                      CustomersTile(
+                        order: order,
+                      )
+                    ]
+                  ],
+                );
+              }),
             ],
-          ),
-        ),
-        const SizedBox(height: 20),
-        const Text(
-          'TRANSACTION HISTORY',
-          style: TextStyle(
-            color: Color(0xFF171625),
-            fontSize: 16,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        const TransactionCard(),
-        const TransactionCard(),
-        const TransactionCard(),
-        const SizedBox(
-          height: 20,
-        ),
-        const Text(
-          'RECENT CUSTOMERS',
-          style: TextStyle(
-            color: Color(0xFF171625),
-            fontSize: 16,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(
-          height: 14,
-        ),
-        const CustomersTile(),
-        const CustomersTile(),
-        const CustomersTile(),
-      ],
-    );
+          );
+        });
   }
 }
 
 class CustomersTile extends StatelessWidget {
   const CustomersTile({
     super.key,
+    required this.order,
   });
+  final OrderModel order;
 
   @override
   Widget build(BuildContext context) {
-    return const ListTile(
-      leading: CircleAvatar(
-        backgroundImage: AssetImage('assets/images/layla.jpeg'),
+    return ListTile(
+      leading: const CircleAvatar(
+        // backgroundImage: AssetImage('assets/images/layla.jpeg'),
+        backgroundColor: Colors.grey,
       ),
-      title: Text(
-        'Layla De Lima ',
-        style: TextStyle(
-          color: Color(0xFF171625),
-          fontSize: 14,
-          fontFamily: 'Inter',
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      title: FutureBuilder<String?>(
+          future: UserService().getUserName(order.userId),
+          initialData: "",
+          builder: (context, snapshot) {
+            return Text(
+              snapshot.data ?? "",
+              style: const TextStyle(
+                color: Color(0xFF171625),
+                fontSize: 14,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w600,
+              ),
+            );
+          }),
       subtitle: Text(
-        'ID #6124',
-        style: TextStyle(
+        'ID #${order.userId.toUpperCase()}',
+        style: const TextStyle(
           color: Color(0xFF92929D),
           fontSize: 12,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
-          height: 0,
         ),
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
       ),
       trailing: Text(
-        'Paid',
+        order.shippingStatus,
         style: TextStyle(
-          color: Color(0xFF3CD598),
-          fontSize: 12,
+          color: order.shippingStatus.toUpperCase() == "CANCELLED"
+              ? Colors.redAccent
+              : const Color(0xFF3CD598),
+          fontSize: 14,
           fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
-          height: 0,
         ),
       ),
     );
@@ -261,8 +304,9 @@ class TransactionCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: const Color.fromARGB(52, 61, 213, 152)),
+                  borderRadius: BorderRadius.circular(5),
+                  color: const Color.fromARGB(52, 61, 213, 152),
+                ),
                 child: const Text(
                   'Completed',
                   style: TextStyle(
