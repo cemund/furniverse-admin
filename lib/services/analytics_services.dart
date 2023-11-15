@@ -187,4 +187,53 @@ class AnalyticsServices {
       return {};
     }
   }
+
+  Future<double> getTotalRevenuePerPeriod(int noOfYear) async {
+    try {
+      double totalRevenue = 0.0;
+      final QuerySnapshot analyticsDoc = await _db
+          .collection('analytics')
+          .orderBy('year', descending: true)
+          .get();
+
+      int counter = 0;
+      for (QueryDocumentSnapshot doc in analyticsDoc.docs) {
+        final yearDetails = doc.data() as Map;
+        totalRevenue = totalRevenue + yearDetails['totalRevenue'];
+        counter++;
+        if (counter == noOfYear) return totalRevenue;
+      }
+
+      return 0.0;
+    } catch (e) {
+      print('Error get Total Revenue Per Period: $e');
+      return 0.0;
+    }
+  }
+
+  Future<double> getAOVPerPeriod(int noOfYear) async {
+    try {
+      double averageOrderValue = 0.0;
+      final QuerySnapshot analyticsDoc = await _db
+          .collection('analytics')
+          .orderBy('year', descending: true)
+          .get();
+
+      int counter = 0;
+      for (QueryDocumentSnapshot doc in analyticsDoc.docs) {
+        final yearDetails = doc.data() as Map;
+        averageOrderValue =
+            averageOrderValue + yearDetails['averageOrderValue'];
+        counter++;
+        if (counter == noOfYear) {
+          return averageOrderValue / counter;
+        }
+      }
+
+      return 0.0;
+    } catch (e) {
+      print('Error get Total Revenue Per Period: $e');
+      return 0.0;
+    }
+  }
 }

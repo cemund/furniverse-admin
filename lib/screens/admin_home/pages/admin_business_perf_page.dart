@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:furniverse_admin/services/analytics_services.dart';
 
 class BusinessPerformancePage extends StatefulWidget {
   const BusinessPerformancePage({super.key});
@@ -123,19 +124,29 @@ class _BusinessPerformancePageState extends State<BusinessPerformancePage> {
             childAspectRatio: (1 / .7),
             crossAxisSpacing: 14,
             mainAxisSpacing: 14,
-            children: const [
-              Report(
-                title: 'Sales',
-                previous: 21340,
-                percent: 2.5,
-                price: 60289,
-              ),
-              Report(
-                title: 'Purchase',
-                previous: 21340,
-                percent: 2.5,
-                price: 60289,
-              ),
+            children: [
+              FutureBuilder<double>(
+                  future: AnalyticsServices()
+                      .getTotalRevenuePerPeriod(selectedIndex + 1),
+                  builder: (context, snapshot) {
+                    return Report(
+                      title: 'Total Revenue',
+                      previous: 21340,
+                      percent: 2.5,
+                      price: (snapshot.data ?? 0.0).toInt(),
+                    );
+                  }),
+              FutureBuilder<double>(
+                  future:
+                      AnalyticsServices().getAOVPerPeriod(selectedIndex + 1),
+                  builder: (context, snapshot) {
+                    return Report(
+                      title: 'Average Order Value',
+                      previous: 21340,
+                      percent: 2.5,
+                      price: (snapshot.data ?? 0.0).toInt(),
+                    );
+                  }),
             ],
           ),
         ),
@@ -363,24 +374,6 @@ class Report extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(
-                width: 8,
-              ),
-              Text(
-                '+$percent%',
-                style: const TextStyle(
-                  color: Color(0xFF3DD598),
-                  fontSize: 12,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
-                  height: 0,
-                ),
-              ),
-              const Icon(
-                Icons.arrow_upward_rounded,
-                size: 12,
-                color: Color(0xFF3DD598),
-              ),
             ],
           ),
           Text(
@@ -393,7 +386,7 @@ class Report extends StatelessWidget {
             ),
           ),
           Text(
-            'Compared to \n(₱$previous last year)',
+            '$title in this period',
             style: const TextStyle(
               color: Color(0xFF92929D),
               fontSize: 12,
