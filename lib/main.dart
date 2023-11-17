@@ -31,6 +31,7 @@ void main() async {
         value: ProductService().streamProducts(), initialData: null)
   ], child: MyApp()));
 }
+final navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   final routes = {
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
     '/adminHome': "Admin Home",
     '/newprod': "New Product",
     '/notif': "Notfication",
-    '/editprod': 'Edit Product',
+    '/login': 'login',
     // '/status': "Status",
     // '/req': "Request",
   };
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
     );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       initialRoute: '/',
       title: 'Furniverse',
       theme: customTheme,
@@ -64,7 +66,7 @@ class MyApp extends StatelessWidget {
         '/adminHome': (context) => const AdminMain(),
         '/newprod': (context) => const AddProduct(),
         '/notif': (context) => const AppNotification(),
-        // '/editprod' : (context) => const EditProduct(),
+        '/login' : (context) => const LogIn(),
         // '/status': (context) => const OrderStatus(),
         // '/req': (context) => const CustomerRequestPage(),
       },
