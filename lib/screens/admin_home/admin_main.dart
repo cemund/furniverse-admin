@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_business_perf_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_customer_req_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_home_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_prod_list_dart.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/order_status_page.dart';
+import 'package:furniverse_admin/services/auth_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/request_services.dart';
+import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:provider/provider.dart';
 
 class AdminMain extends StatefulWidget {
@@ -19,6 +22,7 @@ class _AdminMainState extends State<AdminMain> {
   GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
   String userName = 'Alice Mhiema';
   int selectedIdxPage = 0;
+  final AuthService _auth = AuthService();
 
   List pages = <Widget>[
     const AdminHomePage(),
@@ -225,7 +229,29 @@ class _AdminMainState extends State<AdminMain> {
                 SizedBox(
                   height: 60,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      showDialog(
+                        context: context,
+                        builder: (context) => ConfirmationAlertDialog(
+                            title: "Are you sure you want to log out?",
+                            onTapNo: () {
+                              Navigator.pop(context);
+                            },
+                            onTapYes: () async {
+                              await _auth.signOut();
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
+
+                              Fluttertoast.showToast(
+                                msg: "Logged Out Successfully.",
+                                backgroundColor: Colors.grey,
+                              );
+                            },
+                            tapNoString: "No",
+                            tapYesString: "Yes"),
+                      );
+                    },
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(
                         Color(0xffD38181),
