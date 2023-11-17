@@ -9,12 +9,14 @@ import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/edit_product_variants_model.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/models/products.dart';
+import 'package:furniverse_admin/services/delete_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/upload_image_services.dart';
 import 'package:furniverse_admin/services/upload_model_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/addvariantwidget.dart';
+import 'package:furniverse_admin/widgets/edit_old_variant_widget.dart';
 import 'package:furniverse_admin/widgets/editvariantwidget.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
@@ -115,9 +117,9 @@ class _EditProductState extends State<EditProduct> {
     selectedCategory = widget.product!.category;
     _descriptionController.text = widget.product!.description;
 
-    for (int i = 0; i < widget.product!.images.length; i++) {
-      productImages.add(widget.product!.images[i]);
-    }
+    // for (int i = 0; i < widget.product!.images.length; i++) {
+    //   productImages.add(widget.product!.images[i]);
+    // }
 
     for (int i = 0; i < widget.product!.images.length; i++) {
       listItems.add({
@@ -399,7 +401,7 @@ class _EditProductState extends State<EditProduct> {
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Product Variants',
+                    'Original Product Variants',
                     style: TextStyle(
                       color: Color(0xFF43464B),
                       fontSize: 13,
@@ -408,12 +410,12 @@ class _EditProductState extends State<EditProduct> {
                     ),
                   ),
                   const SizedBox(height: 10),
+
+                  // show original variants
                   if (widget.product!.variants.isNotEmpty) ...[
                     Builder(builder: (context) {
-                      final provider =
+                      final variants =
                           Provider.of<VariantsProvider>(context, listen: false);
-                      provider.clearOldVariant();
-                      // provider.clearVariant();
 
                       return ListView.separated(
                         shrinkWrap: true,
@@ -423,20 +425,6 @@ class _EditProductState extends State<EditProduct> {
                         itemCount: widget.product!.variants.length,
                         itemBuilder: (context, index) {
                           final variant = widget.product!.variants[index];
-                          final oldvariants = EditProductVariants(
-                              variantName: widget.product?.variants[index]
-                                  ['variant_name'],
-                              material: widget.product?.variants[index]
-                                  ['material'],
-                              color: widget.product?.variants[index]['color'],
-                              image: widget.product?.variants[index]['image'],
-                              size: widget.product?.variants[index]['size'],
-                              model: widget.product?.variants[index]['model'],
-                              price: widget.product?.variants[index]['price'],
-                              stocks: widget.product?.variants[index]['stocks'],
-                              id: widget.product?.variants[index]['id']);
-
-                          provider.oldvariant(oldvariants);
 
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -449,133 +437,163 @@ class _EditProductState extends State<EditProduct> {
                                     height: 80,
                                     clipBehavior: Clip.hardEdge,
                                     decoration: ShapeDecoration(
-                                      image: DecorationImage(
-                                        // image: AssetImage(widget.product.image),
-                                        image: CachedNetworkImageProvider(
-                                          widget.product?.variants[index]
-                                                  ['image'] ??
-                                              "http://via.placeholder.com/350x150",
-                                        ),
-                                        fit: BoxFit.cover,
-                                      ),
+                                      image: variants.oldvariants[index]
+                                                  .selectedNewImage ==
+                                              null
+                                          ? DecorationImage(
+                                              image: CachedNetworkImageProvider(
+                                                  variants.oldvariants[index]
+                                                      .image),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : null,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                     ),
+                                    child: variants.oldvariants[index]
+                                                .selectedNewImage !=
+                                            null
+                                        ? Image.file(
+                                            File(variants.oldvariants[index]
+                                                .selectedNewImage!.path),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : null,
                                   ),
                                   const Gap(10),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        widget.product?.variants[index]
-                                            ['variant_name'],
-                                        style: const TextStyle(
-                                          color: foregroundColor,
-                                          fontSize: 16,
-                                          fontFamily: 'Nunito Sans',
-                                          fontWeight: FontWeight.w800,
+                                  SizedBox(
+                                    width: MediaQuery.sizeOf(context).width / 2,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          variants
+                                              .oldvariants[index].variantName,
+                                          style: const TextStyle(
+                                            color: foregroundColor,
+                                            fontSize: 16,
+                                            fontFamily: 'Nunito Sans',
+                                            fontWeight: FontWeight.w800,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        "Price: ₱${widget.product?.variants[index]['price'].toStringAsFixed(2)}",
-                                        style: const TextStyle(
-                                          color: foregroundColor,
-                                          fontSize: 12,
-                                          fontFamily: 'Nunito Sans',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      Text(
-                                        "Stocks: ${widget.product?.variants[index]['stocks']}",
-                                        style: const TextStyle(
-                                          color: foregroundColor,
-                                          fontSize: 12,
-                                          fontFamily: 'Nunito Sans',
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 200,
-                                        child: Text(
-                                          "3D Model: ${widget.product?.variants[index]['model']}",
+                                        Text(
+                                          "Prices: ₱${variants.oldvariants[index].price.toStringAsFixed(2)}",
                                           style: const TextStyle(
                                             color: foregroundColor,
                                             fontSize: 12,
                                             fontFamily: 'Nunito Sans',
                                             fontWeight: FontWeight.w400,
                                           ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: 200,
-                                        child: ReadMoreText(
-                                          "Size: ${widget.product?.variants[index]['size']}, Color: ${widget.product?.variants[index]['color']}, Material: ${widget.product?.variants[index]['material']} ",
+                                        Text(
+                                          "Stocks: ${variants.oldvariants[index].stocks}",
                                           style: const TextStyle(
                                             color: foregroundColor,
                                             fontSize: 12,
                                             fontFamily: 'Nunito Sans',
                                             fontWeight: FontWeight.w400,
                                           ),
-                                          trimLines: 1,
-                                          trimMode: TrimMode.Line,
-                                          trimCollapsedText: 'More',
-                                          trimExpandedText: ' Less',
-                                          moreStyle: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold),
-                                          lessStyle: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold),
                                         ),
-                                      ),
-                                    ],
+                                        SizedBox(
+                                          width: 200,
+                                          child: Text(
+                                            variants.oldvariants[index]
+                                                        .selectedNewModel ==
+                                                    null
+                                                ? "3D Model: ${variants.oldvariants[index].variantName} model"
+                                                : "3D Model: ${basename(variants.oldvariants[index].selectedNewModel!.path)}",
+                                            style: const TextStyle(
+                                              color: foregroundColor,
+                                              fontSize: 12,
+                                              fontFamily: 'Nunito Sans',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 200,
+                                          child: ReadMoreText(
+                                            "Size: ${variants.oldvariants[index].size}, Color: ${variants.oldvariants[index].color}, Material: ${variants.oldvariants[index].material} ",
+                                            style: const TextStyle(
+                                              color: foregroundColor,
+                                              fontSize: 12,
+                                              fontFamily: 'Nunito Sans',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            trimLines: 1,
+                                            trimMode: TrimMode.Line,
+                                            trimCollapsedText: 'More',
+                                            trimExpandedText: ' Less',
+                                            moreStyle: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold),
+                                            lessStyle: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   )
                                 ],
                               ),
-                              // Row(
-                              //   children: [
-                              //     IconButton(
-                              //         padding: EdgeInsets.zero,
-                              //         constraints: const BoxConstraints(),
-                              //         onPressed: () {
-                              //           showDialog(
-                              //               builder: (context) =>
-                              //                   EditVariantWidget(
-                              //                     productVariants: variant[index],
-                              //                   ),
-                              //               context: context,
-                              //               barrierDismissible: false);
-                              //         },
-                              //         icon: const Icon(
-                              //           Icons.edit,
-                              //           color: foregroundColor,
-                              //         )),
-                              //     IconButton(
-                              //         padding: EdgeInsets.zero,
-                              //         constraints: const BoxConstraints(),
-                              //         onPressed: () {
-                              //           final provider =
-                              //               Provider.of<VariantsProvider>(
-                              //                   context,
-                              //                   listen: false);
-                              //           provider.removeVariant(variant);
-                              //         },
-                              //         icon: const Icon(
-                              //           Icons.delete,
-                              //           color: foregroundColor,
-                              //         ))
-                              //   ],
-                              // ),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      showDialog(
+                                          builder: (context) =>
+                                              EditOldVariantWidget(
+                                                productVariants:
+                                                    variants.oldvariants[index],
+                                              ),
+                                          context: context,
+                                          barrierDismissible: false);
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: foregroundColor,
+                                    ),
+                                  ),
+                                  // DELETE ORIGINAL VARIANT, FOR DEVELOPMENT
+                                  // IconButton(
+                                  //   padding: EdgeInsets.zero,
+                                  //   constraints: const BoxConstraints(),
+                                  //   onPressed: () {
+                                  //     final provider =
+                                  //         Provider.of<VariantsProvider>(context,
+                                  //             listen: false);
+                                  //     provider.removeVariant(variant);
+                                  //   },
+                                  //   icon: const Icon(
+                                  //     Icons.delete,
+                                  //     color: foregroundColor,
+                                  //   ),
+                                  // ),
+                                ],
+                              ),
                             ],
                           );
                         },
                       );
                     }),
                   ],
+                  const Gap(20),
+                  const Text(
+                    'New Product Variants',
+                    style: TextStyle(
+                      color: Color(0xFF43464B),
+                      fontSize: 13,
+                      fontFamily: 'Nunito Sans',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   const Gap(10),
                   if (variants.isNotEmpty)
                     ListView.separated(
@@ -607,70 +625,74 @@ class _EditProductState extends State<EditProduct> {
                                   ),
                                 ),
                                 const Gap(10),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      variant.variantName,
-                                      style: const TextStyle(
-                                        color: foregroundColor,
-                                        fontSize: 16,
-                                        fontFamily: 'Nunito Sans',
-                                        fontWeight: FontWeight.w800,
+                                SizedBox(
+                                  width: MediaQuery.sizeOf(context).width / 2,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        variant.variantName,
+                                        style: const TextStyle(
+                                          color: foregroundColor,
+                                          fontSize: 16,
+                                          fontFamily: 'Nunito Sans',
+                                          fontWeight: FontWeight.w800,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      "Price: ₱${variant.price.toStringAsFixed(2)}",
-                                      style: const TextStyle(
-                                        color: foregroundColor,
-                                        fontSize: 12,
-                                        fontFamily: 'Nunito Sans',
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Stocks: ${variant.stocks}",
-                                      style: const TextStyle(
-                                        color: foregroundColor,
-                                        fontSize: 12,
-                                        fontFamily: 'Nunito Sans',
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    Text(
-                                      "3D Model: ${basename(variant.model.path)}",
-                                      style: const TextStyle(
-                                        color: foregroundColor,
-                                        fontSize: 12,
-                                        fontFamily: 'Nunito Sans',
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    SizedBox(
-                                      width: 200,
-                                      child: ReadMoreText(
-                                        "Size: ${variant.size}; Color: ${variant.color}; Material: ${variant.material}; ",
+                                      Text(
+                                        "Price: ₱${variant.price.toStringAsFixed(2)}",
                                         style: const TextStyle(
                                           color: foregroundColor,
                                           fontSize: 12,
                                           fontFamily: 'Nunito Sans',
                                           fontWeight: FontWeight.w400,
                                         ),
-                                        trimLines: 1,
-                                        trimMode: TrimMode.Line,
-                                        trimCollapsedText: 'More',
-                                        trimExpandedText: ' Less',
-                                        moreStyle: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold),
-                                        lessStyle: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold),
                                       ),
-                                    ),
-                                  ],
+                                      Text(
+                                        "Stocks: ${variant.stocks}",
+                                        style: const TextStyle(
+                                          color: foregroundColor,
+                                          fontSize: 12,
+                                          fontFamily: 'Nunito Sans',
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      Text(
+                                        "3D Model: ${basename(variant.model.path)}",
+                                        style: const TextStyle(
+                                          color: foregroundColor,
+                                          fontSize: 12,
+                                          fontFamily: 'Nunito Sans',
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      SizedBox(
+                                        width: 200,
+                                        child: ReadMoreText(
+                                          "Size: ${variant.size}; Color: ${variant.color}; Material: ${variant.material}; ",
+                                          style: const TextStyle(
+                                            color: foregroundColor,
+                                            fontSize: 12,
+                                            fontFamily: 'Nunito Sans',
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          trimLines: 1,
+                                          trimMode: TrimMode.Line,
+                                          trimCollapsedText: 'More',
+                                          trimExpandedText: ' Less',
+                                          moreStyle: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold),
+                                          lessStyle: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 )
                               ],
                             ),
@@ -774,6 +796,7 @@ class _EditProductState extends State<EditProduct> {
 
     final images = await uploadSelectedImages();
     final productMaps = await provider.getMap();
+    final toDeleteFiles = provider.getToDeleteFiles();
 
     Map<String, dynamic> productData = {
       'product_name': _productnameController.text,
@@ -786,6 +809,10 @@ class _EditProductState extends State<EditProduct> {
     // Add the product to Firestore
     await productService.updateProduct(productData, widget.id);
     // await productService.addProduct(productData, productMaps);
+
+    for (String file in toDeleteFiles) {
+      deleteFileByUrl(file);
+    }
 
     provider.clearVariant();
     provider.clearOldVariant();

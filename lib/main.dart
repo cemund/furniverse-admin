@@ -11,7 +11,7 @@ import 'package:furniverse_admin/screens/admin_home/pages/notification.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/order_status_page.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
-import 'package:furniverse_admin/widgets/editproduct.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/admin_edit_product.dart';
 import 'package:provider/provider.dart';
 import 'screens/home/main_page.dart';
 import 'package:firebase_core/firebase_core.dart';

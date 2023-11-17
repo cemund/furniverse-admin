@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:image_picker/image_picker.dart';
 
 class EditProductVariants {
   String id;
@@ -11,6 +12,8 @@ class EditProductVariants {
   int stocks;
   String image;
   String model;
+  XFile? selectedNewImage;
+  File? selectedNewModel;
 
   EditProductVariants({
     required this.id,
@@ -22,5 +25,7 @@ class EditProductVariants {
     required this.stocks,
     required this.image,
     required this.model,
+    this.selectedNewImage,
+    this.selectedNewModel,
   });
 }
