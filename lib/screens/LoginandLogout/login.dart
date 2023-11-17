@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:furniverse_admin/screens/LoginandLogout/emailforgetpass.dart';
 
 
 
@@ -40,7 +43,7 @@ class _LogInState extends State<LogIn> {
               children: [
                 const SizedBox(height: 76),
     
-                // Center(child: SvgPicture.asset('assets/icons/PrimaryIcon.svg')),
+                Center(child: SvgPicture.asset('assets/icons/PrimaryIcon.svg')),
     
                 const SizedBox(height: 40),
     
@@ -75,6 +78,11 @@ class _LogInState extends State<LogIn> {
                     border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
                     labelText: 'Email',
                   ),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (email) =>
+                    email != null && !EmailValidator.validate(email)
+                      ? 'Enter valid email'
+                      : null,
                 ),
                 
                 const SizedBox(height: 20),
@@ -87,43 +95,50 @@ class _LogInState extends State<LogIn> {
                     labelText: 'Password',
                     suffixIcon: togglePassword(),
                   ),
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) =>
+                    value != null && value.length < 8
+                      ? 'Enter valid password'
+                      : null,
                 ),
                 
                 const SizedBox(height: 20),
                 
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 12),
-                      child: Text("Remember me",
-                        style: TextStyle(
-                          color:  Colors.black,
-                          fontSize: 14,
-                          fontFamily: 'Nunito Sans',
-                          fontWeight: FontWeight.w600,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                                padding: EdgeInsets.only(top: 15),
+                                child: Text(
+                                  "Forgot Password?",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontFamily: 'Nunito Sans',
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                )),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EmailForgetPass(),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  "Click here.",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontFamily: 'Nunito Sans',
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ))
+                          ],
                         ),
-                      )
-                    ),
-                    TextButton(onPressed: () {
-                      // Navigator.of(context).pushReplacement(
-                      //     MaterialPageRoute(
-                      //       builder: (context) => const EmailForgetPass(),
-                      //       ),
-                      //     );
-                        },
-                      child: const Text("Forget Password",
-                        style: TextStyle(
-                          color:  Colors.black,
-                          fontSize: 14,
-                          fontFamily: 'Nunito Sans',
-                          fontWeight: FontWeight.w600,
-                          ),
-                        )
-                      )
-                  ],
-                ),
                 
                 const SizedBox(height: 20),
                 

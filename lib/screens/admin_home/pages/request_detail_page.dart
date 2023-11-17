@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/models/request.dart';
 import 'package:furniverse_admin/services/request_services.dart';
 import 'package:furniverse_admin/shared/loading.dart';
@@ -219,7 +220,10 @@ class Body extends StatelessWidget {
                     if (await canLaunchUrl(url)) {
                       await launchUrl(url);
                     } else {
-                      print("Invalid Number");
+                      Fluttertoast.showToast(
+                        msg: "Invalid number.",
+                        backgroundColor: Colors.grey,
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -304,6 +308,11 @@ class Body extends StatelessWidget {
               decimal: true,
             ),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) =>
+              value!.isEmpty
+                ? 'Please input a price.'
+                : null,
           ),
           const SizedBox(height: 20),
           if (request.reqStatus.toUpperCase() == 'PENDING')
