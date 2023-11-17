@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/firebasefiles/firebase_user_notification.dart';
@@ -9,9 +10,11 @@ import 'package:furniverse_admin/sample.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/request_detail_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/notification.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/order_status_page.dart';
+import 'package:furniverse_admin/services/auth_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_edit_product.dart';
+import 'package:furniverse_admin/wrapper.dart';
 import 'package:provider/provider.dart';
 import 'screens/home/main_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -28,9 +31,11 @@ void main() async {
     StreamProvider.value(
         value: OrderService().streamOrders(), initialData: null),
     StreamProvider.value(
-        value: ProductService().streamProducts(), initialData: null)
+        value: ProductService().streamProducts(), initialData: null),
+    StreamProvider<User?>.value(value: AuthService().user, initialData: null),
   ], child: MyApp()));
 }
+
 final navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
@@ -60,16 +65,17 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       title: 'Furniverse',
       theme: customTheme,
-      routes: {
-        '/': (context) => MainButtons(routes),
-        '/page1': (context) => const Sample(),
-        '/adminHome': (context) => const AdminMain(),
-        '/newprod': (context) => const AddProduct(),
-        '/notif': (context) => const AppNotification(),
-        '/login' : (context) => const LogIn(),
-        // '/status': (context) => const OrderStatus(),
-        // '/req': (context) => const CustomerRequestPage(),
-      },
+      home: const Wrapper(),
+      // routes: {
+      //   '/': (context) => MainButtons(routes),
+      //   '/page1': (context) => const Sample(),
+      //   '/adminHome': (context) => const AdminMain(),
+      //   '/newprod': (context) => const AddProduct(),
+      //   '/notif': (context) => const AppNotification(),
+      //   '/login' : (context) => const LogIn(),
+      //   // '/status': (context) => const OrderStatus(),
+      //   // '/req': (context) => const CustomerRequestPage(),
+      // },
     );
   }
 }
