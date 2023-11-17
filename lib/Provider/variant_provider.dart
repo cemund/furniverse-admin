@@ -19,10 +19,8 @@ class VariantsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void oldvariant(EditProductVariants editProductVariants) {
-    print("hello");
+  void addOldVariant(EditProductVariants editProductVariants) {
     _oldvariants.add(editProductVariants);
-    print(_oldvariants.length);
   }
 
   void removeVariant(ProductVariants productVariants) {
@@ -56,39 +54,67 @@ class VariantsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // DI PA GUMAGANA
-  // void saveVariant(String id) {
-  //   FirebaseFirestore.instance.collection("products").add({
-  //     'variants': FieldValue.arrayUnion(variant),
-  //   });
+  void updateOldVariants(
+    EditProductVariants productVariants,
+    EditProductVariants newVariant,
+  ) {
+    int indexOfValue = _oldvariants.indexOf(productVariants);
+    if (indexOfValue != -1) {
+      // Check if the value exists in the list
+      _oldvariants[indexOfValue] =
+          newVariant; // Replace the value with the new value
+    } else {
+      // Handle the case where the value is not found in the list
+      print("Value $productVariants not found in the list.");
+    }
 
-  //   notifyListeners();
-  // }
+    notifyListeners();
+  }
+
+  List<String> getToDeleteFiles() {
+    List<String> toDeleteFiles = [];
+
+    for (EditProductVariants variant in _oldvariants) {
+      if (variant.selectedNewImage != null) {
+        toDeleteFiles.add(variant.image);
+      }
+      if (variant.selectedNewModel != null) {
+        toDeleteFiles.add(variant.model);
+      }
+    }
+
+    return toDeleteFiles;
+  }
 
   Future<List<Map<String, dynamic>>> getMap() async {
     List<Map<String, dynamic>> productMaps = [];
 
-    print("oldvariants.lengh");
-    print(_oldvariants.length);
+    for (EditProductVariants variant in _oldvariants) {
+      String? imageReference = variant.image;
+      String? modelReference = variant.model;
 
-    for (EditProductVariants products in _oldvariants) {
+      if (variant.selectedNewImage != null) {
+        imageReference =
+            await uploadVariantImageToFirebase(variant.selectedNewImage);
+      }
+      if (variant.selectedNewModel != null) {
+        imageReference = await uploadModelToFirebase(variant.selectedNewModel);
+      }
+
       productMaps.add({
-        'variant_name': products.variantName,
-        'material': products.material,
-        'size': products.size,
-        'color': products.color,
-        'price': products.price,
-        'stocks': products.stocks,
-        'image': products.image,
-        'model': products.model,
-        'id': products.id,
+        'variant_name': variant.variantName,
+        'material': variant.material,
+        'size': variant.size,
+        'color': variant.color,
+        'price': variant.price,
+        'stocks': variant.stocks,
+        'image': imageReference,
+        'model': modelReference,
+        'id': variant.id,
       });
     }
 
     for (ProductVariants product in _variant) {
-      print("oldvariants.lengh");
-      print(_oldvariants.length);
-
       String? imageReference = '';
       String? modelReference = '';
 

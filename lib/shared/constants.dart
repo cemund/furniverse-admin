@@ -10,3 +10,4 @@ var outlineInputBorder = ({required label}) => InputDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8))),
       labelText: label,
     );
+const imagePlaceholder = "http://via.placeholder.com/350x150";

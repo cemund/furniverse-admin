@@ -2,12 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
+import 'package:furniverse_admin/models/edit_product_variants_model.dart';
 import 'package:furniverse_admin/models/products.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_add_product.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
-import 'package:furniverse_admin/widgets/editproduct.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/admin_edit_product.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
@@ -581,17 +582,37 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                 ProductService().deleteProduct(widget.product.id);
               }
               if (value == 2) {
-                final provider =
+                final variants =
                     Provider.of<VariantsProvider>(context, listen: false);
-                provider.clearOldVariant();
-                provider.clearVariant();
+                variants.clearOldVariant();
+                variants.clearVariant();
+
+                // initialize old/original variant
+                // print(widget.product.variants);
+
+                for (var variant in widget.product.variants) {
+                  final oldvariants = EditProductVariants(
+                      variantName: variant['variant_name'],
+                      material: variant['material'],
+                      color: variant['color'],
+                      image: variant['image'],
+                      size: variant['size'],
+                      model: variant['model'],
+                      price: variant['price'],
+                      stocks: variant['stocks'],
+                      id: variant['id']);
+
+                  variants.addOldVariant(oldvariants);
+                }
 
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditProduct(
-                            id: widget.product.id.toString(),
-                            product: widget.product)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditProduct(
+                        id: widget.product.id.toString(),
+                        product: widget.product),
+                  ),
+                );
               }
             },
             padding: EdgeInsets.zero,
