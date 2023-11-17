@@ -1,26 +1,59 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
+import 'package:furniverse_admin/models/edit_product_variants_model.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart';
-import 'package:uuid/uuid.dart';
 
-class AddVariantWidget extends StatefulWidget {
-  const AddVariantWidget({super.key});
+class EditOldVariantWidget extends StatefulWidget {
+  final EditProductVariants productVariants;
+
+  const EditOldVariantWidget({super.key, required this.productVariants});
 
   @override
-  State<AddVariantWidget> createState() => _AddVariantWidgetState();
+  State<EditOldVariantWidget> createState() => _EditOldVariantWidgetState();
 }
 
-class _AddVariantWidgetState extends State<AddVariantWidget> {
+class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
+  String name = "";
+  String material = "";
+  String color = "";
+  String size = "";
+  String id = "";
+  double price = 0.0;
+  int stocks = 0;
+  dynamic selectedImage;
+  dynamic selectedModel;
+  XFile? selectedNewImage;
+  File? selectedNewModel;
+
+  @override
+  void initState() {
+    var variant = widget.productVariants;
+
+    name = variant.variantName;
+    material = variant.material;
+    color = variant.color;
+    size = variant.size;
+    price = variant.price;
+    stocks = variant.stocks;
+    selectedImage = variant.image;
+    selectedModel = variant.model;
+    id = variant.id;
+    selectedNewImage = variant.selectedNewImage;
+    selectedNewModel = variant.selectedNewModel;
+    super.initState();
+  }
+
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _materialController = TextEditingController();
@@ -28,18 +61,26 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
   final _dimensionController = TextEditingController();
   final _priceController = TextEditingController();
   final _stocksController = TextEditingController();
-  String? image;
-  String? model;
-  XFile? selectedImage;
-  File? selectedModel;
+
   final ImagePicker _picker = ImagePicker();
   String error = '';
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _materialController.dispose();
+    _colorController.dispose();
+    _dimensionController.dispose();
+    _priceController.dispose();
+    _stocksController.dispose();
+    super.dispose();
+  }
 
   Future<void> pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
-        selectedImage = image;
+        selectedNewImage = image;
       });
     }
   }
@@ -50,33 +91,31 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
       type: FileType.any,
 
       // for GLB files only
-      // type: FileType.custom,
+      // type: FileType.any,
       // allowedExtensions: ['glb'],
     );
     if (result == null) return;
 
     final path = result.files.single.path!;
 
-    setState(() => selectedModel = File(path));
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _materialController.dispose();
-    _colorController.dispose();
-    _dimensionController.dispose();
-    _priceController.dispose();
-    _stocksController.dispose();
-
-    super.dispose();
+    setState(() => selectedNewModel = File(path));
   }
 
   @override
   Widget build(BuildContext context) {
-    var fileName = selectedModel != null
-        ? basename(selectedModel!.path)
-        : "Upload 3D Model";
+    _nameController.text = name;
+    _materialController.text = material;
+    _colorController.text = color;
+    _dimensionController.text = size;
+    _priceController.text = price.toString();
+    _stocksController.text = stocks.toString();
+    // var fileName = selectedModel != null
+    //     ? basename(selectedModel!.path)
+    //     : "Upload 3D Model";
+    var fileName = selectedNewModel == null
+        ? "$name's 3D Model"
+        : basename(selectedNewModel!.path);
+
     return AlertDialog(
       content: Form(
         key: _formKey,
@@ -87,7 +126,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Add Variant"),
+                const Text("Edit Variant"),
                 IconButton(
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -105,60 +144,54 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
               child: ListView(
                 physics: const BouncingScrollPhysics(),
                 children: [
-                  selectedImage == null
-                      ? Center(
-                          child: GestureDetector(
-                            onTap: () async {
-                              await pickImage();
-                              setState(() {});
-                            },
-                            child: Container(
-                              height: 80,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 2, color: const Color(0xFFA9ADB2)),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(
-                                Icons.add_a_photo_rounded,
-                                color: foregroundColor,
-                              ),
-                            ),
-                          ),
-                        )
-                      : Center(
-                          child: Stack(
-                          children: [
-                            Container(
-                              width: 80,
-                              clipBehavior: Clip.hardEdge,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Image.file(
-                                File(selectedImage!.path),
+                  Center(
+                      child: Stack(
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 80,
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          image: selectedNewImage == null
+                              ? DecorationImage(
+                                  image: CachedNetworkImageProvider(
+                                    selectedImage ?? imagePlaceholder,
+                                  ),
+                                  fit: BoxFit.cover)
+                              : null,
+                        ),
+                        child: selectedNewImage != null
+                            ? Image.file(
+                                File(selectedNewImage!.path),
                                 fit: BoxFit.cover,
-                              ),
-                            ),
-                            Positioned(
-                              top: 5,
-                              right: 5,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    selectedImage = null;
-                                  });
-                                },
-                                child: const Icon(
-                                  Icons.close_rounded,
-                                  size: 18,
-                                  color: backgroundColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        )),
+                              )
+                            : null,
+                      ),
+                      Positioned(
+                        top: 5,
+                        right: 5,
+                        child: GestureDetector(
+                          onTap: () async {
+                            if (selectedNewImage == null) {
+                              await pickImage();
+                            } else {
+                              setState(() {
+                                selectedNewImage = null;
+                              });
+                            }
+                          },
+                          child: Icon(
+                            selectedNewImage == null
+                                ? Icons.add_photo_alternate_rounded
+                                : Icons.undo_rounded,
+                            size: 18,
+                            color: foregroundColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )),
                   const Gap(20),
                   TextFormField(
                     controller: _nameController,
@@ -195,13 +228,13 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                     decoration: outlineInputBorder(label: 'Stocks'),
                     keyboardType: const TextInputType.numberWithOptions(
                       signed: false,
-                      decimal: false,
+                      decimal: true,
                     ),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                   const Gap(20),
                   GestureDetector(
-                    onTap: selectFile,
+                    // onTap: selectFile,
                     child: Container(
                       height: 60,
                       width: double.infinity,
@@ -239,13 +272,19 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                                 constraints: const BoxConstraints(),
                                 color: foregroundColor,
                                 onPressed: () {
-                                  setState(() {
-                                    selectedModel = null;
-                                  });
+                                  if (selectedNewModel == null) {
+                                    selectFile();
+                                  } else {
+                                    setState(() {
+                                      selectedNewModel = null;
+                                    });
+                                  }
                                 },
-                                icon: const Icon(
-                                  Icons.close,
-                                ),
+                                icon: selectedNewModel == null
+                                    ? const Icon(
+                                        Icons.upload_file_rounded,
+                                      )
+                                    : const Icon(Icons.undo_rounded),
                               ),
                             ),
                         ],
@@ -258,14 +297,14 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        addVariant(context);
+                        editVariant(context);
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8))),
                       child: const Text(
-                        "Add Variant",
+                        "Save Changes",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
@@ -286,9 +325,8 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
     );
   }
 
-  addVariant(BuildContext context) {
+  editVariant(BuildContext context) {
     final isValid = _formKey.currentState?.validate();
-    final id = const Uuid().v4();
 
     if (!isValid! && selectedImage == null && selectedModel == null) {
       setState(() {
@@ -300,19 +338,22 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
       setState(() {
         error = "";
       });
-      final variant = ProductVariants(
-          variantName: _nameController.text,
-          material: _materialController.text,
-          color: _colorController.text,
-          image: selectedImage!,
-          size: _dimensionController.text,
-          model: selectedModel!,
-          price: double.parse(_priceController.text),
-          stocks: int.parse(_stocksController.text),
-          id: id);
+      final newVariant = EditProductVariants(
+        id: widget.productVariants.id,
+        variantName: _nameController.text,
+        material: _materialController.text,
+        color: _colorController.text,
+        image: selectedImage!,
+        size: _dimensionController.text,
+        model: selectedModel!,
+        price: double.parse(_priceController.text),
+        stocks: int.parse(_stocksController.text),
+        selectedNewImage: selectedNewImage,
+        selectedNewModel: selectedNewModel,
+      );
 
       final provider = Provider.of<VariantsProvider>(context, listen: false);
-      provider.addVariant(variant);
+      provider.updateOldVariants(widget.productVariants, newVariant);
 
       Navigator.of(context).pop();
     }
