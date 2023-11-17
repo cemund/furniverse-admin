@@ -1,16 +1,12 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/upload_image_services.dart';
-import 'package:furniverse_admin/services/upload_model_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/addvariantwidget.dart';
@@ -19,7 +15,6 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:uuid/uuid.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
