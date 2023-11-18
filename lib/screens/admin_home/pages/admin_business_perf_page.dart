@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/models/user.dart';
@@ -9,7 +8,6 @@ import 'package:furniverse_admin/services/user_services.dart';
 import 'package:furniverse_admin/shared/functions.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 
 class BusinessPerformancePage extends StatefulWidget {
   const BusinessPerformancePage({super.key});

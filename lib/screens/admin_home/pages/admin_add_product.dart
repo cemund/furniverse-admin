@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/services/product_services.dart';
@@ -121,9 +122,6 @@ class _AddProductState extends State<AddProduct> {
           final id = const Uuid().v4();
           // final loadingID = const Uuid().v4();
           await pickImage();
-          if (selectedImage == null) {
-            return;
-          }
 
           setState(() {
             listItems.insert(0, {
@@ -248,6 +246,11 @@ class _AddProductState extends State<AddProduct> {
                                   BorderRadius.all(Radius.circular(8))),
                           labelText: 'Product Name',
                         ),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) =>
+                          value!.isEmpty
+                            ? 'Please input a product name.'
+                            : null,
                       ),
                       const SizedBox(height: 20),
                       DropdownButtonFormField2<String>(
@@ -279,6 +282,11 @@ class _AddProductState extends State<AddProduct> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) =>
+                          value!.isEmpty
+                            ? 'Please select a category.'
+                            : null,
                         items: items
                             .map((String item) => DropdownMenuItem<String>(
                                   value: item,
@@ -379,6 +387,11 @@ class _AddProductState extends State<AddProduct> {
                                   BorderRadius.all(Radius.circular(8))),
                           hintText: 'Enter Product Description',
                         ),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) =>
+                          value!.isEmpty
+                            ? 'Please input a product description.'
+                            : null,
                       ),
                       const SizedBox(height: 20),
                       const Text(
@@ -530,75 +543,71 @@ class _AddProductState extends State<AddProduct> {
                                       ),
                                     ),
                                     const Gap(10),
-                                    SizedBox(
-                                      width:
-                                          MediaQuery.sizeOf(context).width / 2,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            variant.variantName,
-                                            style: const TextStyle(
-                                              color: foregroundColor,
-                                              fontSize: 16,
-                                              fontFamily: 'Nunito Sans',
-                                              fontWeight: FontWeight.w800,
-                                            ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          variant.variantName,
+                                          style: const TextStyle(
+                                            color: foregroundColor,
+                                            fontSize: 16,
+                                            fontFamily: 'Nunito Sans',
+                                            fontWeight: FontWeight.w800,
                                           ),
-                                          Text(
-                                            "Price: ₱${variant.price.toStringAsFixed(2)}",
+                                        ),
+                                        Text(
+                                          "Price: ₱${variant.price.toStringAsFixed(2)}",
+                                          style: const TextStyle(
+                                            color: foregroundColor,
+                                            fontSize: 12,
+                                            fontFamily: 'Nunito Sans',
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Stocks: ${variant.stocks}",
+                                          style: const TextStyle(
+                                            color: foregroundColor,
+                                            fontSize: 12,
+                                            fontFamily: 'Nunito Sans',
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        Text(
+                                          "3D Model: ${basename(variant.model.path)}",
+                                          style: const TextStyle(
+                                            color: foregroundColor,
+                                            fontSize: 12,
+                                            fontFamily: 'Nunito Sans',
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(
+                                          width: 200,
+                                          child: ReadMoreText(
+                                            "Size: ${variant.size}; Color: ${variant.color}; Material: ${variant.material}; ",
                                             style: const TextStyle(
                                               color: foregroundColor,
                                               fontSize: 12,
                                               fontFamily: 'Nunito Sans',
                                               fontWeight: FontWeight.w400,
                                             ),
-                                          ),
-                                          Text(
-                                            "Stocks: ${variant.stocks}",
-                                            style: const TextStyle(
-                                              color: foregroundColor,
-                                              fontSize: 12,
-                                              fontFamily: 'Nunito Sans',
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                          Text(
-                                            "3D Model: ${basename(variant.model.path)}",
-                                            style: const TextStyle(
-                                              color: foregroundColor,
-                                              fontSize: 12,
-                                              fontFamily: 'Nunito Sans',
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          SizedBox(
-                                            width: 200,
-                                            child: ReadMoreText(
-                                              "Size: ${variant.size}; Color: ${variant.color}; Material: ${variant.material}; ",
-                                              style: const TextStyle(
-                                                color: foregroundColor,
+                                            trimLines: 1,
+                                            trimMode: TrimMode.Line,
+                                            trimCollapsedText: 'More',
+                                            trimExpandedText: ' Less',
+                                            moreStyle: const TextStyle(
                                                 fontSize: 12,
-                                                fontFamily: 'Nunito Sans',
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                              trimLines: 1,
-                                              trimMode: TrimMode.Line,
-                                              trimCollapsedText: 'More',
-                                              trimExpandedText: ' Less',
-                                              moreStyle: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold),
-                                              lessStyle: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                                fontWeight: FontWeight.bold),
+                                            lessStyle: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     )
                                   ],
                                 ),

@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:furniverse_admin/models/edit_product_variants_model.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/services/upload_image_services.dart';
 import 'package:furniverse_admin/services/upload_model_services.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class VariantsProvider extends ChangeNotifier {

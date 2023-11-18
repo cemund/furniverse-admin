@@ -168,8 +168,10 @@ class _LogInState extends State<LogIn> {
                               _passworController.text.trim(),
                             );
                             if (result == null) {
-                              error =
-                                  'could not sign in with entered credentials';
+                              Fluttertoast.showToast(
+                                msg: "Invalid Email or Password",
+                                backgroundColor: Colors.grey,
+                              );
                               setState(() {
                                 loading = false;
                               });

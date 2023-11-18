@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:furniverse_admin/main.dart';
 import 'package:furniverse_admin/screens/LoginandLogout/forgetpassnotice.dart';
 
 class EmailForgetPass extends StatefulWidget {
@@ -69,10 +70,10 @@ class _EmailForgetPassState extends State<EmailForgetPass> {
                     labelText: 'Email',
                   ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (email) =>
-                      email != null && !EmailValidator.validate(email)
-                        ? 'Enter valid email'
-                        : null,
+                  validator: (email) =>
+                    email != null && !EmailValidator.validate(email)
+                      ? 'Enter valid email'
+                      : null,
                 ),
                 const SizedBox(height: 40),
                 Center(
@@ -111,23 +112,19 @@ class _EmailForgetPassState extends State<EmailForgetPass> {
                   children: [
                     const Text("Remember now?"),
                     TextButton(
-                        onPressed: () {
-                          //Navigator.of(context).pushNamedAndRemoveUntil('/screen4', (Route<dynamic> route) => false);
-                          // Navigator.of(context).pushReplacement(
-                          //   MaterialPageRoute(
-                          //     builder: (context) => const LogIn(),
-                          //   ),
-                          // );
-                        },
-                        child: const Text(
-                          "LOG IN",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Nunito Sans',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        )),
+                      onPressed: () {
+                        navigatorKey.currentState!.popUntil((route) => route.isFirst);
+                      },
+                      child: const Text(
+                        "LOG IN",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontFamily: 'Nunito Sans',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )
+                    ),
                   ],
                 ),
               ],
