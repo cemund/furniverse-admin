@@ -206,6 +206,8 @@ class _EditProductState extends State<EditProduct> {
           // final loadingID = const Uuid().v4();
           await pickImage();
 
+          if (selectedImage == null) return;
+
           setState(() {
             listItems.insert(0, {
               'id': id,
@@ -784,26 +786,32 @@ class _EditProductState extends State<EditProduct> {
                                           onPressed: () {
                                             showDialog(
                                               context: context,
-                                              builder: (context) => ConfirmationAlertDialog(
-                                                title: "Are you sure you want to delete this variant?",
-                                                onTapNo: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                onTapYes: () async {
-                                                // final currentContext = context; // Capture the context outside the async block
-                                                  final provider =
-                                                    Provider.of<VariantsProvider>(context, listen: false);
-                                                  provider.removeVariant(variant);
-                                                        
-                                                  Fluttertoast.showToast(
-                                                    msg: "Variant Deleted Successfully.",
-                                                    backgroundColor: Colors.grey,
-                                                  );
-                                                  Navigator.pop(context);
-                                                },
-                                                tapNoString: "No",
-                                                tapYesString: "Yes"
-                                              ),
+                                              builder: (context) =>
+                                                  ConfirmationAlertDialog(
+                                                      title:
+                                                          "Are you sure you want to delete this variant?",
+                                                      onTapNo: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      onTapYes: () async {
+                                                        // final currentContext = context; // Capture the context outside the async block
+                                                        final provider = Provider
+                                                            .of<VariantsProvider>(
+                                                                context,
+                                                                listen: false);
+                                                        provider.removeVariant(
+                                                            variant);
+
+                                                        Fluttertoast.showToast(
+                                                          msg:
+                                                              "Variant Deleted Successfully.",
+                                                          backgroundColor:
+                                                              Colors.grey,
+                                                        );
+                                                        Navigator.pop(context);
+                                                      },
+                                                      tapNoString: "No",
+                                                      tapYesString: "Yes"),
                                             );
                                           },
                                           icon: const Icon(
@@ -827,40 +835,41 @@ class _EditProductState extends State<EditProduct> {
                               showDialog(
                                 context: context,
                                 builder: (context) => ConfirmationAlertDialog(
-                                  title: "Are you sure you want to update this product?",
-                                  onTapNo: () {
-                                    Navigator.pop(context);
-                                  },
-                                  onTapYes: () async {
-                                    setState(() {
-                                      isSaving = true;
-                                    });
-                                    final currentContext = context; // Capture the context outside the async block
-                                    saveproduct(currentContext).then((_) {
+                                    title:
+                                        "Are you sure you want to update this product?",
+                                    onTapNo: () {
+                                      Navigator.pop(context);
+                                    },
+                                    onTapYes: () async {
                                       setState(() {
-                                        isSaving =
-                                            false; // Set the flag back to false when saving is complete
+                                        isSaving = true;
+                                      });
+                                      final currentContext =
+                                          context; // Capture the context outside the async block
+                                      saveproduct(currentContext).then((_) {
+                                        setState(() {
+                                          isSaving =
+                                              false; // Set the flag back to false when saving is complete
+                                        });
+
+                                        // Show the "Upload Complete" snackbar
+                                        // ScaffoldMessenger.of(context).showSnackBar(
+                                        //   const SnackBar(
+                                        //     content: Text('Product Saved'),
+                                        //     duration: Duration(seconds: 2),
+                                        //   ),
+                                        // );
+
+                                        Fluttertoast.showToast(
+                                          msg: "Product updated Successfully.",
+                                          backgroundColor: Colors.grey,
+                                        );
                                       });
 
-                                      // Show the "Upload Complete" snackbar
-                                      // ScaffoldMessenger.of(context).showSnackBar(
-                                      //   const SnackBar(
-                                      //     content: Text('Product Saved'),
-                                      //     duration: Duration(seconds: 2),
-                                      //   ),
-                                      // );
-
-                                      Fluttertoast.showToast(
-                                        msg: "Product updated Successfully.",
-                                        backgroundColor: Colors.grey,
-                                      );
-                                    });
-                                    
-                                    Navigator.pop(context);
-                                  },
-                                  tapNoString: "No",
-                                  tapYesString: "Yes"
-                                ),
+                                      Navigator.pop(context);
+                                    },
+                                    tapNoString: "No",
+                                    tapYesString: "Yes"),
                               );
                             },
                             style: ElevatedButton.styleFrom(

@@ -201,7 +201,9 @@ class AnalyticsServices {
         final yearDetails = doc.data() as Map;
         totalRevenue = totalRevenue + yearDetails['totalRevenue'];
         counter++;
-        if (counter == noOfYear) return totalRevenue;
+        if (counter == noOfYear || counter == analyticsDoc.docs.length) {
+          return totalRevenue;
+        }
       }
 
       return 0.0;
@@ -225,7 +227,7 @@ class AnalyticsServices {
         averageOrderValue =
             averageOrderValue + yearDetails['averageOrderValue'];
         counter++;
-        if (counter == noOfYear) {
+        if (counter == noOfYear || counter == analyticsDoc.docs.length) {
           return averageOrderValue / counter;
         }
       }
