@@ -194,13 +194,14 @@ class Analytics extends StatelessWidget {
     }
 
     // not cancelled orders
-    final fullOrders = orders.map(
-      (e) {
-        if (e.shippingStatus.toUpperCase() != 'CANCELLED') return e;
-      },
-    ).toList();
+   final List<OrderModel> fullOrders = [];
+    for (var order in orders) {
+      if (order.shippingStatus.toUpperCase() != 'CANCELLED') {
+        fullOrders.add(order);
+      }
+    }
 
-    if (fullOrders[0] == null) {
+    if (fullOrders.isEmpty) {
       return const Center(child: Text("No data for analysis"));
     }
 
@@ -208,8 +209,8 @@ class Analytics extends StatelessWidget {
     double sales = 0.0;
     List<double> amountPerTransaction = [];
     for (int i = 0; i < fullOrders.length; i++) {
-      sales += fullOrders[i]!.totalPrice;
-      amountPerTransaction.add(fullOrders[i]!.totalPrice);
+      sales += fullOrders[i].totalPrice;
+      amountPerTransaction.add(fullOrders[i].totalPrice);
     }
 
     // monthly sales
@@ -217,7 +218,7 @@ class Analytics extends StatelessWidget {
     for (var order in fullOrders) {
       // final month = DateFormat('MMMM')
       //     .format(DateTime(0, order?.orderDate.toDate().month ?? 0));
-      final month = order!.orderDate.toDate().month.toString();
+      final month = order.orderDate.toDate().month.toString();
       monthlySales.putIfAbsent(month, () => 0);
       monthlySales[month] = monthlySales[month]! + order.totalPrice;
     }
@@ -225,18 +226,18 @@ class Analytics extends StatelessWidget {
     // all products
     Map<String, int> products = {};
     for (int i = 0; i < fullOrders.length; i++) {
-      for (int j = 0; j < fullOrders[i]!.products.length; j++) {
-        products.putIfAbsent(fullOrders[i]!.products[j]['productId'], () => 0);
-        products[fullOrders[i]!.products[j]['productId']] =
-            (products[fullOrders[i]!.products[j]['productId']]! +
-                fullOrders[i]!.products[j]['quantity'] as int);
+      for (int j = 0; j < fullOrders[i].products.length; j++) {
+        products.putIfAbsent(fullOrders[i].products[j]['productId'], () => 0);
+        products[fullOrders[i].products[j]['productId']] =
+            (products[fullOrders[i].products[j]['productId']]! +
+                fullOrders[i].products[j]['quantity'] as int);
       }
     }
 
     Map<String, dynamic> ordersPerCity = {};
     for (var order in fullOrders) {
       final province =
-          order!.shippingCity == "" ? 'Others' : order.shippingCity;
+          order.shippingCity == "" ? 'Others' : order.shippingCity;
       ordersPerCity.putIfAbsent(
           province, () => {"users": [], "quantity": 0, "total": 0});
 
@@ -258,8 +259,8 @@ class Analytics extends StatelessWidget {
     int totalQuantity = 0;
     Map<String, dynamic> ordersPerProduct = {};
     for (var order in fullOrders) {
-      if (order?.products != null) {
-        for (var product in order!.products) {
+      if (order.products.isNotEmpty) {
+        for (var product in order.products) {
           final productId = product['productId'];
           ordersPerProduct.putIfAbsent(
               productId, () => {"quantity": 0, "total": 0.0});

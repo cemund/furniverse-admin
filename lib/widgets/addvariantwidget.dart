@@ -4,9 +4,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/shared/constants.dart';
+import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -283,7 +285,27 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        addVariant(context);
+                        showDialog(
+                          context: context,
+                          builder: (context) => ConfirmationAlertDialog(
+                            title: "Are you sure you want to add this variant?",
+                            onTapNo: () {
+                              Navigator.pop(context);
+                            },
+                            onTapYes: () async {
+                            // final currentContext = context; // Capture the context outside the async block
+                              addVariant(context);
+                                    
+                              Fluttertoast.showToast(
+                                msg: "Variant Added Successfully.",
+                                backgroundColor: Colors.grey,
+                              );
+                              Navigator.pop(context);
+                            },
+                            tapNoString: "No",
+                            tapYesString: "Yes"
+                          ),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,

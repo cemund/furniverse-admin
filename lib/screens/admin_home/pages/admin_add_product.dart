@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/services/product_services.dart';
@@ -11,6 +12,7 @@ import 'package:furniverse_admin/services/upload_image_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/addvariantwidget.dart';
+import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:furniverse_admin/widgets/editvariantwidget.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
@@ -633,11 +635,30 @@ class _AddProductState extends State<AddProduct> {
                                         padding: EdgeInsets.zero,
                                         constraints: const BoxConstraints(),
                                         onPressed: () {
-                                          final provider =
-                                              Provider.of<VariantsProvider>(
-                                                  context,
-                                                  listen: false);
-                                          provider.removeVariant(variant);
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => ConfirmationAlertDialog(
+                                              title: "Are you sure you want to delete this variant?",
+                                              onTapNo: () {
+                                                Navigator.pop(context);
+                                              },
+                                              onTapYes: () async {
+                                              // final currentContext = context; // Capture the context outside the async block
+                                                final provider =
+                                                  Provider.of<VariantsProvider>(context, listen: false);
+                                                provider.removeVariant(variant);
+                                                      
+                                                Fluttertoast.showToast(
+                                                  msg: "Variant Deleted Successfully.",
+                                                  backgroundColor: Colors.grey,
+                                                );
+                                                Navigator.pop(context);
+                                              },
+                                              tapNoString: "No",
+                                              tapYesString: "Yes"
+                                            ),
+                                          );
+                                          
                                         },
                                         icon: const Icon(
                                           Icons.delete,
@@ -710,26 +731,43 @@ class _AddProductState extends State<AddProduct> {
                         height: 60,
                         child: ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              isSaving = true;
-                            });
-                            final currentContext =
-                                context; // Capture the context outside the async block
-                            saveproduct(currentContext).then((_) {
-                              // setState(() {
-                              //   isSaving =
-                              //       false; // Set the flag back to false when saving is complete
-                              // });
+                            showDialog(
+                              context: context,
+                              builder: (context) => ConfirmationAlertDialog(
+                                title: "Are you sure you want to add this product?",
+                                onTapNo: () {
+                                  Navigator.pop(context);
+                                },
+                                onTapYes: () async {
+                                  setState(() {
+                                    isSaving = true;
+                                  });
+                                  final currentContext = context; // Capture the context outside the async block
+                                  saveproduct(currentContext).then((_) {
+                                    // setState(() {
+                                    //   isSaving =
+                                    //       false; // Set the flag back to false when saving is complete
+                                    // });
 
-                              // Show the "Upload Complete" snackbar
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Product Saved'),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                              Navigator.pop(currentContext);
-                            });
+                                    // Show the "Upload Complete" snackbar
+                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   const SnackBar(
+                                    //     content: Text('Product Saved'),
+                                    //     duration: Duration(seconds: 2),
+                                    //   ),
+                                    // );
+
+                                    Fluttertoast.showToast(
+                                      msg: "Product Added Successfully.",
+                                      backgroundColor: Colors.grey,
+                                    );
+                                  });
+                                
+                                  Navigator.pop(currentContext);
+                                },
+                                tapNoString: "No",
+                                tapYesString: "Yes"),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,

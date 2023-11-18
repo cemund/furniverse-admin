@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/edit_product_variants_model.dart';
 import 'package:furniverse_admin/models/products.dart';
@@ -9,6 +10,7 @@ import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_edit_product.dart';
+import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
@@ -68,16 +70,15 @@ class _AdminProdListState extends State<AdminProdList> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Products List',
-                      style: TextStyle(
-                        color: Color(0xFF171725),
-                        fontSize: 18,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
+                    // const Text(
+                    //   'Products List',
+                    //   style: TextStyle(
+                    //     color: Color(0xFF171725),
+                    //     fontSize: 18,
+                    //     fontFamily: 'Inter',
+                    //     fontWeight: FontWeight.w600,
+                    //   ),
+                    // ),
                     Row(
                       children: [
                         const Text(
@@ -135,9 +136,76 @@ class _AdminProdListState extends State<AdminProdList> {
                     ),
                   ],
                 ),
+
+                DropdownButtonHideUnderline(
+                      child: DropdownButton2<String>(
+                        isExpanded: true,
+                        hint: Text(
+                          'Action',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).hintColor,
+                          ),
+                        ),
+                        items: actions
+                            .map((String item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(
+                                    item,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                    maxLines: 2,
+                                  ),
+                                ))
+                            .toList(),
+                        value: selectedAction,
+                        onChanged: (String? value) async {
+                          if (value == 'Delete') {
+                            showDialog(
+                              context: context,
+                              builder: (context) => ConfirmationAlertDialog(
+                                title: "Are you sure you want to delete this product?",
+                                onTapNo: () {Navigator.pop(context);},
+                                onTapYes: () async {
+                                              // final currentContext = context; // Capture the context outside the async block
+                                  int i = highlightedProducts.length - 1;
+                                  while (highlightedProducts.isNotEmpty) {
+                                    await ProductService()
+                                        .deleteProduct(highlightedProducts[i].id);
+                                    highlightedProducts.removeAt(i);
+                                    i--;
+                                  }
+                                                      
+                                  Fluttertoast.showToast(
+                                    msg: "Product Deleted Successfully.",
+                                    backgroundColor: Colors.grey,
+                                  );
+                                  Navigator.pop(context);
+                                },
+                                tapNoString: "No",
+                                tapYesString: "Yes"
+                              ),
+                            ); 
+                          }
+                          setState(() {
+                            selectedAction = null;
+                          });
+                        },
+                        buttonStyleData: const ButtonStyleData(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          height: 40,
+                          width: 110,
+                        ),
+                        menuItemStyleData: const MenuItemStyleData(
+                          height: 40,
+                        ),
+                      ),
+                    ),
+
                 Row(
                   children: [
-                    const Icon(Icons.filter_alt),
+                    // const Icon(Icons.filter_alt),
                     const SizedBox(width: 10),
                     GestureDetector(
                       onTap: () {
@@ -167,81 +235,36 @@ class _AdminProdListState extends State<AdminProdList> {
               ],
             ),
             const SizedBox(height: 28),
-            Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 14),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                                color: Color(0xffD0D5DD), width: 1),
-                          ),
-                          hintText: "Search",
-                          hintStyle: const TextStyle(
-                            color: Color(0xFF667084),
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          prefixIcon: const Icon(Icons.search),
-                        ),
-                      ),
-                    ),
-                    DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                        isExpanded: true,
-                        hint: Text(
-                          'Action',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(context).hintColor,
-                          ),
-                        ),
-                        items: actions
-                            .map((String item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ))
-                            .toList(),
-                        value: selectedAction,
-                        onChanged: (String? value) async {
-                          if (value == 'Delete') {
-                            int i = highlightedProducts.length - 1;
-                            while (highlightedProducts.isNotEmpty) {
-                              await ProductService()
-                                  .deleteProduct(highlightedProducts[i].id);
-                              highlightedProducts.removeAt(i);
-                              i--;
-                            }
-                          }
-                          setState(() {
-                            selectedAction = null;
-                          });
-                        },
-                        buttonStyleData: const ButtonStyleData(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          height: 40,
-                          width: 110,
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            // Column(
+            //   children: [
+            //     Row(
+            //       children: [
+            //         // Expanded(
+            //         //   child: TextField(
+            //         //     decoration: InputDecoration(
+            //         //       contentPadding: const EdgeInsets.symmetric(
+            //         //           vertical: 8, horizontal: 14),
+            //         //       border: OutlineInputBorder(
+            //         //         borderRadius: BorderRadius.circular(8),
+            //         //         borderSide: const BorderSide(
+            //         //             color: Color(0xffD0D5DD), width: 1),
+            //         //       ),
+            //         //       hintText: "Search",
+            //         //       hintStyle: const TextStyle(
+            //         //         color: Color(0xFF667084),
+            //         //         fontSize: 16,
+            //         //         fontFamily: 'Inter',
+            //         //         fontWeight: FontWeight.w400,
+            //         //       ),
+            //         //       prefixIcon: const Icon(Icons.search),
+            //         //     ),
+            //         //   ),
+            //         // ),
+                    
+            //       ],
+            //     ),
+            //   ],
+            // ),
             const SizedBox(height: 10),
             products == null
                 ? const Loading()
@@ -579,7 +602,26 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
           PopupMenuButton(
             onSelected: (value) {
               if (value == 1) {
-                ProductService().deleteProduct(widget.product.id);
+                showDialog(
+                  context: context,
+                  builder: (context) => ConfirmationAlertDialog(
+                    title: "Are you sure you want to delete this product?",
+                    onTapNo: () {
+                      Navigator.pop(context);
+                    },
+                    onTapYes: () async {
+                      // final currentContext = context; // Capture the context outside the async block
+                      ProductService().deleteProduct(widget.product.id);
+                      Fluttertoast.showToast(
+                        msg: "Product Deleted Successfully.",
+                        backgroundColor: Colors.grey,
+                      );
+                      Navigator.pop(context);
+                    },
+                    tapNoString: "No",
+                    tapYesString: "Yes"
+                  ),
+                );
               }
               if (value == 2) {
                 final variants =
