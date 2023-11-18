@@ -195,16 +195,31 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
                   TextFormField(
                     controller: _nameController,
                     decoration: outlineInputBorder(label: 'Variant Name'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                      value!.isEmpty
+                        ? 'Please input a variant name.'
+                        : null,
                   ),
                   const Gap(20),
                   TextFormField(
                     controller: _colorController,
                     decoration: outlineInputBorder(label: 'Color'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                      value!.isEmpty
+                        ? 'Please input a color.'
+                        : null,
                   ),
                   const Gap(20),
                   TextFormField(
                     controller: _materialController,
                     decoration: outlineInputBorder(label: 'Material'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                      value!.isEmpty
+                        ? 'Please input a material.'
+                        : null,
                   ),
                   const Gap(20),
                   TextFormField(
@@ -220,6 +235,11 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
                       decimal: true,
                     ),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                      value!.isEmpty
+                        ? 'Please input a price.'
+                        : null,
                   ),
                   const Gap(20),
                   TextFormField(
@@ -227,9 +247,14 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
                     decoration: outlineInputBorder(label: 'Stocks'),
                     keyboardType: const TextInputType.numberWithOptions(
                       signed: false,
-                      decimal: true,
+                      decimal: false,
                     ),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                      value!.isEmpty
+                        ? 'Please input a stock/s.'
+                        : null,
                   ),
                   const Gap(20),
                   GestureDetector(

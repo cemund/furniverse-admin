@@ -163,16 +163,31 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                   TextFormField(
                     controller: _nameController,
                     decoration: outlineInputBorder(label: 'Variant Name'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                      value!.isEmpty
+                        ? 'Please input a variant name.'
+                        : null,
                   ),
                   const Gap(20),
                   TextFormField(
                     controller: _colorController,
                     decoration: outlineInputBorder(label: 'Color'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                      value!.isEmpty
+                        ? 'Please input a color.'
+                        : null,
                   ),
                   const Gap(20),
                   TextFormField(
                     controller: _materialController,
                     decoration: outlineInputBorder(label: 'Material'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                      value!.isEmpty
+                        ? 'Please input a material.'
+                        : null,
                   ),
                   const Gap(20),
                   TextFormField(
@@ -188,6 +203,11 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                       decimal: true,
                     ),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                      value!.isEmpty
+                        ? 'Please input a price.'
+                        : null,
                   ),
                   const Gap(20),
                   TextFormField(
@@ -198,6 +218,11 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                       decimal: false,
                     ),
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) =>
+                      value!.isEmpty
+                        ? 'Please input a stock/s.'
+                        : null,
                   ),
                   const Gap(20),
                   GestureDetector(
@@ -289,6 +314,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
   addVariant(BuildContext context) {
     final isValid = _formKey.currentState?.validate();
     final id = const Uuid().v4();
+    print(id);
 
     if (!isValid! && selectedImage == null && selectedModel == null) {
       setState(() {
