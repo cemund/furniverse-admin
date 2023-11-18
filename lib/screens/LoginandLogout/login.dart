@@ -134,7 +134,7 @@ class _LogInState extends State<LogIn> {
                               )),
                           TextButton(
                               onPressed: () {
-                                Navigator.of(context).pushReplacement(
+                                Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         const EmailForgetPass(),

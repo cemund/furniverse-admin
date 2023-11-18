@@ -20,9 +20,10 @@ class AdminMain extends StatefulWidget {
 
 class _AdminMainState extends State<AdminMain> {
   GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
-  String userName = 'Alice Mhiema';
+  String userName = 'ADMIN';
   int selectedIdxPage = 0;
   final AuthService _auth = AuthService();
+  String pageName = "HOME";
 
   List pages = <Widget>[
     const AdminHomePage(),
@@ -44,6 +45,29 @@ class _AdminMainState extends State<AdminMain> {
       child: SafeArea(
         child: Scaffold(
           key: globalKey,
+          appBar: AppBar(
+              elevation: 0,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              leading: GestureDetector(
+          onTap: () {
+            globalKey.currentState?.openDrawer();
+          },
+          child: const Icon(
+            Icons.menu,
+            size: 24,
+            color: Colors.black,
+          ),
+        ),
+              title: Text(
+                pageName,
+                style: const TextStyle(
+                  color: Color(0xFF303030),
+                  fontSize: 16,
+                  fontFamily: 'Avenir Next LT Pro',
+                  fontWeight: FontWeight.w700,
+                ),
+              )),
           drawer: Drawer(
             backgroundColor: const Color(0xFF303030),
             child: ListView(
@@ -92,9 +116,17 @@ class _AdminMainState extends State<AdminMain> {
                 const SizedBox(height: 38),
                 Row(
                   children: [
-                    const CircleAvatar(
-                      radius: 30,
-                      backgroundImage: AssetImage('assets/images/avatar1.jpeg'),
+                    CircleAvatar(
+                      backgroundColor: Colors.grey[300],
+                      foregroundColor: Colors.black,
+                      child: const Text( "A",
+                        style: TextStyle(
+                          color: Color(0xFF303030),
+                          fontSize: 16,
+                          fontFamily: 'Avenir Next LT Pro',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Text(
@@ -113,6 +145,7 @@ class _AdminMainState extends State<AdminMain> {
                 ListTile(
                   onTap: () {
                     setState(() {
+                      pageName = "HOME";
                       selectedIdxPage = 0;
                       Navigator.pop(context);
                     });
@@ -138,6 +171,7 @@ class _AdminMainState extends State<AdminMain> {
                 ListTile(
                   onTap: () {
                     setState(() {
+                      pageName = "ORDERS";
                       selectedIdxPage = 1;
                       Navigator.pop(context);
                     });
@@ -162,6 +196,7 @@ class _AdminMainState extends State<AdminMain> {
                 ListTile(
                   onTap: () {
                     setState(() {
+                      pageName = "PRODUCT LIST";
                       selectedIdxPage = 2;
                       Navigator.pop(context);
                     });
@@ -184,6 +219,7 @@ class _AdminMainState extends State<AdminMain> {
                 ListTile(
                   onTap: () {
                     setState(() {
+                      pageName = "BUSINESS PERFORMANCE";
                       selectedIdxPage = 3;
                       Navigator.pop(context);
                     });
@@ -206,6 +242,7 @@ class _AdminMainState extends State<AdminMain> {
                 ListTile(
                   onTap: () {
                     setState(() {
+                      pageName = "CUSTOMER REQUEST";
                       selectedIdxPage = 4;
                       Navigator.pop(context);
                     });
@@ -277,8 +314,8 @@ class _AdminMainState extends State<AdminMain> {
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
             child: Column(
               children: [
-                AdminHeader(globalKey: globalKey),
-                const SizedBox(height: 28),
+                // AdminHeader(globalKey: globalKey),
+                // const SizedBox(height: 28),
                 Expanded(
                   child: pages[selectedIdxPage],
                 )
@@ -302,6 +339,8 @@ class AdminHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
           onTap: () {
@@ -310,39 +349,40 @@ class AdminHeader extends StatelessWidget {
           child: const Icon(
             Icons.menu,
             size: 24,
+            color: Colors.black,
           ),
         ),
         const SizedBox(
           width: 16,
         ),
-        Expanded(
-          child: TextField(
-            decoration: InputDecoration(
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide:
-                    const BorderSide(color: Color(0xffD0D5DD), width: 1),
-              ),
-              hintText: "Search",
-              hintStyle: const TextStyle(
-                color: Color(0xFF667084),
-                fontSize: 16,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-              ),
-              prefixIcon: const Icon(Icons.search),
-            ),
-          ),
-        ),
-        const SizedBox(
-          width: 16,
-        ),
-        const Icon(
-          Icons.notifications_none_outlined,
-          size: 24,
-        ),
+        // Expanded(
+        //   child: TextField(
+        //     decoration: InputDecoration(
+        //       contentPadding:
+        //           const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
+        //       border: OutlineInputBorder(
+        //         borderRadius: BorderRadius.circular(8),
+        //         borderSide:
+        //             const BorderSide(color: Color(0xffD0D5DD), width: 1),
+        //       ),
+        //       hintText: "Search",
+        //       hintStyle: const TextStyle(
+        //         color: Color(0xFF667084),
+        //         fontSize: 16,
+        //         fontFamily: 'Inter',
+        //         fontWeight: FontWeight.w400,
+        //       ),
+        //       prefixIcon: const Icon(Icons.search),
+        //     ),
+        //   ),
+        // ),
+        // const SizedBox(
+        //   width: 16,
+        // ),
+        // const Icon(
+        //   Icons.notifications_none_outlined,
+        //   size: 24,
+        // ),
       ],
     );
   }
