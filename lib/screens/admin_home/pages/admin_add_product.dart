@@ -750,13 +750,18 @@ class _AddProductState extends State<AddProduct> {
                                     // setState(() {
                                     //   isSaving = true;
                                     // });
+                                    Fluttertoast.showToast(
+                                      msg: "Adding New Product...",
+                                      backgroundColor: Colors.grey,
+                                    );
+
                                     await saveproduct(context);
                                     // setState(() {
                                     //   isSaving =
                                     //       false; // Set the flag back to false when saving is complete
                                     // });
                                     Fluttertoast.showToast(
-                                      msg: "Product Added Successfully.",
+                                      msg: "Product Added Successfully",
                                       backgroundColor: Colors.grey,
                                     );
 
