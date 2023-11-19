@@ -152,6 +152,7 @@ class _AddProductState extends State<AddProduct> {
                           listItems.removeWhere((element) {
                             return element['id'] == id;
                           });
+                          listSelectedImage.remove(selectedImage);
                         });
                       },
                       child: const Icon(
@@ -249,8 +250,7 @@ class _AddProductState extends State<AddProduct> {
                           labelText: 'Product Name',
                         ),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) =>
-                          value!.isEmpty
+                        validator: (value) => value!.isEmpty
                             ? 'Please input a product name.'
                             : null,
                       ),
@@ -286,9 +286,7 @@ class _AddProductState extends State<AddProduct> {
                         ),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) =>
-                          value!.isEmpty
-                            ? 'Please select a category.'
-                            : null,
+                            value!.isEmpty ? 'Please select a category.' : null,
                         items: items
                             .map((String item) => DropdownMenuItem<String>(
                                   value: item,
@@ -390,8 +388,7 @@ class _AddProductState extends State<AddProduct> {
                           hintText: 'Enter Product Description',
                         ),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) =>
-                          value!.isEmpty
+                        validator: (value) => value!.isEmpty
                             ? 'Please input a product description.'
                             : null,
                       ),
@@ -637,28 +634,33 @@ class _AddProductState extends State<AddProduct> {
                                         onPressed: () {
                                           showDialog(
                                             context: context,
-                                            builder: (context) => ConfirmationAlertDialog(
-                                              title: "Are you sure you want to delete this variant?",
-                                              onTapNo: () {
-                                                Navigator.pop(context);
-                                              },
-                                              onTapYes: () async {
-                                              // final currentContext = context; // Capture the context outside the async block
-                                                final provider =
-                                                  Provider.of<VariantsProvider>(context, listen: false);
-                                                provider.removeVariant(variant);
-                                                      
-                                                Fluttertoast.showToast(
-                                                  msg: "Variant Deleted Successfully.",
-                                                  backgroundColor: Colors.grey,
-                                                );
-                                                Navigator.pop(context);
-                                              },
-                                              tapNoString: "No",
-                                              tapYesString: "Yes"
-                                            ),
+                                            builder: (context) =>
+                                                ConfirmationAlertDialog(
+                                                    title:
+                                                        "Are you sure you want to delete this variant?",
+                                                    onTapNo: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    onTapYes: () async {
+                                                      // final currentContext = context; // Capture the context outside the async block
+                                                      final provider = Provider
+                                                          .of<VariantsProvider>(
+                                                              context,
+                                                              listen: false);
+                                                      provider.removeVariant(
+                                                          variant);
+
+                                                      Fluttertoast.showToast(
+                                                        msg:
+                                                            "Variant Deleted Successfully.",
+                                                        backgroundColor:
+                                                            Colors.grey,
+                                                      );
+                                                      Navigator.pop(context);
+                                                    },
+                                                    tapNoString: "No",
+                                                    tapYesString: "Yes"),
                                           );
-                                          
                                         },
                                         icon: const Icon(
                                           Icons.delete,
@@ -734,39 +736,44 @@ class _AddProductState extends State<AddProduct> {
                             showDialog(
                               context: context,
                               builder: (context) => ConfirmationAlertDialog(
-                                title: "Are you sure you want to add this product?",
-                                onTapNo: () {
-                                  Navigator.pop(context);
-                                },
-                                onTapYes: () async {
-                                  setState(() {
-                                    isSaving = true;
-                                  });
-                                  final currentContext = context; // Capture the context outside the async block
-                                  saveproduct(currentContext).then((_) {
+                                  title:
+                                      "Are you sure you want to add this product?",
+                                  onTapNo: () {
+                                    Navigator.pop(context);
+                                  },
+                                  onTapYes: () async {
+                                    if (context.mounted) {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    }
+
+                                    // setState(() {
+                                    //   isSaving = true;
+                                    // });
+                                    await saveproduct(context);
                                     // setState(() {
                                     //   isSaving =
                                     //       false; // Set the flag back to false when saving is complete
                                     // });
-
-                                    // Show the "Upload Complete" snackbar
-                                    // ScaffoldMessenger.of(context).showSnackBar(
-                                    //   const SnackBar(
-                                    //     content: Text('Product Saved'),
-                                    //     duration: Duration(seconds: 2),
-                                    //   ),
-                                    // );
-
                                     Fluttertoast.showToast(
                                       msg: "Product Added Successfully.",
                                       backgroundColor: Colors.grey,
                                     );
-                                  });
-                                
-                                  Navigator.pop(currentContext);
-                                },
-                                tapNoString: "No",
-                                tapYesString: "Yes"),
+
+                                    // saveproduct(context).then((_) {
+
+                                    //   // Show the "Upload Complete" snackbar
+                                    //   // ScaffoldMessenger.of(context).showSnackBar(
+                                    //   //   const SnackBar(
+                                    //   //     content: Text('Product Saved'),
+                                    //   //     duration: Duration(seconds: 2),
+                                    //   //   ),
+                                    //   // );
+
+                                    // });
+                                  },
+                                  tapNoString: "No",
+                                  tapYesString: "Yes"),
                             );
                           },
                           style: ElevatedButton.styleFrom(

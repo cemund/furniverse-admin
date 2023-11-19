@@ -56,4 +56,18 @@ class Product {
     }
     return leastPrice;
   }
+
+  double getHighestPrice() {
+    double highPrice = variants[0]['price'];
+    if (variants.length == 1) {
+      return highPrice;
+    }
+
+    for (int i = 1; i < variants.length; i++) {
+      if (highPrice < variants[i]['price']) {
+        highPrice = variants[i]['price'];
+      }
+    }
+    return highPrice;
+  }
 }
