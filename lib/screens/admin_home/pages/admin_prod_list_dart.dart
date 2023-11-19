@@ -136,73 +136,73 @@ class _AdminProdListState extends State<AdminProdList> {
                     ),
                   ],
                 ),
-
                 DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                        isExpanded: true,
-                        hint: Text(
-                          'Action',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(context).hintColor,
-                          ),
-                        ),
-                        items: actions
-                            .map((String item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                    maxLines: 2,
-                                  ),
-                                ))
-                            .toList(),
-                        value: selectedAction,
-                        onChanged: (String? value) async {
-                          if (value == 'Delete') {
-                            showDialog(
-                              context: context,
-                              builder: (context) => ConfirmationAlertDialog(
-                                title: "Are you sure you want to delete this product?",
-                                onTapNo: () {Navigator.pop(context);},
-                                onTapYes: () async {
-                                              // final currentContext = context; // Capture the context outside the async block
-                                  int i = highlightedProducts.length - 1;
-                                  while (highlightedProducts.isNotEmpty) {
-                                    await ProductService()
-                                        .deleteProduct(highlightedProducts[i].id);
-                                    highlightedProducts.removeAt(i);
-                                    i--;
-                                  }
-                                                      
-                                  Fluttertoast.showToast(
-                                    msg: "Product Deleted Successfully.",
-                                    backgroundColor: Colors.grey,
-                                  );
-                                  Navigator.pop(context);
-                                },
-                                tapNoString: "No",
-                                tapYesString: "Yes"
-                              ),
-                            ); 
-                          }
-                          setState(() {
-                            selectedAction = null;
-                          });
-                        },
-                        buttonStyleData: const ButtonStyleData(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          height: 40,
-                          width: 110,
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                        ),
+                  child: DropdownButton2<String>(
+                    isExpanded: true,
+                    hint: Text(
+                      'Action',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).hintColor,
                       ),
                     ),
+                    items: actions
+                        .map((String item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                ),
+                                maxLines: 2,
+                              ),
+                            ))
+                        .toList(),
+                    value: selectedAction,
+                    onChanged: (String? value) async {
+                      if (value == 'Delete') {
+                        showDialog(
+                          context: context,
+                          builder: (context) => ConfirmationAlertDialog(
+                              title:
+                                  "Are you sure you want to delete this product?",
+                              onTapNo: () {
+                                Navigator.pop(context);
+                              },
+                              onTapYes: () async {
+                                // final currentContext = context; // Capture the context outside the async block
+                                int i = highlightedProducts.length - 1;
+                                while (highlightedProducts.isNotEmpty) {
+                                  await ProductService()
+                                      .deleteProduct(highlightedProducts[i].id);
+                                  highlightedProducts.removeAt(i);
+                                  i--;
+                                }
 
+                                Fluttertoast.showToast(
+                                  msg: "Product Deleted Successfully.",
+                                  backgroundColor: Colors.grey,
+                                );
+                                Navigator.pop(context);
+                              },
+                              tapNoString: "No",
+                              tapYesString: "Yes"),
+                        );
+                      }
+                      setState(() {
+                        selectedAction = null;
+                      });
+                    },
+                    buttonStyleData: const ButtonStyleData(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      height: 40,
+                      width: 110,
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      height: 40,
+                    ),
+                  ),
+                ),
                 Row(
                   children: [
                     // const Icon(Icons.filter_alt),
@@ -260,7 +260,7 @@ class _AdminProdListState extends State<AdminProdList> {
             //         //     ),
             //         //   ),
             //         // ),
-                    
+
             //       ],
             //     ),
             //   ],
@@ -419,6 +419,10 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
   @override
   Widget build(BuildContext context) {
     isChecked = widget.highlightedProd.contains(widget.product);
+    final leastPrice = widget.product.getLeastPrice().toStringAsFixed(2);
+    final highPrice = widget.product.getHighestPrice().toStringAsFixed(2);
+    bool isPriceEqual = leastPrice == highPrice;
+    String price = isPriceEqual ? "₱$leastPrice" : "₱$leastPrice-₱$highPrice";
 
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
@@ -484,21 +488,17 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                                 fontSize: 14,
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w500,
-                                height: 0,
-                                letterSpacing: 0.20,
                               ),
                             ),
                           ],
                         ),
                         Text(
-                          "₱${widget.product.getLeastPrice().toStringAsFixed(2)}",
+                          price,
                           style: const TextStyle(
                             color: Color(0xFF171625),
                             fontSize: 14,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w700,
-                            height: 0,
-                            letterSpacing: 0.10,
                           ),
                         )
                       ],
@@ -605,22 +605,21 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                 showDialog(
                   context: context,
                   builder: (context) => ConfirmationAlertDialog(
-                    title: "Are you sure you want to delete this product?",
-                    onTapNo: () {
-                      Navigator.pop(context);
-                    },
-                    onTapYes: () async {
-                      // final currentContext = context; // Capture the context outside the async block
-                      ProductService().deleteProduct(widget.product.id);
-                      Fluttertoast.showToast(
-                        msg: "Product Deleted Successfully.",
-                        backgroundColor: Colors.grey,
-                      );
-                      Navigator.pop(context);
-                    },
-                    tapNoString: "No",
-                    tapYesString: "Yes"
-                  ),
+                      title: "Are you sure you want to delete this product?",
+                      onTapNo: () {
+                        Navigator.pop(context);
+                      },
+                      onTapYes: () async {
+                        // final currentContext = context; // Capture the context outside the async block
+                        ProductService().deleteProduct(widget.product.id);
+                        Fluttertoast.showToast(
+                          msg: "Product Deleted Successfully.",
+                          backgroundColor: Colors.grey,
+                        );
+                        Navigator.pop(context);
+                      },
+                      tapNoString: "No",
+                      tapYesString: "Yes"),
                 );
               }
               if (value == 2) {
