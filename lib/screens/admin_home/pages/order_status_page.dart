@@ -180,8 +180,9 @@ class _OrdersCardState extends State<OrdersCard> {
           height: 2,
           decoration: ShapeDecoration(
             color: const Color(0xFFF0F0F0),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6),
+            ),
           ),
         ),
         Padding(
@@ -227,7 +228,7 @@ class _OrdersCardState extends State<OrdersCard> {
                       ),
                     ),
                     TextSpan(
-                      text: '₱${order.totalPrice.toStringAsFixed(2)}',
+                      text: '₱${order.totalPrice.toStringAsFixed(0)}',
                       style: const TextStyle(
                         color: Color(0xFF303030),
                         fontSize: 16,
@@ -373,6 +374,9 @@ class _OrdersCardState extends State<OrdersCard> {
                                                       "Your order #${order.orderId.toUpperCase()} has been confirmed.";
                                                   subtitile =
                                                       "Seller has confirmed your order! Please expect your item to be shipped within 5-7 days.";
+                                                  ProductService()
+                                                      .reducedQuantity(
+                                                          order.products);
                                                   break;
                                                 }
                                               case "ON DELIVERY":
@@ -397,6 +401,8 @@ class _OrdersCardState extends State<OrdersCard> {
                                                       "Your order #${order.orderId.toUpperCase()} has been cancelled by the seller.";
                                                   subtitile =
                                                       "Your order #${order.orderId.toUpperCase()} has been canceled by the seller. Please click here for more details.";
+                                                  ProductService().addQuantity(
+                                                      order.products);
                                                   break;
                                                 }
                                             }

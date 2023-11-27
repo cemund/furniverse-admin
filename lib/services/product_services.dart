@@ -55,6 +55,64 @@ class ProductService {
     }
   }
 
+  Future<void> reducedQuantity(List<dynamic> products) async {
+    try {
+      // await _productsCollection
+      //     .doc(productId)
+      //     .update({'quantity': FieldValue.increment(-quantity)});
+      // print(products);
+      if (products[0]['productId'] == "") return;
+      for (var product in products) {
+        DocumentSnapshot doc =
+            await _productsCollection.doc(product['productId']).get();
+        Map data = doc.data() as Map;
+        var variants = data['variants'];
+        List<Map> newVariants = [];
+        for (var variant in variants) {
+          if (variant['id'] == product['variationId']) {
+            variant['stocks'] = variant['stocks'] - product['quantity'];
+          }
+          newVariants.add(variant);
+        }
+        await _productsCollection
+            .doc(product['productId'])
+            .update({'variants': newVariants});
+        // .update({'quantity': FieldValue.increment(-quantity)});
+      }
+    } catch (e) {
+      print('Error updating product quantity: $e');
+    }
+  }
+
+  Future<void> addQuantity(List<dynamic> products) async {
+    try {
+      // await _productsCollection
+      //     .doc(productId)
+      //     .update({'quantity': FieldValue.increment(-quantity)});
+      // print(products);
+      if (products[0]['productId'] == "") return;
+      for (var product in products) {
+        DocumentSnapshot doc =
+            await _productsCollection.doc(product['productId']).get();
+        Map data = doc.data() as Map;
+        var variants = data['variants'];
+        List<Map> newVariants = [];
+        for (var variant in variants) {
+          if (variant['id'] == product['variationId']) {
+            variant['stocks'] = variant['stocks'] + product['quantity'];
+          }
+          newVariants.add(variant);
+        }
+        await _productsCollection
+            .doc(product['productId'])
+            .update({'variants': newVariants});
+        // .update({'quantity': FieldValue.increment(-quantity)});
+      }
+    } catch (e) {
+      print('Error updating product quantity: $e');
+    }
+  }
+
   Stream<QuerySnapshot> getAllProducts() {
     return _productsCollection.snapshots();
   }

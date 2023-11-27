@@ -334,10 +334,10 @@ class _BodyState extends State<Body> {
                         )),
                     const Gap(10),
                     Text(
-                      order.shippingStatus.toUpperCase(),
+                      order.shippingStatus,
                       style: TextStyle(
-                        color: order.shippingStatus == 'cancelled'
-                            ? Colors.red[300]
+                        color: order.shippingStatus.toUpperCase() == 'CANCELLED'
+                            ? Colors.red
                             : const Color(0xFF27AE60),
                         fontSize: 18,
                         fontFamily: 'Nunito Sans',

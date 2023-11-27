@@ -640,7 +640,7 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                       size: variant['size'],
                       metric: variant['metric'],
                       model: variant['model'],
-                      price: variant['price'],
+                      price: variant['price'].toDouble(),
                       stocks: variant['stocks'],
                       id: variant['id']);
 
