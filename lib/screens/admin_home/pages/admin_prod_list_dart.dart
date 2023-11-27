@@ -638,6 +638,7 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                       color: variant['color'],
                       image: variant['image'],
                       size: variant['size'],
+                      metric: variant['metric'],
                       model: variant['model'],
                       price: variant['price'],
                       stocks: variant['stocks'],

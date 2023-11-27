@@ -575,7 +575,7 @@ class _EditProductState extends State<EditProduct> {
                                               SizedBox(
                                                 width: 200,
                                                 child: ReadMoreText(
-                                                  "Size: ${variants.oldvariants[index].size}, Color: ${variants.oldvariants[index].color}, Material: ${variants.oldvariants[index].material} ",
+                                                  "Size: ${variants.oldvariants[index].size} ${variants.oldvariants[index].metric}, Color: ${variants.oldvariants[index].color}, Material: ${variants.oldvariants[index].material} ",
                                                   style: const TextStyle(
                                                     color: foregroundColor,
                                                     fontSize: 12,

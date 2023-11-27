@@ -103,6 +103,7 @@ class VariantsProvider extends ChangeNotifier {
         'variant_name': variant.variantName,
         'material': variant.material,
         'size': variant.size,
+        'metric': variant.metric,
         'color': variant.color,
         'price': variant.price,
         'stocks': variant.stocks,
@@ -140,6 +141,7 @@ class VariantsProvider extends ChangeNotifier {
       productMaps.add({
         'variant_name': product.variantName,
         'material': product.material,
+        'metric': product.metric,
         'size': product.size,
         'color': product.color,
         'price': product.price,
