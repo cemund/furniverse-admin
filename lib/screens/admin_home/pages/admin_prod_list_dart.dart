@@ -30,9 +30,9 @@ class _AdminProdListState extends State<AdminProdList> {
     'Dining Room',
     'Office',
     'Outdoor',
-    'Kids\' Furniture',
+    // 'Kids\' Furniture',
     'Storage and Organization',
-    'Accent Furniture',
+    // 'Accent Furniture',
   ];
   final List<String> actions = [
     'Delete',
@@ -638,6 +638,7 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                       color: variant['color'],
                       image: variant['image'],
                       size: variant['size'],
+                      metric: variant['metric'],
                       model: variant['model'],
                       price: variant['price'],
                       stocks: variant['stocks'],

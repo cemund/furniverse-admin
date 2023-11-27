@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +38,14 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
   XFile? selectedNewImage;
   File? selectedNewModel;
 
+  final List<String> items = [
+    'inch',
+    'cm',
+    'ft',
+    'm',
+  ];
+  String? selectedCategory;
+
   @override
   void initState() {
     var variant = widget.productVariants;
@@ -49,6 +58,7 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
     stocks = variant.stocks;
     selectedImage = variant.image;
     selectedModel = variant.model;
+    selectedCategory = variant.metric;
     id = variant.id;
     selectedNewImage = variant.selectedNewImage;
     selectedNewModel = variant.selectedNewModel;
@@ -209,9 +219,90 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                     decoration: outlineInputBorder(label: 'Material'),
                   ),
                   const Gap(20),
-                  TextFormField(
-                    controller: _dimensionController,
-                    decoration: outlineInputBorder(label: 'Dimension/Size'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(child: TextFormField(
+                        controller: _dimensionController,
+                        decoration: outlineInputBorder(label: 'Dimension/Size'),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) =>
+                          value!.isEmpty
+                            ? 'Please input a dimension.'
+                            : null,
+                      ),),
+
+                      // const SizedBox(height: 10),
+
+                      // Flexible(child: TextFormField(
+                      //   controller: _dimensionController,
+                      //   decoration: outlineInputBorder(label: 'Length'),
+                      //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                      //   validator: (value) =>
+                      //     value!.isEmpty
+                      //       ? 'Please input a length.'
+                      //       : null,
+                      // ),),
+                      // const SizedBox(height: 10),
+
+                      Flexible(child: DropdownButtonFormField2<String>(
+                        buttonStyleData: const ButtonStyleData(
+                          height: 26,
+                          padding: EdgeInsets.only(right: 8),
+                        ),
+                        hint: const Text(
+                          'Select Metric Length',
+                          style: TextStyle(fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        iconStyleData: const IconStyleData(
+                          icon: Icon(
+                            Icons.arrow_drop_down,
+                          ),
+                          iconSize: 24,
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        menuItemStyleData: const MenuItemStyleData(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 16),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Please select a metric length.' : null,
+                        items: items
+                            .map((String item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(
+                                    item,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      // fontWeight: FontWeight.bold,
+                                      // color: Colors.],
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ))
+                            .toList(),
+                        isExpanded: true,
+                        value: selectedCategory,
+                        onChanged: (String? value) {
+                          setState(() {
+                            selectedCategory = value;
+                          });
+                        },
+                      ),)
+                    ],
                   ),
                   const Gap(20),
                   TextFormField(
@@ -349,7 +440,7 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
   editVariant(BuildContext context) {
     final isValid = _formKey.currentState?.validate();
 
-    if (!isValid! && selectedImage == null && selectedModel == null) {
+    if (isValid! && selectedImage == null && selectedModel == null) {
       setState(() {
         error = "Input values are invalid";
       });
@@ -367,6 +458,7 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
         image: selectedImage!,
         size: _dimensionController.text,
         model: selectedModel!,
+        metric: selectedCategory.toString(),
         price: double.parse(_priceController.text),
         stocks: int.parse(_stocksController.text),
         selectedNewImage: selectedNewImage,

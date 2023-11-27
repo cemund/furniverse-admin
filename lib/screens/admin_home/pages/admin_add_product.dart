@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/updateemail.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/upload_image_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
@@ -31,6 +32,8 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
+  
+  final _formKey = GlobalKey<FormState>();
   final _productnameController = TextEditingController();
   final _materialController = TextEditingController();
   final _dimensionController = TextEditingController();
@@ -62,9 +65,9 @@ class _AddProductState extends State<AddProduct> {
     'Dining Room',
     'Office',
     'Outdoor',
-    'Kids\' Furniture',
+    // 'Kids\' Furniture',
     'Storage and Organization',
-    'Accent Furniture',
+    // 'Accent Furniture',
   ];
   String? selectedCategory;
 
@@ -309,7 +312,7 @@ class _AddProductState extends State<AddProduct> {
                           });
                         },
                       ),
-
+                  
                       // DONT DELETE for backup
                       // const SizedBox(height: 20),
                       // TextFormField(
@@ -420,7 +423,7 @@ class _AddProductState extends State<AddProduct> {
                                   // return null;
                                 },
                                 // children: [
-
+                  
                                 // ],
                               ),
                             ),
@@ -511,7 +514,7 @@ class _AddProductState extends State<AddProduct> {
                         ),
                       ),
                       const SizedBox(height: 10),
-
+                  
                       if (variants.isNotEmpty)
                         ListView.separated(
                           shrinkWrap: true,
@@ -521,7 +524,7 @@ class _AddProductState extends State<AddProduct> {
                           itemCount: variants.length,
                           itemBuilder: (context, index) {
                             final variant = variants[index];
-
+                  
                             return Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -587,7 +590,7 @@ class _AddProductState extends State<AddProduct> {
                                         SizedBox(
                                           width: 200,
                                           child: ReadMoreText(
-                                            "Size: ${variant.size}; Color: ${variant.color}; Material: ${variant.material}; ",
+                                            "Size: ${variant.size} ${variant.metric}; Color: ${variant.color}; Material: ${variant.material}; ",
                                             style: const TextStyle(
                                               color: foregroundColor,
                                               fontSize: 12,
@@ -649,7 +652,7 @@ class _AddProductState extends State<AddProduct> {
                                                               listen: false);
                                                       provider.removeVariant(
                                                           variant);
-
+                  
                                                       Fluttertoast.showToast(
                                                         msg:
                                                             "Variant Deleted Successfully.",
@@ -694,7 +697,7 @@ class _AddProductState extends State<AddProduct> {
                             //   //     ),
                             //   //   ),
                             //   // ),
-
+                  
                             //   ],
                             // );
                           },
@@ -746,7 +749,7 @@ class _AddProductState extends State<AddProduct> {
                                       Navigator.pop(context);
                                       Navigator.pop(context);
                                     }
-
+                  
                                     // setState(() {
                                     //   isSaving = true;
                                     // });
@@ -754,7 +757,7 @@ class _AddProductState extends State<AddProduct> {
                                       msg: "Adding New Product...",
                                       backgroundColor: Colors.grey,
                                     );
-
+                  
                                     await saveproduct(context);
                                     // setState(() {
                                     //   isSaving =
@@ -764,9 +767,9 @@ class _AddProductState extends State<AddProduct> {
                                       msg: "Product Added Successfully",
                                       backgroundColor: Colors.grey,
                                     );
-
+                  
                                     // saveproduct(context).then((_) {
-
+                  
                                     //   // Show the "Upload Complete" snackbar
                                     //   // ScaffoldMessenger.of(context).showSnackBar(
                                     //   //   const SnackBar(
@@ -774,7 +777,7 @@ class _AddProductState extends State<AddProduct> {
                                     //   //     duration: Duration(seconds: 2),
                                     //   //   ),
                                     //   // );
-
+                  
                                     // });
                                   },
                                   tapNoString: "No",
@@ -798,6 +801,15 @@ class _AddProductState extends State<AddProduct> {
                           ),
                         ),
                       ),
+                  
+                      ElevatedButton(onPressed: () {
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UpdateEmail()
+                        ),
+                      );
+                      }, child: Text("sadad"))
                     ],
                   ),
                 ),

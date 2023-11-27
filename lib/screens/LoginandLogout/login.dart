@@ -156,49 +156,50 @@ class _LogInState extends State<LogIn> {
                       const SizedBox(height: 20),
 
                       Center(
-                          child: SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            setState(() => loading = true);
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              setState(() => loading = true);
 
-                            dynamic result = await _auth.signIn(
-                              _emailController.text.trim(),
-                              _passworController.text.trim(),
-                            );
-                            if (result == null) {
-                              Fluttertoast.showToast(
-                                msg: "Invalid Email or Password",
-                                backgroundColor: Colors.grey,
+                              dynamic result = await _auth.signIn(
+                                _emailController.text.trim(),
+                                _passworController.text.trim(),
                               );
-                              setState(() {
-                                loading = false;
-                              });
-                            } else {
-                              // print(result.uid);
-                              Fluttertoast.showToast(
-                                msg: "Log In Succesfully",
-                                backgroundColor: Colors.grey,
-                              );
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8))),
-                          child: const Text(
-                            "LOG IN",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontFamily: 'Nunito Sans',
-                              fontWeight: FontWeight.w600,
-                              height: 0,
+                              if (result == null) {
+                                Fluttertoast.showToast(
+                                  msg: "Invalid Email or Password",
+                                  backgroundColor: Colors.grey,
+                                );
+                                setState(() {
+                                  loading = false;
+                                });
+                              } else {
+                                // print(result.uid);
+                                Fluttertoast.showToast(
+                                  msg: "Log In Succesfully",
+                                  backgroundColor: Colors.grey,
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8))),
+                            child: const Text(
+                              "LOG IN",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontFamily: 'Nunito Sans',
+                                fontWeight: FontWeight.w600,
+                                height: 0,
+                              ),
                             ),
                           ),
-                        ),
-                      )),
+                        )
+                      ),
 
                       const SizedBox(height: 10),
 
