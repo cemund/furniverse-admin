@@ -44,28 +44,28 @@ class Product {
   }
 
   double getLeastPrice() {
-    double leastPrice = variants[0]['price'];
+    double leastPrice = variants[0]['price'].toDouble();
     if (variants.length == 1) {
       return leastPrice;
     }
 
     for (int i = 1; i < variants.length; i++) {
       if (leastPrice > variants[i]['price']) {
-        leastPrice = variants[i]['price'];
+        leastPrice = variants[i]['price'].toDouble();
       }
     }
     return leastPrice;
   }
 
   double getHighestPrice() {
-    double highPrice = variants[0]['price'];
+    double highPrice = variants[0]['price'].toDouble();
     if (variants.length == 1) {
       return highPrice;
     }
 
     for (int i = 1; i < variants.length; i++) {
       if (highPrice < variants[i]['price']) {
-        highPrice = variants[i]['price'];
+        highPrice = variants[i]['price'].toDouble();
       }
     }
     return highPrice;
