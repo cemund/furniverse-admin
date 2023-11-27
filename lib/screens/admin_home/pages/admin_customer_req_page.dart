@@ -54,11 +54,11 @@ class CustomerRequestsPage extends StatelessWidget {
                   height: 0,
                 ),
               ),
-              Icon(
-                Icons.more_horiz_outlined,
-                color: Color(0xffB5B5BE),
-                size: 24,
-              )
+              // Icon(
+              //   Icons.more_horiz_outlined,
+              //   color: Color(0xffB5B5BE),
+              //   size: 24,
+              // )
             ],
           ),
           for (int i = 0; i < requests.length; i++) ...[

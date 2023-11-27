@@ -328,10 +328,10 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
                             // final currentContext = context; // Capture the context outside the async block
                               editVariant(context);
                                     
-                              Fluttertoast.showToast(
-                                msg: "Variant Changed Successfully.",
-                                backgroundColor: Colors.grey,
-                              );
+                              // Fluttertoast.showToast(
+                              //   msg: "Variant Changed Successfully.",
+                              //   backgroundColor: Colors.grey,
+                              // );
                               Navigator.pop(context);
                             },
                             tapNoString: "No",
@@ -379,12 +379,16 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
   //   }
   // }
   editVariant(BuildContext context) {
-    final isValid = _formKey.currentState?.validate();
+    final isValid = _formKey.currentState!.validate();
 
-    if (!isValid! && selectedImage == null && selectedModel == null) {
+    if (!isValid || selectedImage == null || selectedModel == null) {
       setState(() {
         error = "Input values are invalid";
       });
+      Fluttertoast.showToast(
+        msg: "Please complete the information needed.",
+        backgroundColor: Colors.grey,
+      );
       print("Input values are invalid");
       return;
     } else {
@@ -406,6 +410,10 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
       provider.updateVariant(widget.productVariants, newVariant);
 
       Navigator.of(context).pop();
+      Fluttertoast.showToast(
+        msg: "Variant Added Successfully.",
+        backgroundColor: Colors.grey,
+      );
     }
   }
 }

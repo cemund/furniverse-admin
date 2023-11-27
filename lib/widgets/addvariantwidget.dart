@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,12 +31,21 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
   final _dimensionController = TextEditingController();
   final _priceController = TextEditingController();
   final _stocksController = TextEditingController();
+
   String? image;
   String? model;
   XFile? selectedImage;
   File? selectedModel;
   final ImagePicker _picker = ImagePicker();
   String error = '';
+
+  final List<String> items = [
+    'inch',
+    'cm',
+    'ft',
+    'm',
+  ];
+  String? selectedCategory;
 
   Future<void> pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -162,16 +172,19 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                           ],
                         )),
                   const Gap(20),
+
                   TextFormField(
                     controller: _nameController,
                     decoration: outlineInputBorder(label: 'Variant Name'),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) =>
-                      value!.isEmpty
+                    validator: (value) 
+                      {print(value);
+                        return value!.isEmpty
                         ? 'Please input a variant name.'
-                        : null,
+                        : null;}
                   ),
                   const Gap(20),
+                  
                   TextFormField(
                     controller: _colorController,
                     decoration: outlineInputBorder(label: 'Color'),
@@ -182,6 +195,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                         : null,
                   ),
                   const Gap(20),
+                  
                   TextFormField(
                     controller: _materialController,
                     decoration: outlineInputBorder(label: 'Material'),
@@ -192,11 +206,93 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                         : null,
                   ),
                   const Gap(20),
-                  TextFormField(
-                    controller: _dimensionController,
-                    decoration: outlineInputBorder(label: 'Dimension/Size'),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(child: TextFormField(
+                        controller: _dimensionController,
+                        decoration: outlineInputBorder(label: 'Size'),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) =>
+                          value!.isEmpty
+                            ? 'Please input a dimension.'
+                            : null,
+                      ),),
+
+                      // const SizedBox(height: 10),
+
+                      // Flexible(child: TextFormField(
+                      //   controller: _dimensionController,
+                      //   decoration: outlineInputBorder(label: 'Length'),
+                      //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                      //   validator: (value) =>
+                      //     value!.isEmpty
+                      //       ? 'Please input a length.'
+                      //       : null,
+                      // ),),
+                      // const SizedBox(height: 10),
+
+                      Flexible(child: DropdownButtonFormField2<String>(
+                        buttonStyleData: const ButtonStyleData(
+                          padding: EdgeInsets.only(right: 8),
+                        ),
+                        hint: const Text(
+                          'Select Metric Length',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        iconStyleData: const IconStyleData(
+                          icon: Icon(
+                            Icons.arrow_drop_down,
+                          ),
+                          iconSize: 24,
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        menuItemStyleData: const MenuItemStyleData(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 16),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        // autovalidateMode: AutovalidateMode.onUserInteraction,
+                        // validator: (value) =>
+                        //     value!.isEmpty ? 'Please select a metric length.' : null,
+                        items: items
+                            .map((String item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(
+                                    item,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      // fontWeight: FontWeight.bold,
+                                      // color: Colors.],
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ))
+                            .toList(),
+                        isExpanded: true,
+                        value: selectedCategory,
+                        onChanged: (String? value) {
+                          setState(() {
+                            selectedCategory = value;
+                          });
+                        },
+                      ),)
+                    ],
                   ),
+                  
                   const Gap(20),
+                  
                   TextFormField(
                     controller: _priceController,
                     decoration: outlineInputBorder(label: 'Price'),
@@ -211,6 +307,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                         ? 'Please input a price.'
                         : null,
                   ),
+                  
                   const Gap(20),
                   TextFormField(
                     controller: _stocksController,
@@ -295,11 +392,6 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                             onTapYes: () async {
                             // final currentContext = context; // Capture the context outside the async block
                               addVariant(context);
-                                    
-                              Fluttertoast.showToast(
-                                msg: "Variant Added Successfully.",
-                                backgroundColor: Colors.grey,
-                              );
                               Navigator.pop(context);
                             },
                             tapNoString: "No",
@@ -334,14 +426,20 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
   }
 
   addVariant(BuildContext context) {
-    final isValid = _formKey.currentState?.validate();
-    final id = const Uuid().v4();
-    print(id);
+    final isValid = _formKey.currentState!.validate();
+    //   if (!isValid) return;
 
-    if (!isValid! && selectedImage == null && selectedModel == null) {
+    final id = const Uuid().v4();
+    print(isValid.toString());
+
+    if (!isValid || selectedImage == null || selectedModel == null) {
       setState(() {
         error = "Input values are invalid";
       });
+      Fluttertoast.showToast(
+        msg: "Please complete the information needed.",
+        backgroundColor: Colors.grey,
+      );
       print("Input values are invalid");
       return;
     } else {
@@ -363,6 +461,10 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
       provider.addVariant(variant);
 
       Navigator.of(context).pop();
+      Fluttertoast.showToast(
+        msg: "Variant Added Successfully.",
+        backgroundColor: Colors.grey,
+      );
     }
   }
 }

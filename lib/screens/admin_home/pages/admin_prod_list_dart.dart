@@ -30,9 +30,9 @@ class _AdminProdListState extends State<AdminProdList> {
     'Dining Room',
     'Office',
     'Outdoor',
-    'Kids\' Furniture',
+    // 'Kids\' Furniture',
     'Storage and Organization',
-    'Accent Furniture',
+    // 'Accent Furniture',
   ];
   final List<String> actions = [
     'Delete',
