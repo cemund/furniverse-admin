@@ -77,9 +77,9 @@ class _EditProductState extends State<EditProduct> {
     'Dining Room',
     'Office',
     'Outdoor',
-    'Kids\' Furniture',
+    // 'Kids\' Furniture',
     'Storage and Organization',
-    'Accent Furniture',
+    // 'Accent Furniture',
   ];
   String? selectedCategory;
 

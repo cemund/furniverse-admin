@@ -349,7 +349,7 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
   editVariant(BuildContext context) {
     final isValid = _formKey.currentState?.validate();
 
-    if (!isValid! && selectedImage == null && selectedModel == null) {
+    if (isValid! && selectedImage == null && selectedModel == null) {
       setState(() {
         error = "Input values are invalid";
       });
