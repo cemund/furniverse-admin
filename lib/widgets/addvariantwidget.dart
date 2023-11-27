@@ -213,7 +213,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                     children: [
                       Flexible(child: TextFormField(
                         controller: _dimensionController,
-                        decoration: outlineInputBorder(label: 'Size'),
+                        decoration: outlineInputBorder(label: 'Dimension/Size'),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) =>
                           value!.isEmpty
@@ -236,11 +236,13 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
 
                       Flexible(child: DropdownButtonFormField2<String>(
                         buttonStyleData: const ButtonStyleData(
+                          height: 26,
                           padding: EdgeInsets.only(right: 8),
                         ),
                         hint: const Text(
                           'Select Metric Length',
                           style: TextStyle(fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
                         ),
                         iconStyleData: const IconStyleData(
                           icon: Icon(
@@ -263,9 +265,9 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        // autovalidateMode: AutovalidateMode.onUserInteraction,
-                        // validator: (value) =>
-                        //     value!.isEmpty ? 'Please select a metric length.' : null,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Please select a metric length.' : null,
                         items: items
                             .map((String item) => DropdownMenuItem<String>(
                                   value: item,
@@ -452,6 +454,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
           color: _colorController.text,
           image: selectedImage!,
           size: _dimensionController.text,
+          metric: selectedCategory.toString(),
           model: selectedModel!,
           price: double.parse(_priceController.text),
           stocks: int.parse(_stocksController.text),
@@ -459,6 +462,8 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
 
       final provider = Provider.of<VariantsProvider>(context, listen: false);
       provider.addVariant(variant);
+
+      print(selectedCategory.toString());
 
       Navigator.of(context).pop();
       Fluttertoast.showToast(

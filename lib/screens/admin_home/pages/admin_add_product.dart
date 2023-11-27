@@ -590,7 +590,7 @@ class _AddProductState extends State<AddProduct> {
                                         SizedBox(
                                           width: 200,
                                           child: ReadMoreText(
-                                            "Size: ${variant.size}; Color: ${variant.color}; Material: ${variant.material}; ",
+                                            "Size: ${variant.size} ${variant.metric}; Color: ${variant.color}; Material: ${variant.material}; ",
                                             style: const TextStyle(
                                               color: foregroundColor,
                                               fontSize: 12,

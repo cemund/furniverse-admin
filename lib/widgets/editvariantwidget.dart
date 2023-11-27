@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,10 +30,19 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
   String color = "";
   String size = "";
   String id = "";
+  String metric = "";
   double price = 0.0;
   int stocks = 0;
   XFile? selectedImage;
   File? selectedModel;
+
+  final List<String> items = [
+    'inch',
+    'cm',
+    'ft',
+    'm',
+  ];
+  String? selectedCategory;
 
   @override
   void initState() {
@@ -40,6 +50,7 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
     material = widget.productVariants.material;
     color = widget.productVariants.color;
     size = widget.productVariants.size;
+    selectedCategory = widget.productVariants.metric;
     price = widget.productVariants.price;
     stocks = widget.productVariants.stocks;
     selectedImage = widget.productVariants.image;
@@ -224,9 +235,77 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
                         : null,
                   ),
                   const Gap(20),
-                  TextFormField(
-                    controller: _dimensionController,
-                    decoration: outlineInputBorder(label: 'Dimension/Size'),
+                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(child: TextFormField(
+                        controller: _dimensionController,
+                        decoration: outlineInputBorder(label: 'Dimension/Size'),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) =>
+                          value!.isEmpty
+                            ? 'Please input a dimension.'
+                            : null,
+                      ),),
+
+                      Flexible(child: DropdownButtonFormField2<String>(
+                        buttonStyleData: const ButtonStyleData(
+                          height: 26,
+                          padding: EdgeInsets.only(right: 8),
+                        ),
+                        hint: const Text(
+                          'Select Metric Length',
+                          style: TextStyle(fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        iconStyleData: const IconStyleData(
+                          icon: Icon(
+                            Icons.arrow_drop_down,
+                          ),
+                          iconSize: 30,
+                        ),
+                        dropdownStyleData: DropdownStyleData(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        menuItemStyleData: const MenuItemStyleData(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 16),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (value) =>
+                            value!.isEmpty ? 'Please select a metric length.' : null,
+                        items: items
+                            .map((String item) => DropdownMenuItem<String>(
+                                  value: item,
+                                  child: Text(
+                                    item,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      // fontWeight: FontWeight.bold,
+                                      // color: Colors.],
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ))
+                            .toList(),
+                        isExpanded: true,
+                        value: selectedCategory,
+                        onChanged: (String? value) {
+                          setState(() {
+                            selectedCategory = value;
+                          });
+                        },
+                      ),)
+                    ],
                   ),
                   const Gap(20),
                   TextFormField(
@@ -402,6 +481,7 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
           color: _colorController.text,
           image: selectedImage!,
           size: _dimensionController.text,
+          metric: selectedCategory.toString(),
           model: selectedModel!,
           price: double.parse(_priceController.text),
           stocks: int.parse(_stocksController.text));
