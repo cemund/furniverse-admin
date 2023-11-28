@@ -14,16 +14,22 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseUserNotification().initNotifications();
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(
-      create: (_) => VariantsProvider(),
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => VariantsProvider(),
+        ),
+        StreamProvider.value(
+            value: OrderService().streamOrders(), initialData: null),
+        StreamProvider.value(
+            value: ProductService().streamProducts(), initialData: null),
+        StreamProvider<User?>.value(
+            value: AuthService().user, initialData: null),
+      ],
+      child: MyApp(),
     ),
-    StreamProvider.value(
-        value: OrderService().streamOrders(), initialData: null),
-    StreamProvider.value(
-        value: ProductService().streamProducts(), initialData: null),
-    StreamProvider<User?>.value(value: AuthService().user, initialData: null),
-  ], child: MyApp()));
+  );
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -31,13 +37,11 @@ final navigatorKey = GlobalKey<NavigatorState>();
 class MyApp extends StatelessWidget {
   final routes = {
     '/': 'Home Page',
-    '/page1': 'Page 1',
-    '/adminHome': "Admin Home",
-    '/newprod': "New Product",
-    '/notif': "Notfication",
-    '/login': 'login',
-    // '/status': "Status",
-    // '/req': "Request",
+    // '/page1': 'Page 1',
+    // '/adminHome': "Admin Home",
+    // '/newprod': "New Product",
+    // '/notif': "Notfication",
+    // '/login': 'login',
   };
 
   MyApp({super.key});
@@ -56,16 +60,6 @@ class MyApp extends StatelessWidget {
       title: 'Furniverse',
       theme: customTheme,
       home: const Wrapper(),
-      // routes: {
-      //   '/': (context) => MainButtons(routes),
-      //   '/page1': (context) => const Sample(),
-      //   '/adminHome': (context) => const AdminMain(),
-      //   '/newprod': (context) => const AddProduct(),
-      //   '/notif': (context) => const AppNotification(),
-      //   '/login' : (context) => const LogIn(),
-      //   // '/status': (context) => const OrderStatus(),
-      //   // '/req': (context) => const CustomerRequestPage(),
-      // },
     );
   }
 }
