@@ -801,15 +801,6 @@ class _AddProductState extends State<AddProduct> {
                           ),
                         ),
                       ),
-                  
-                      ElevatedButton(onPressed: () {
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UpdateEmail()
-                        ),
-                      );
-                      }, child: Text("sadad"))
                     ],
                   ),
                 ),

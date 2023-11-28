@@ -265,9 +265,9 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) =>
-                            value!.isEmpty ? 'Please select a metric length.' : null,
+                        // autovalidateMode: AutovalidateMode.onUserInteraction,
+                        // validator: (value) =>
+                        //     value!.isEmpty ? 'Please select a metric length.' : null,
                         items: items
                             .map((String item) => DropdownMenuItem<String>(
                                   value: item,

@@ -278,8 +278,8 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                           ),
                         ),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) =>
-                            value!.isEmpty ? 'Please select a metric length.' : null,
+                        // validator: (value) =>
+                        //     value!.isEmpty ? 'Please select a metric length.' : null,
                         items: items
                             .map((String item) => DropdownMenuItem<String>(
                                   value: item,
