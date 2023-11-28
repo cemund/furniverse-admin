@@ -6,10 +6,11 @@ class OrderService {
       FirebaseFirestore.instance.collection('orders');
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future<void> updateStatus(String orderId, String newStatus) async {
+  Future<void> updateStatus(String orderId, String newStatus, String reason) async {
     try {
       await _ordersCollection.doc(orderId).update({
         'shippingStatus': newStatus,
+        'reason': reason
       });
       print('Status updated successfully');
     } catch (e) {

@@ -433,7 +433,7 @@ class _OrdersCardState extends State<OrdersCard> {
                                                                 )
                                                               );
 
-                                                              orderService.updateStatus(order.orderId, value);
+                                                              orderService.updateStatus(order.orderId, value, _reasonController.text);
 
                                                               messagingService.notifyUser(
                                                                 userId: order.userId,
@@ -540,7 +540,7 @@ class _OrdersCardState extends State<OrdersCard> {
                                             )
                                           );
 
-                                          orderService.updateStatus(order.orderId, value);
+                                          orderService.updateStatus(order.orderId, value, "");
 
                                           messagingService.notifyUser(
                                             userId: order.userId,
