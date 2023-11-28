@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:furniverse_admin/models/analytics.dart';
 import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/models/products.dart';
+import 'package:furniverse_admin/models/refund.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/pdf_preview_page.dart';
 import 'package:furniverse_admin/services/analytics_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
+import 'package:furniverse_admin/services/refund_services.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/line_chart_widget.dart';
 import 'package:gap/gap.dart';
@@ -29,8 +31,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
   @override
   Widget build(BuildContext context) {
     final orders = Provider.of<List<OrderModel>?>(context);
+    final refunds = Provider.of<List<Refund>?>(context);
 
-    if (orders == null) {
+    if (orders == null || refunds == null) {
       return const Center(
         child: Loading(),
       );
@@ -112,7 +115,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
                           menuItemStyleData: const MenuItemStyleData(
                             height: 30,
                             padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
+                              horizontal: 5,
+                              vertical: 5,
+                            ),
                           ),
                         ),
                       ),
@@ -161,10 +166,17 @@ class _AdminHomePageState extends State<AdminHomePage> {
           ],
         ),
         years.isNotEmpty
-            ? StreamProvider.value(
-                value: OrderService().streamOrdersByYear(
-                    int.parse(selectedValue ?? years[0].toString())),
-                initialData: null,
+            ? MultiProvider(
+                providers: [
+                    StreamProvider.value(
+                        value: OrderService().streamOrdersByYear(
+                            int.parse(selectedValue ?? years[0].toString())),
+                        initialData: null),
+                    StreamProvider.value(
+                        value: RefundService().streamRefundsPerYear(
+                            int.parse(selectedValue ?? years[0].toString())),
+                        initialData: null)
+                  ],
                 child: Analytics(
                     years: years,
                     year: int.parse(selectedValue ?? years[0].toString())))
@@ -186,15 +198,16 @@ class Analytics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final orders = Provider.of<List<OrderModel>?>(context);
+    final refunds = Provider.of<List<Refund>?>(context);
 
-    if (orders == null) {
+    if (orders == null || refunds == null) {
       return const Center(
         child: Loading(),
       );
     }
 
     // not cancelled orders
-   final List<OrderModel> fullOrders = [];
+    final List<OrderModel> fullOrders = [];
     for (var order in orders) {
       if (order.shippingStatus.toUpperCase() != 'CANCELLED') {
         fullOrders.add(order);
@@ -213,6 +226,13 @@ class Analytics extends StatelessWidget {
       amountPerTransaction.add(fullOrders[i].totalPrice);
     }
 
+    // total revenue
+    double deduction = 0.0;
+    for (var refund in refunds) {
+      deduction += refund.totalPrice;
+    }
+    sales -= deduction;
+
     // monthly sales
     Map<String, dynamic> monthlySales = {};
     for (var order in fullOrders) {
@@ -221,6 +241,12 @@ class Analytics extends StatelessWidget {
       final month = order.orderDate.toDate().month.toString();
       monthlySales.putIfAbsent(month, () => 0);
       monthlySales[month] = monthlySales[month]! + order.totalPrice;
+    }
+
+    // monthly deductions
+    for (var refund in refunds) {
+      final month = refund.timestamp?.toDate().month.toString();
+      monthlySales[month!] = monthlySales[month]! - refund.totalPrice;
     }
 
     // all products
@@ -235,11 +261,28 @@ class Analytics extends StatelessWidget {
     }
 
     Map<String, dynamic> ordersPerCity = {};
+    Map<String, dynamic> refundPerId = {};
+    for (var refund in refunds) {
+      refundPerId.putIfAbsent(
+          refund.orderId, () => {'totalDeduction': 0.0, 'quantity': 0});
+      refundPerId[refund.orderId]['totalDeduction'] =
+          refundPerId[refund.orderId]['totalDeduction'] + refund.totalPrice;
+
+      //add quantity
+      refundPerId[refund.orderId]['quantity'] =
+          refundPerId[refund.orderId]['quantity'] + refund.quantity;
+    }
     for (var order in fullOrders) {
-      final province =
-          order.shippingCity == "" ? 'Others' : order.shippingCity;
+      final province = order.shippingCity == "" ? 'Others' : order.shippingCity;
       ordersPerCity.putIfAbsent(
-          province, () => {"users": [], "quantity": 0, "total": 0});
+          province,
+          () => {
+                "users": [],
+                "quantity": 0,
+                "total": (refundPerId.containsKey(order.orderId)
+                    ? 0 - refundPerId[order.orderId]['totalDeduction']
+                    : 0),
+              });
 
       // add users
       if (!ordersPerCity[province]['users'].contains(order.userId)) {
@@ -255,15 +298,33 @@ class Analytics extends StatelessWidget {
           ordersPerCity[province]['total'] + order.totalPrice;
     }
 
+    // NOTE: SHIPPING PRICE IS STATIC HERE
+    double shippingPrice = 200;
     // products
     int totalQuantity = 0;
     Map<String, dynamic> ordersPerProduct = {};
+    Map<String, dynamic> refundPerProductId = {};
+    for (var refund in refunds) {
+      refundPerProductId.putIfAbsent(refund.productId, () => 0);
+      refundPerProductId[refund.productId] =
+          refundPerProductId[refund.productId] + refund.quantity;
+    }
+
     for (var order in fullOrders) {
       if (order.products.isNotEmpty) {
+        // Calculate shipping cost per product
+        final shippingCostPerProduct = shippingPrice / order.products.length;
         for (var product in order.products) {
           final productId = product['productId'];
           ordersPerProduct.putIfAbsent(
-              productId, () => {"quantity": 0, "total": 0.0});
+              productId,
+              () => {
+                    "quantity": 0,
+                    "total": 0.0,
+                    "refunds": (refundPerProductId.containsKey(productId))
+                        ? refundPerProductId[productId]
+                        : 0
+                  });
 
           // add quantity
           ordersPerProduct[productId]['quantity'] =
@@ -273,10 +334,31 @@ class Analytics extends StatelessWidget {
           totalQuantity = totalQuantity + product['quantity'] as int;
 
           // add total
-          ordersPerProduct[productId]['total'] =
-              ordersPerProduct[productId]['total'] + product['totalPrice'];
+          ordersPerProduct[productId]['total'] = ordersPerProduct[productId]
+                  ['total'] +
+              product['totalPrice'] +
+              shippingCostPerProduct;
         }
       }
+    }
+
+    // products deductions
+    int originalTotalQuantity = totalQuantity;
+    for (var refund in refunds) {
+      // reduce quantity
+      ordersPerProduct[refund.productId]['quantity'] =
+          ordersPerProduct[refund.productId]['quantity'] - refund.quantity;
+
+      // reduce total quantity
+      totalQuantity = totalQuantity - refund.quantity;
+
+      // reduce total
+      ordersPerProduct[refund.productId]['total'] =
+          ordersPerProduct[refund.productId]['total'] - refund.totalPrice;
+
+      // reduce product quantity
+      products[refund.productId] =
+          products[refund.productId]! - refund.quantity;
     }
 
     //sorting top products
@@ -302,6 +384,7 @@ class Analytics extends StatelessWidget {
         monthlySales: monthlySales,
         ordersPerCity: ordersPerCity,
         ordersPerProduct: ordersPerProduct,
+        totalRefunds: originalTotalQuantity - totalQuantity,
       ),
     );
 

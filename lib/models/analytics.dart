@@ -1,6 +1,7 @@
 class AnalyticsModel {
   final int year;
   final int totalQuantity;
+  final int totalRefunds;
   final double totalRevenue;
   final double averageOrderValue;
   final Map<String, int> topProducts;
@@ -17,6 +18,7 @@ class AnalyticsModel {
     required this.ordersPerCity,
     required this.ordersPerProduct,
     required this.totalQuantity,
+    required this.totalRefunds,
   });
 
   Map<String, dynamic> getMap() {
@@ -29,6 +31,7 @@ class AnalyticsModel {
       'ordersPerCity': ordersPerCity,
       'ordersPerProduct': ordersPerProduct,
       'totalQuantity': totalQuantity,
+      'totalRefunds': totalRefunds,
     };
   }
 }

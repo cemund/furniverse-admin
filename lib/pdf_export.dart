@@ -13,6 +13,7 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerCity,
 
   final totalQuantity = await AnalyticsServices().getTotalQuantity(year);
   final totalRevenue = await AnalyticsServices().getTotalRevenue(year);
+  final totalRefund = await AnalyticsServices().getTotalRefund(year);
 
   Map<String, dynamic> ordersWithName = ordersPerProduct;
 
@@ -111,7 +112,8 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerCity,
                 child: _buildHeader(title: "Furniture"),
               ),
 
-              _buildHeader(title: "No. of Orders"),
+              _buildHeader(title: "Complete Orders"),
+              _buildHeader(title: "Refunds"),
               _buildHeader(title: "Total Revenue"),
               // _buildHeader(title: "Surplus/Leakage"),
               // _buildHeader(title: "Trade Area Capture"),
@@ -125,6 +127,7 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerCity,
             title: "Total",
             totalQuantity: totalQuantity,
             totalRevenue: totalRevenue,
+            totalRefund: totalRefund,
           ),
 
           for (var productId in productIds) ...[
@@ -132,6 +135,7 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerCity,
                 productId: productId,
                 productName: ordersWithName[productId]['productName'] ?? "",
                 quantity: ordersWithName[productId]['quantity'] ?? 0,
+                refunds: ordersWithName[productId]['refunds'] ?? 0,
                 revenue: ordersWithName[productId]['total'] ?? 0.0),
           ]
 
@@ -214,6 +218,7 @@ TableRow _buildProductRow(
     {required String productId,
     required String productName,
     required int quantity,
+    required int refunds,
     required double revenue}) {
   return TableRow(
       decoration: const BoxDecoration(
@@ -256,6 +261,7 @@ TableRow _buildProductRow(
           ),
         ),
         _buildNextCell(value: quantity),
+        _buildNextCell(value: refunds),
         _buildNextCell(value: revenue),
         // _buildNextCell(value: 2000000),
         // _buildNextCell(value: 2000000),
@@ -266,6 +272,7 @@ TableRow _buildTotalRow({
   required String title,
   required double totalRevenue,
   required int totalQuantity,
+  required int totalRefund,
 }) {
   return TableRow(
       decoration: const BoxDecoration(
@@ -291,6 +298,7 @@ TableRow _buildTotalRow({
         ),
         _buildNextCell(value: ""),
         _buildNextCell(value: totalQuantity),
+        _buildNextCell(value: totalRefund),
         _buildNextCell(value: totalRevenue),
         // _buildNextCell(value: quantity),
         // _buildNextCell(value: totalRevenue),
