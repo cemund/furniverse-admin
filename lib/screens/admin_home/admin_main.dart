@@ -5,6 +5,8 @@ import 'package:furniverse_admin/screens/admin_home/pages/admin_customer_req_pag
 import 'package:furniverse_admin/screens/admin_home/pages/admin_home_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_prod_list_dart.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/order_status_page.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/refundrequest.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/updateemail.dart';
 import 'package:furniverse_admin/services/auth_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/request_services.dart';
@@ -30,7 +32,9 @@ class _AdminMainState extends State<AdminMain> {
     const OrderStatus(),
     const AdminProdList(),
     const BusinessPerformancePage(),
-    const CustomerRequestsPage()
+    const CustomerRequestsPage(),
+    const RefundRequest(),
+    const UpdateEmail()
   ];
 
   @override
@@ -71,7 +75,7 @@ class _AdminMainState extends State<AdminMain> {
           drawer: Drawer(
             backgroundColor: const Color(0xFF303030),
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               children: [
                 Align(
                   alignment: Alignment.topLeft,
@@ -85,7 +89,7 @@ class _AdminMainState extends State<AdminMain> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 38),
+                const SizedBox(height: 30),
                 const FittedBox(
                   fit: BoxFit.fitWidth,
                   child: Text.rich(
@@ -95,7 +99,7 @@ class _AdminMainState extends State<AdminMain> {
                           text: 'FURNIVERSE\n',
                           style: TextStyle(
                               color: Color(0xFFF6BE2C),
-                              fontSize: 25,
+                              fontSize: 22,
                               fontFamily: 'Avenir Next LT Pro',
                               fontWeight: FontWeight.w700,
                               letterSpacing: 1.25),
@@ -104,7 +108,7 @@ class _AdminMainState extends State<AdminMain> {
                           text: 'ADMIN PANEL',
                           style: TextStyle(
                               color: Colors.white,
-                              fontSize: 25,
+                              fontSize: 22,
                               fontFamily: 'Avenir Next LT Pro',
                               fontWeight: FontWeight.w700,
                               letterSpacing: 1.25),
@@ -113,7 +117,7 @@ class _AdminMainState extends State<AdminMain> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 38),
+                const SizedBox(height: 30),
                 Row(
                   children: [
                     CircleAvatar(
@@ -141,7 +145,7 @@ class _AdminMainState extends State<AdminMain> {
                     )
                   ],
                 ),
-                const SizedBox(height: 38),
+                const SizedBox(height: 30),
                 ListTile(
                   onTap: () {
                     setState(() {
@@ -262,9 +266,55 @@ class _AdminMainState extends State<AdminMain> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 38),
+                ListTile(
+                  onTap: () {
+                    setState(() {
+                      pageName = "REFUND REQUESTS";
+                      selectedIdxPage = 5;
+                      Navigator.pop(context);
+                    });
+                  },
+                  minLeadingWidth: 10,
+                  contentPadding: EdgeInsets.zero,
+                  leading:
+                      const Icon(Icons.request_page_outlined, color: Colors.white),
+                  title: const Text(
+                    'Refund Requests',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontFamily: 'Nunito Sans',
+                      fontWeight: FontWeight.w700,
+                      height: 0,
+                    ),
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
+                    setState(() {
+                      pageName = "UPDATE EMAIL";
+                      selectedIdxPage = 6;
+                      Navigator.pop(context);
+                    });
+                  },
+                  minLeadingWidth: 10,
+                  contentPadding: EdgeInsets.zero,
+                  leading:
+                      const Icon(Icons.email_outlined, color: Colors.white),
+                  title: const Text(
+                    'Update Email',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontFamily: 'Nunito Sans',
+                      fontWeight: FontWeight.w700,
+                      height: 0,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
                 SizedBox(
-                  height: 60,
+                  height: 50,
                   child: ElevatedButton(
                     onPressed: () async {
                       showDialog(

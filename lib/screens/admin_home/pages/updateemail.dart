@@ -26,11 +26,11 @@ class _UpdateEmailState extends State<UpdateEmail> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xFFF0F0F0),
+        // backgroundColor: const Color(0xFFF0F0F0),
         body: SingleChildScrollView(
           physics: const NeverScrollableScrollPhysics(),
           child: Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(8.0),
             child: Form(
               key: _formKey,
               child: Column(
