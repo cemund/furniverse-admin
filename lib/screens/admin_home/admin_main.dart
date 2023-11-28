@@ -34,7 +34,7 @@ class _AdminMainState extends State<AdminMain> {
     const AdminProdList(),
     const BusinessPerformancePage(),
     const CustomerRequestsPage(),
-    const RefundRequest(),
+    const RefundPage(),
     const DeliveryMethodList(),
     const UpdateEmail()
   ];
@@ -56,15 +56,15 @@ class _AdminMainState extends State<AdminMain> {
               centerTitle: true,
               backgroundColor: Colors.white,
               leading: GestureDetector(
-          onTap: () {
-            globalKey.currentState?.openDrawer();
-          },
-          child: const Icon(
-            Icons.menu,
-            size: 24,
-            color: Colors.black,
-          ),
-        ),
+                onTap: () {
+                  globalKey.currentState?.openDrawer();
+                },
+                child: const Icon(
+                  Icons.menu,
+                  size: 24,
+                  color: Colors.black,
+                ),
+              ),
               title: Text(
                 pageName,
                 style: const TextStyle(
@@ -125,7 +125,8 @@ class _AdminMainState extends State<AdminMain> {
                     CircleAvatar(
                       backgroundColor: Colors.grey[300],
                       foregroundColor: Colors.black,
-                      child: const Text( "A",
+                      child: const Text(
+                        "A",
                         style: TextStyle(
                           color: Color(0xFF303030),
                           fontSize: 16,
@@ -278,8 +279,8 @@ class _AdminMainState extends State<AdminMain> {
                   },
                   minLeadingWidth: 10,
                   contentPadding: EdgeInsets.zero,
-                  leading:
-                      const Icon(Icons.request_page_outlined, color: Colors.white),
+                  leading: const Icon(Icons.request_page_outlined,
+                      color: Colors.white),
                   title: const Text(
                     'Refund Requests',
                     style: TextStyle(

@@ -98,6 +98,28 @@ class AnalyticsServices {
     }
   }
 
+  Future<int> getTotalRefund(int year) async {
+    try {
+      DocumentSnapshot analyticsDoc =
+          await _db.collection('analytics').doc(year.toString()).get();
+      if (analyticsDoc.exists) {
+        // Check if the product document exists
+        Map<String, dynamic> analyticsData =
+            analyticsDoc.data() as Map<String, dynamic>;
+
+        // Retrieve the image URL from the product data
+        int totalRefund = analyticsData['totalRefunds'];
+
+        return totalRefund;
+      }
+
+      return 0;
+    } catch (e) {
+      print('Error adding product to cart: $e');
+      return 0;
+    }
+  }
+
   Future<Map<String, dynamic>> getMonthlySales(int year) async {
     try {
       DocumentSnapshot analyticsDoc =

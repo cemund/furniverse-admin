@@ -1,19 +1,32 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:furniverse_admin/models/refund.dart';
+import 'package:furniverse_admin/models/user.dart';
+import 'package:furniverse_admin/services/refund_services.dart';
+import 'package:furniverse_admin/services/user_services.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RefundRequestDetail extends StatefulWidget {
-  const RefundRequestDetail({super.key});
+  final Refund refund;
+  final String productName;
+  final String variantName;
+  const RefundRequestDetail(
+      {super.key,
+      required this.refund,
+      required this.productName,
+      required this.variantName});
 
   @override
   State<RefundRequestDetail> createState() => _RefundRequestDetailState();
 }
 
 class _RefundRequestDetailState extends State<RefundRequestDetail> {
- String phone = "09876543212";
+  String phone = "09876543212";
   String customerName = "";
 
   @override
@@ -25,12 +38,10 @@ class _RefundRequestDetailState extends State<RefundRequestDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    // StreamProvider.value(
-    //     value: RequestsService().streamRequest(widget.request.id),
-    //     initialData: null,
-    //     child: 
-        SafeArea(
+    return StreamProvider.value(
+        value: UserService().streamUser(widget.refund.userId),
+        initialData: null,
+        child: SafeArea(
           child: Scaffold(
             backgroundColor: const Color(0xFFF0F0F0),
             appBar: AppBar(
@@ -56,41 +67,48 @@ class _RefundRequestDetailState extends State<RefundRequestDetail> {
                   ),
                 )),
             body: Body(
-              customerName: customerName,
-              phone: phone,
+              refund: widget.refund,
+              variantName: widget.variantName,
+              productName: widget.productName,
               // requestId: widget.request.id,
               // productName: widget.productName,
             ),
           ),
-        );
-        // );
+        ));
+    // );
   }
 }
 
 class Body extends StatelessWidget {
   Body({
     super.key,
-    required this.customerName,
-    required this.phone,
+    required this.refund,
+    required this.variantName,
+    required this.productName,
     // required this.requestId,
     // required this.productName,
   });
   final _reasonController = TextEditingController();
   final _priceController = TextEditingController();
-  final String customerName;
-  final String phone;
+  final Refund refund;
+  final String variantName;
+  final String productName;
   // final String requestId;
   // final String productName;
 
   @override
   Widget build(BuildContext context) {
     // final request = Provider.of<CustomerRequests?>(context);
+    final user = Provider.of<UserModel?>(context);
 
     // if (request == null) {
     //   return const Center(
     //     child: Loading(),
     //   );
     // }
+
+    _reasonController.text = refund.reason;
+    _priceController.text = refund.totalPrice.toStringAsFixed(0);
 
     // _sizeController.text = request.size;
     // _colorController.text = request.color;
@@ -110,7 +128,7 @@ class Body extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Request ID: requestId",
+            "Request ID: ${refund.refundId}",
             style: const TextStyle(
               color: Color(0xFF303030),
               fontSize: 14,
@@ -119,8 +137,8 @@ class Body extends StatelessWidget {
             ),
           ),
           Text(
-            "request.reqStatus",
-            style: TextStyle(
+            refund.requestStatus ?? "",
+            style: const TextStyle(
               // color: request.reqStatus.toUpperCase() == 'REJECTED'
               //     ? Colors.redAccent
               //     : const Color(0xFF303030),
@@ -131,7 +149,7 @@ class Body extends StatelessWidget {
           ),
           const Gap(20),
           Text(
-            "Product ID: {request.productId}",
+            "Product ID: ${refund.productId}",
             style: const TextStyle(
               color: Color(0xFF303030),
               fontSize: 14,
@@ -141,7 +159,28 @@ class Body extends StatelessWidget {
             ),
           ),
           Text(
-            "productName",
+            productName,
+            style: const TextStyle(
+              color: Color(0xFF303030),
+              fontSize: 18,
+              fontFamily: 'Nunito Sans',
+              fontWeight: FontWeight.w700,
+              height: 0,
+            ),
+          ),
+          const Gap(20),
+          Text(
+            "Variant ID: ${refund.variantId}",
+            style: const TextStyle(
+              color: Color(0xFF303030),
+              fontSize: 14,
+              fontFamily: 'Nunito Sans',
+              fontWeight: FontWeight.w400,
+              height: 0,
+            ),
+          ),
+          Text(
+            variantName,
             style: const TextStyle(
               color: Color(0xFF303030),
               fontSize: 18,
@@ -152,7 +191,7 @@ class Body extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            "Customer ID: {request.userId}",
+            "Customer ID: ${refund.userId}",
             style: const TextStyle(
               color: Color(0xFF303030),
               fontSize: 14,
@@ -162,7 +201,28 @@ class Body extends StatelessWidget {
             ),
           ),
           Text(
-            "customerName",
+            user?.name ?? "",
+            style: const TextStyle(
+              color: Color(0xFF303030),
+              fontSize: 18,
+              fontFamily: 'Nunito Sans',
+              fontWeight: FontWeight.w700,
+              height: 0,
+            ),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            "E-Wallet Number:",
+            style: TextStyle(
+              color: Color(0xFF303030),
+              fontSize: 14,
+              fontFamily: 'Nunito Sans',
+              fontWeight: FontWeight.w400,
+              height: 0,
+            ),
+          ),
+          SelectableText(
+            refund.eWalletNumber,
             style: const TextStyle(
               color: Color(0xFF303030),
               fontSize: 18,
@@ -186,7 +246,7 @@ class Body extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                phone,
+                user?.contactNumber ?? "",
                 style: const TextStyle(
                   color: Color(0xFF303030),
                   fontSize: 18,
@@ -200,7 +260,8 @@ class Body extends StatelessWidget {
                 height: 25,
                 child: ElevatedButton(
                   onPressed: () async {
-                    final Uri url = Uri(scheme: 'tel', path: phone);
+                    final Uri url =
+                        Uri(scheme: 'tel', path: user?.contactNumber ?? "");
 
                     if (await canLaunchUrl(url)) {
                       await launchUrl(url);
@@ -240,7 +301,6 @@ class Body extends StatelessWidget {
             maxLines: 5,
           ),
           const SizedBox(height: 20),
-          
           TextFormField(
             // readOnly: (!(request.reqStatus.toUpperCase() == 'PENDING')),
             controller: _priceController,
@@ -258,12 +318,53 @@ class Body extends StatelessWidget {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (value) =>
-              value!.isEmpty
-                ? 'Please input a price.'
-                : null,
+                value!.isEmpty ? 'Please input a price.' : null,
           ),
           const SizedBox(height: 20),
-          // if (request.reqStatus.toUpperCase() == 'PENDING')
+          const Text(
+            "Images:",
+            style: TextStyle(
+              color: Color(0xFF303030),
+              fontSize: 14,
+              fontFamily: 'Nunito Sans',
+              fontWeight: FontWeight.w400,
+              height: 0,
+            ),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: MediaQuery.sizeOf(context).width / 2,
+            child: Row(
+              children: [
+                Expanded(
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: refund.images.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: 10),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        width: MediaQuery.sizeOf(context).width / 2,
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                            // border:
+                            //     Border.all(width: 2, color: const Color(0xFFA9ADB2)),
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                                image: CachedNetworkImageProvider(
+                                  refund.images[index] ??
+                                      "http://via.placeholder.com/350x150",
+                                ),
+                                fit: BoxFit.cover)),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Gap(20),
+          if (refund.requestStatus?.toUpperCase() == 'PENDING')
             Row(
               children: [
                 Expanded(
@@ -276,14 +377,15 @@ class Body extends StatelessWidget {
                           context: context,
                           builder: (context) => ConfirmationAlertDialog(
                               title:
-                                  "Are you sure you want to reject $customerName's request?",
+                                  "Are you sure you want to reject ${user?.name ?? ""}'s request?",
                               onTapNo: () {
                                 Navigator.pop(context);
                               },
                               onTapYes: () async {
-                                // await RequestsService()
-                                //     .rejectRequest(request.id);
+                                await RefundService()
+                                    .rejectRefund(refund.refundId ?? "");
                                 if (context.mounted) {
+                                  Navigator.pop(context);
                                   Navigator.pop(context);
                                 }
                               },
@@ -319,15 +421,15 @@ class Body extends StatelessWidget {
                             context: context,
                             builder: (context) => ConfirmationAlertDialog(
                                 title:
-                                    "Are you sure you want to accept the request with amount of ₱${_priceController.text}.00?",
+                                    "Are you sure you want to accept the request with amount of ₱${_priceController.text}?",
                                 onTapNo: () {
                                   Navigator.pop(context);
                                 },
                                 onTapYes: () async {
-                                  // await RequestsService().acceptRequest(
-                                  //     request.id,
-                                  //     double.parse(_priceController.text));
+                                  await RefundService()
+                                      .acceptRefund(refund.refundId ?? "");
                                   if (context.mounted) {
+                                    Navigator.pop(context);
                                     Navigator.pop(context);
                                   }
                                 },

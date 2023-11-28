@@ -5,6 +5,7 @@ import 'package:furniverse_admin/firebasefiles/firebase_user_notification.dart';
 import 'package:furniverse_admin/services/auth_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
+import 'package:furniverse_admin/services/refund_services.dart';
 import 'package:furniverse_admin/wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -22,6 +23,8 @@ void main() async {
         ),
         StreamProvider.value(
             value: OrderService().streamOrders(), initialData: null),
+        StreamProvider.value(
+            value: RefundService().streamRefunds(), initialData: null),
         StreamProvider.value(
             value: ProductService().streamProducts(), initialData: null),
         StreamProvider<User?>.value(
