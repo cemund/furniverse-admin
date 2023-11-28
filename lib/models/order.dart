@@ -15,6 +15,7 @@ class OrderModel {
   final String shippingCity;
   final String shippingStreet;
   final String shippingZipCode;
+  final String reason;
 
   OrderModel({
     required this.userId,
@@ -31,6 +32,7 @@ class OrderModel {
     required this.shippingCity,
     required this.shippingStreet,
     required this.shippingZipCode,
+    required this.reason,
   });
 
   factory OrderModel.fromMap(Map data, String orderId) {
@@ -49,6 +51,7 @@ class OrderModel {
       shippingCity: data['shippingCity'] ?? '',
       shippingStreet: data['shippingStreet'] ?? '',
       shippingZipCode: data['shippingZipCode'] ?? '',
+      reason: data['reason'] ?? "",
     );
   }
 
@@ -70,6 +73,7 @@ class OrderModel {
       shippingCity: data['shippingCity'] ?? '',
       shippingStreet: data['shippingStreet'] ?? '',
       shippingZipCode: data['shippingZipCode'] ?? '',
+      reason: data['reason'] ?? "",
     );
   }
 }

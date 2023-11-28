@@ -144,6 +144,7 @@ class _BodyState extends State<Body> {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
                         user.name,
@@ -346,6 +347,22 @@ class _BodyState extends State<Body> {
                     ),
                   ],
                 ),
+
+                if (order.shippingStatus.toUpperCase() == 'CANCELLED')
+                   ...[
+                        const Text("Reason:",
+                        style: TextStyle(
+                          color: Color(0xFF909090),
+                          fontSize: 16,
+                          fontFamily: 'Nunito Sans',
+                          fontWeight: FontWeight.w600,
+                        )
+                      ),
+        
+                      const Gap(10),
+              
+                      Text(order.reason),
+                      ],
               ],
             ),
           ),
