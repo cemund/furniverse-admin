@@ -70,15 +70,6 @@ class _AdminProdListState extends State<AdminProdList> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // const Text(
-                    //   'Products List',
-                    //   style: TextStyle(
-                    //     color: Color(0xFF171725),
-                    //     fontSize: 18,
-                    //     fontFamily: 'Inter',
-                    //     fontWeight: FontWeight.w600,
-                    //   ),
-                    // ),
                     Row(
                       children: [
                         const Text(
@@ -88,8 +79,6 @@ class _AdminProdListState extends State<AdminProdList> {
                             fontSize: 14,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w400,
-                            height: 0,
-                            letterSpacing: 0.08,
                           ),
                         ),
                         DropdownButtonHideUnderline(
@@ -183,7 +172,9 @@ class _AdminProdListState extends State<AdminProdList> {
                                   msg: "Product Deleted Successfully.",
                                   backgroundColor: Colors.grey,
                                 );
-                                Navigator.pop(context);
+                                if (context.mounted) {
+                                  Navigator.pop(context);
+                                }
                               },
                               tapNoString: "No",
                               tapYesString: "Yes"),
@@ -234,7 +225,7 @@ class _AdminProdListState extends State<AdminProdList> {
                 ),
               ],
             ),
-            const SizedBox(height: 28),
+            // const SizedBox(height: 10),
             // Column(
             //   children: [
             //     Row(
@@ -419,10 +410,10 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
   @override
   Widget build(BuildContext context) {
     isChecked = widget.highlightedProd.contains(widget.product);
-    final leastPrice = widget.product.getLeastPrice().toStringAsFixed(2);
-    final highPrice = widget.product.getHighestPrice().toStringAsFixed(2);
+    final leastPrice = widget.product.getLeastPrice().toStringAsFixed(0);
+    final highPrice = widget.product.getHighestPrice().toStringAsFixed(0);
     bool isPriceEqual = leastPrice == highPrice;
-    String price = isPriceEqual ? "₱$leastPrice" : "₱$leastPrice-₱$highPrice";
+    String price = isPriceEqual ? "₱$leastPrice" : "₱$leastPrice - ₱$highPrice";
 
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
