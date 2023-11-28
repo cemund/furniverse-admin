@@ -1,14 +1,17 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/models/notification.dart';
 import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/order_detail_screen.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/refundrequest.dart';
 import 'package:furniverse_admin/services/messaging_services.dart';
 import 'package:furniverse_admin/services/notification_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
+import 'package:furniverse_admin/widgets/ordercancellationreason.dart';
 import 'package:provider/provider.dart';
 
 class OrderStatus extends StatefulWidget {
@@ -96,6 +99,9 @@ class OrdersCard extends StatefulWidget {
 class _OrdersCardState extends State<OrdersCard> {
   String? selectedValue, samplel;
   String? hintText;
+
+  final _formKey = GlobalKey<FormState>();
+  final _reasonController = TextEditingController();
 
   final messagingService = MessagingService();
   final orderService = OrderService();
@@ -342,98 +348,218 @@ class _OrdersCardState extends State<OrdersCard> {
                                   .toList(),
                               value: selectedValue,
                               onChanged: (String? value) async {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) =>
-                                        ConfirmationAlertDialog(
-                                          title: "",
-                                          content: const Text(
-                                            "Are you sure you want to update the status?",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w500),
+                                if (value?.toUpperCase() == "CANCELLED") {
+                                  showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    content: Form(
+                                      key: _formKey,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text("Cancellation Form"),
+                                              IconButton(
+                                                padding: EdgeInsets.zero,
+                                                constraints: const BoxConstraints(),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                icon: const Icon(Icons.close),
+                                              )
+                                            ],
                                           ),
-                                          onTapYes: () async {
-                                            setState(() {});
+                                          const SizedBox(height: 20),
+                                          SizedBox(
+                                            height: 230,
+                                            width: double.maxFinite,
+                                            child: ListView(
+                                              physics: const BouncingScrollPhysics(),
+                                              children: [
+                                                TextFormField(
+                                                  controller: _reasonController,
+                                                  decoration: const InputDecoration(
+                                                    border: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                                    ),
+                                                    labelText: "Reason of Cancellation",
+                                                  ),
+                                                  maxLines: 5,
+                                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                  validator: (value) =>
+                                                    value!.isEmpty
+                                                      ? 'Please input a reason of cancellation.'
+                                                      : null,
+                                                ),
 
-                                            // initialize fields
-                                            String title = "";
-                                            String subtitile = "";
-                                            String? notifImage =
-                                                await ProductService()
-                                                    .getProductImage(
-                                                        order.products[0]
-                                                            ['productId']);
+                                                const SizedBox(height: 20),
 
-                                            switch (value?.toUpperCase()) {
-                                              case "PROCESSING":
-                                                {
-                                                  title =
-                                                      "Your order #${order.orderId.toUpperCase()} has been confirmed.";
-                                                  subtitile =
-                                                      "Seller has confirmed your order! Please expect your item to be shipped within 5-7 days.";
-                                                  break;
-                                                }
-                                              case "ON DELIVERY":
-                                                {
-                                                  title =
-                                                      "Your order #${order.orderId.toUpperCase()} is now being shipped.";
-                                                  subtitile =
-                                                      "Please expect your item to be delivered in the next few day/s.";
-                                                  break;
-                                                }
-                                              case "DELIVERED":
-                                                {
-                                                  title =
-                                                      "Your order #${order.orderId.toUpperCase()} has been shipped successfully.";
-                                                  subtitile =
-                                                      "Thank you for purchasing.";
-                                                  break;
-                                                }
-                                              case "CANCELLED":
-                                                {
-                                                  title =
-                                                      "Your order #${order.orderId.toUpperCase()} has been cancelled by the seller.";
-                                                  subtitile =
-                                                      "Your order #${order.orderId.toUpperCase()} has been canceled by the seller. Please click here for more details.";
-                                                  break;
-                                                }
+                                                SizedBox(
+                                                  width: double.infinity,
+                                                  height: 50,
+                                                  child: ElevatedButton(
+                                                    onPressed: () async{
+                                                      final isValid =_formKey.currentState!.validate();
+                                                        if (!isValid) return;
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) => ConfirmationAlertDialog(
+                                                          title: "Are you sure you want to cancel this order?",
+                                                          onTapNo: () { Navigator.pop(context); },
+                                                          onTapYes: () async {
+                                                            setState(() {});
+
+                                                            // initialize fields
+                                                            String title = "";
+                                                            String subtitile = "";
+                                                            String? notifImage = await ProductService().getProductImage(order.products[0]['productId']);
+
+                                                            title = "Your order #${order.orderId.toUpperCase()} has been cancelled by the seller.";
+                                                            subtitile = "Your order #${order.orderId.toUpperCase()} has been canceled by the seller. Please click here for more details.";
+                                                            
+
+                                                            if (value != null) {
+                                                              notificationService.addNotification(
+                                                                NotificationModel(
+                                                                  userId: order.userId,
+                                                                  orderId: order.orderId,
+                                                                  notifTitle: title,
+                                                                  notifSubtitle: subtitile,
+                                                                  notifImage: notifImage,
+                                                                  isViewed: false
+                                                                )
+                                                              );
+
+                                                              orderService.updateStatus(order.orderId, value);
+
+                                                              messagingService.notifyUser(
+                                                                userId: order.userId,
+                                                                message: value
+                                                              );
+                                                            }
+
+                                                                // notifyUser(value),
+                                                                // messagingService.notifyUser(
+                                                                //     userId: order.userId,
+                                                                //     message: value!);
+                                                            if (context.mounted) {Navigator.pop(context);
+                                                            Navigator.pop(context);}
+
+                                                            Fluttertoast.showToast(
+                                                              msg: "Order is cancelled.",
+                                                              backgroundColor: Colors.grey,
+                                                            );
+                                                          },         
+                                                          tapYesString: "Yes",
+                                                          tapNoString: "No",
+                                                        )
+                                                      );  
+                                                    },
+                                                    style: ElevatedButton.styleFrom(
+                                                        backgroundColor: Colors.black,
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(8))),
+                                                    child: const Text(
+                                                      "SUBMIT",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 18,
+                                                        fontFamily: 'Nunito Sans',
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                  );
+                                } else {
+                                  showDialog(
+                                  context: context,
+                                  builder: (context) =>
+                                    ConfirmationAlertDialog(
+                                      title: "",
+                                      content: const Text("Are you sure you want to update the status?",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500),
+                                      ),
+                                      onTapYes: () async {
+                                        setState(() {});
+
+                                        // initialize fields
+                                        String title = "";
+                                        String subtitile = "";
+                                        String? notifImage = await ProductService().getProductImage(order.products[0]['productId']);
+                                        
+                                        switch (value?.toUpperCase()) {
+                                          case "PROCESSING":
+                                            {
+                                              title = "Your order #${order.orderId.toUpperCase()} has been confirmed.";
+                                              subtitile = "Seller has confirmed your order! Please expect your item to be shipped within 5-7 days.";
+                                              break;
                                             }
-
-                                            if (value != null) {
-                                              notificationService
-                                                  .addNotification(
-                                                      NotificationModel(
-                                                          userId: order.userId,
-                                                          orderId:
-                                                              order.orderId,
-                                                          notifTitle: title,
-                                                          notifSubtitle:
-                                                              subtitile,
-                                                          notifImage:
-                                                              notifImage,
-                                                          isViewed: false));
-                                              orderService.updateStatus(
-                                                  order.orderId, value);
-
-                                              messagingService.notifyUser(
-                                                  userId: order.userId,
-                                                  message: value);
+                                          case "ON DELIVERY":
+                                            {
+                                              title = "Your order #${order.orderId.toUpperCase()} is now being shipped.";
+                                              subtitile = "Please expect your item to be delivered in the next few day/s.";
+                                              break;
                                             }
+                                          case "DELIVERED":
+                                            {
+                                              title = "Your order #${order.orderId.toUpperCase()} has been shipped successfully.";
+                                              subtitile = "Thank you for purchasing.";
+                                              break;
+                                            }
+                                          // case "CANCELLED":
+                                          //   {
+                                          //     title = "Your order #${order.orderId.toUpperCase()} has been cancelled by the seller.";
+                                          //     subtitile = "Your order #${order.orderId.toUpperCase()} has been canceled by the seller. Please click here for more details.";
+                                          //     break;
+                                          //   }
+                                        }
+
+                                        if (value != null) {
+                                          notificationService.addNotification(
+                                            NotificationModel(
+                                              userId: order.userId,
+                                              orderId: order.orderId,
+                                              notifTitle: title,
+                                              notifSubtitle: subtitile,
+                                              notifImage: notifImage,
+                                              isViewed: false
+                                            )
+                                          );
+
+                                          orderService.updateStatus(order.orderId, value);
+
+                                          messagingService.notifyUser(
+                                            userId: order.userId,
+                                            message: value
+                                          );
+                                        }
 
                                             // notifyUser(value),
                                             // messagingService.notifyUser(
                                             //     userId: order.userId,
                                             //     message: value!);
-                                            if (context.mounted) {
-                                              Navigator.pop(context);
-                                            }
-                                          },
-                                          onTapNo: () => Navigator.pop(context),
-                                          tapYesString: "Yes",
-                                          tapNoString: "No",
-                                        ));
+                                        if (context.mounted) {Navigator.pop(context);}
+                                      },
+                                      onTapNo: () => Navigator.pop(context),
+                                      tapYesString: "Yes",
+                                      tapNoString: "No",
+                                    )
+                                  );
+                                }
                               },
                               buttonStyleData: const ButtonStyleData(
                                 height: 40,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/refundrequestdetail.dart';
 
 class RefundRequest extends StatefulWidget {
   const RefundRequest({super.key});
@@ -10,6 +11,21 @@ class RefundRequest extends StatefulWidget {
 class _RefundRequestState extends State<RefundRequest> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          ElevatedButton(onPressed: (){
+            Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return RefundRequestDetail();
+              },
+            ),
+          );
+          }, child: Text("data"))
+        ],
+      ),
+    );
   }
 }

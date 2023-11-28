@@ -106,22 +106,6 @@ class _OrderCancellationReasonState extends State<OrderCancellationReason> {
                       ),
                     ),
                   ),
-                  
-                  // TextFormField(
-                  //   controller: materialController,
-                  //   decoration: const InputDecoration(
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.all(Radius.circular(8)),
-                  //     ),
-                  //     labelText: 'Material',
-                  //   ),
-                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //   validator: (value) =>
-                  //     value!.isEmpty
-                  //       ? 'Please input a material.'
-                  //       : null,
-                  // ),
-                  //  SizedBox(height: 20),
                 ],
               ),
             ),
