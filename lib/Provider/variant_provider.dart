@@ -1,4 +1,3 @@
-
 import 'package:furniverse_admin/models/edit_product_variants_model.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/services/upload_image_services.dart';
@@ -96,7 +95,7 @@ class VariantsProvider extends ChangeNotifier {
             await uploadVariantImageToFirebase(variant.selectedNewImage);
       }
       if (variant.selectedNewModel != null) {
-        imageReference = await uploadModelToFirebase(variant.selectedNewModel);
+        modelReference = await uploadModelToFirebase(variant.selectedNewModel);
       }
 
       productMaps.add({
