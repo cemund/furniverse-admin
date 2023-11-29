@@ -350,215 +350,265 @@ class _OrdersCardState extends State<OrdersCard> {
                               onChanged: (String? value) async {
                                 if (value?.toUpperCase() == "CANCELLED") {
                                   showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    content: Form(
-                                      key: _formKey,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Text("Cancellation Form"),
-                                              IconButton(
-                                                padding: EdgeInsets.zero,
-                                                constraints: const BoxConstraints(),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                icon: const Icon(Icons.close),
-                                              )
-                                            ],
-                                          ),
-                                          const SizedBox(height: 20),
-                                          SizedBox(
-                                            height: 230,
-                                            width: double.maxFinite,
-                                            child: ListView(
-                                              physics: const BouncingScrollPhysics(),
-                                              children: [
-                                                TextFormField(
-                                                  controller: _reasonController,
-                                                  decoration: const InputDecoration(
-                                                    border: OutlineInputBorder(
-                                                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                                                    ),
-                                                    labelText: "Reason of Cancellation",
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            content: Form(
+                                              key: _formKey,
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      const Text(
+                                                          "Cancellation Form"),
+                                                      IconButton(
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        constraints:
+                                                            const BoxConstraints(),
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        icon: const Icon(
+                                                            Icons.close),
+                                                      )
+                                                    ],
                                                   ),
-                                                  maxLines: 5,
-                                                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                  validator: (value) =>
-                                                    value!.isEmpty
-                                                      ? 'Please input a reason of cancellation.'
-                                                      : null,
-                                                ),
+                                                  const SizedBox(height: 20),
+                                                  SizedBox(
+                                                    height: 230,
+                                                    width: double.maxFinite,
+                                                    child: ListView(
+                                                      physics:
+                                                          const BouncingScrollPhysics(),
+                                                      children: [
+                                                        TextFormField(
+                                                          controller:
+                                                              _reasonController,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .all(Radius
+                                                                          .circular(
+                                                                              8)),
+                                                            ),
+                                                            labelText:
+                                                                "Reason of Cancellation",
+                                                          ),
+                                                          maxLines: 5,
+                                                          autovalidateMode:
+                                                              AutovalidateMode
+                                                                  .onUserInteraction,
+                                                          validator: (value) =>
+                                                              value!.isEmpty
+                                                                  ? 'Please input a reason of cancellation.'
+                                                                  : null,
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        SizedBox(
+                                                          width:
+                                                              double.infinity,
+                                                          height: 50,
+                                                          child: ElevatedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              final isValid = _formKey
+                                                                  .currentState!
+                                                                  .validate();
+                                                              if (!isValid) {
+                                                                return;
+                                                              }
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (context) =>
+                                                                          ConfirmationAlertDialog(
+                                                                            title:
+                                                                                "Are you sure you want to cancel this order?",
+                                                                            onTapNo:
+                                                                                () {
+                                                                              Navigator.pop(context);
+                                                                            },
+                                                                            onTapYes:
+                                                                                () async {
+                                                                              setState(() {});
 
-                                                const SizedBox(height: 20),
+                                                                              // initialize fields
+                                                                              String title = "";
+                                                                              String subtitile = "";
+                                                                              String? notifImage = await ProductService().getProductImage(order.products[0]['productId']);
+                                                                              await ProductService().addQuantity(order.products);
 
-                                                SizedBox(
-                                                  width: double.infinity,
-                                                  height: 50,
-                                                  child: ElevatedButton(
-                                                    onPressed: () async{
-                                                      final isValid =_formKey.currentState!.validate();
-                                                        if (!isValid) return;
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (context) => ConfirmationAlertDialog(
-                                                          title: "Are you sure you want to cancel this order?",
-                                                          onTapNo: () { Navigator.pop(context); },
-                                                          onTapYes: () async {
-                                                            setState(() {});
+                                                                              title = "Your order #${order.orderId.toUpperCase()} has been cancelled by the seller.";
+                                                                              subtitile = "Your order #${order.orderId.toUpperCase()} has been canceled by the seller. Please click here for more details.";
 
-                                                            // initialize fields
-                                                            String title = "";
-                                                            String subtitile = "";
-                                                            String? notifImage = await ProductService().getProductImage(order.products[0]['productId']);
+                                                                              if (value != null) {
+                                                                                notificationService.addNotification(NotificationModel(userId: order.userId, orderId: order.orderId, notifTitle: title, notifSubtitle: subtitile, notifImage: notifImage, isViewed: false));
 
-                                                            title = "Your order #${order.orderId.toUpperCase()} has been cancelled by the seller.";
-                                                            subtitile = "Your order #${order.orderId.toUpperCase()} has been canceled by the seller. Please click here for more details.";
-                                                            
+                                                                                orderService.updateStatus(order.orderId, value, _reasonController.text);
 
-                                                            if (value != null) {
-                                                              notificationService.addNotification(
-                                                                NotificationModel(
-                                                                  userId: order.userId,
-                                                                  orderId: order.orderId,
-                                                                  notifTitle: title,
-                                                                  notifSubtitle: subtitile,
-                                                                  notifImage: notifImage,
-                                                                  isViewed: false
-                                                                )
-                                                              );
+                                                                                messagingService.notifyUser(userId: order.userId, message: value);
+                                                                              }
 
-                                                              orderService.updateStatus(order.orderId, value, _reasonController.text);
+                                                                              // notifyUser(value),
+                                                                              // messagingService.notifyUser(
+                                                                              //     userId: order.userId,
+                                                                              //     message: value!);
+                                                                              if (context.mounted) {
+                                                                                Navigator.pop(context);
+                                                                                Navigator.pop(context);
+                                                                              }
 
-                                                              messagingService.notifyUser(
-                                                                userId: order.userId,
-                                                                message: value
-                                                              );
-                                                            }
-
-                                                                // notifyUser(value),
-                                                                // messagingService.notifyUser(
-                                                                //     userId: order.userId,
-                                                                //     message: value!);
-                                                            if (context.mounted) {Navigator.pop(context);
-                                                            Navigator.pop(context);}
-
-                                                            Fluttertoast.showToast(
-                                                              msg: "Order is cancelled.",
-                                                              backgroundColor: Colors.grey,
-                                                            );
-                                                          },         
-                                                          tapYesString: "Yes",
-                                                          tapNoString: "No",
-                                                        )
-                                                      );  
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                        backgroundColor: Colors.black,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(8))),
-                                                    child: const Text(
-                                                      "SUBMIT",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 18,
-                                                        fontFamily: 'Nunito Sans',
-                                                        fontWeight: FontWeight.w600,
-                                                      ),
+                                                                              Fluttertoast.showToast(
+                                                                                msg: "Order is cancelled.",
+                                                                                backgroundColor: Colors.grey,
+                                                                              );
+                                                                            },
+                                                                            tapYesString:
+                                                                                "Yes",
+                                                                            tapNoString:
+                                                                                "No",
+                                                                          ));
+                                                            },
+                                                            style: ElevatedButton.styleFrom(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .black,
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            8))),
+                                                            child: const Text(
+                                                              "SUBMIT",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 18,
+                                                                fontFamily:
+                                                                    'Nunito Sans',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                  );
+                                          ));
                                 } else {
                                   showDialog(
-                                  context: context,
-                                  builder: (context) =>
-                                    ConfirmationAlertDialog(
-                                      title: "",
-                                      content: const Text("Are you sure you want to update the status?",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500),
-                                      ),
-                                      onTapYes: () async {
-                                        setState(() {});
+                                      context: context,
+                                      builder: (context) =>
+                                          ConfirmationAlertDialog(
+                                            title: "",
+                                            content: const Text(
+                                              "Are you sure you want to update the status?",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            onTapYes: () async {
+                                              setState(() {});
 
-                                        // initialize fields
-                                        String title = "";
-                                        String subtitile = "";
-                                        String? notifImage = await ProductService().getProductImage(order.products[0]['productId']);
-                                        
-                                        switch (value?.toUpperCase()) {
-                                          case "PROCESSING":
-                                            {
-                                              title = "Your order #${order.orderId.toUpperCase()} has been confirmed.";
-                                              subtitile = "Seller has confirmed your order! Please expect your item to be shipped within 5-7 days.";
-                                              break;
-                                            }
-                                          case "ON DELIVERY":
-                                            {
-                                              title = "Your order #${order.orderId.toUpperCase()} is now being shipped.";
-                                              subtitile = "Please expect your item to be delivered in the next few day/s.";
-                                              break;
-                                            }
-                                          case "DELIVERED":
-                                            {
-                                              title = "Your order #${order.orderId.toUpperCase()} has been shipped successfully.";
-                                              subtitile = "Thank you for purchasing.";
-                                              break;
-                                            }
-                                          // case "CANCELLED":
-                                          //   {
-                                          //     title = "Your order #${order.orderId.toUpperCase()} has been cancelled by the seller.";
-                                          //     subtitile = "Your order #${order.orderId.toUpperCase()} has been canceled by the seller. Please click here for more details.";
-                                          //     break;
-                                          //   }
-                                        }
+                                              // initialize fields
+                                              String title = "";
+                                              String subtitile = "";
+                                              String? notifImage =
+                                                  await ProductService()
+                                                      .getProductImage(
+                                                          order.products[0]
+                                                              ['productId']);
 
-                                        if (value != null) {
-                                          notificationService.addNotification(
-                                            NotificationModel(
-                                              userId: order.userId,
-                                              orderId: order.orderId,
-                                              notifTitle: title,
-                                              notifSubtitle: subtitile,
-                                              notifImage: notifImage,
-                                              isViewed: false
-                                            )
-                                          );
+                                              switch (value?.toUpperCase()) {
+                                                case "PROCESSING":
+                                                  {
+                                                    title =
+                                                        "Your order #${order.orderId.toUpperCase()} has been confirmed.";
+                                                    subtitile =
+                                                        "Seller has confirmed your order! Please expect your item to be shipped within 5-7 days.";
+                                                    await ProductService()
+                                                        .reducedQuantity(
+                                                            order.products);
+                                                    break;
+                                                  }
+                                                case "ON DELIVERY":
+                                                  {
+                                                    title =
+                                                        "Your order #${order.orderId.toUpperCase()} is now being shipped.";
+                                                    subtitile =
+                                                        "Please expect your item to be delivered in the next few day/s.";
 
-                                          orderService.updateStatus(order.orderId, value, "");
+                                                    break;
+                                                  }
+                                                case "DELIVERED":
+                                                  {
+                                                    title =
+                                                        "Your order #${order.orderId.toUpperCase()} has been shipped successfully.";
+                                                    subtitile =
+                                                        "Thank you for purchasing.";
+                                                    break;
+                                                  }
+                                                // case "CANCELLED":
+                                                //   {
+                                                //     title = "Your order #${order.orderId.toUpperCase()} has been cancelled by the seller.";
+                                                //     subtitile = "Your order #${order.orderId.toUpperCase()} has been canceled by the seller. Please click here for more details.";
+                                                //     break;
+                                                //   }
+                                              }
 
-                                          messagingService.notifyUser(
-                                            userId: order.userId,
-                                            message: value
-                                          );
-                                        }
+                                              if (value != null) {
+                                                notificationService
+                                                    .addNotification(
+                                                        NotificationModel(
+                                                            userId:
+                                                                order.userId,
+                                                            orderId:
+                                                                order.orderId,
+                                                            notifTitle: title,
+                                                            notifSubtitle:
+                                                                subtitile,
+                                                            notifImage:
+                                                                notifImage,
+                                                            isViewed: false));
 
-                                            // notifyUser(value),
-                                            // messagingService.notifyUser(
-                                            //     userId: order.userId,
-                                            //     message: value!);
-                                        if (context.mounted) {Navigator.pop(context);}
-                                      },
-                                      onTapNo: () => Navigator.pop(context),
-                                      tapYesString: "Yes",
-                                      tapNoString: "No",
-                                    )
-                                  );
+                                                orderService.updateStatus(
+                                                    order.orderId, value, "");
+
+                                                messagingService.notifyUser(
+                                                    userId: order.userId,
+                                                    message: value);
+                                              }
+
+                                              // notifyUser(value),
+                                              // messagingService.notifyUser(
+                                              //     userId: order.userId,
+                                              //     message: value!);
+                                              if (context.mounted) {
+                                                Navigator.pop(context);
+                                              }
+                                            },
+                                            onTapNo: () =>
+                                                Navigator.pop(context),
+                                            tapYesString: "Yes",
+                                            tapNoString: "No",
+                                          ));
                                 }
                               },
                               buttonStyleData: const ButtonStyleData(

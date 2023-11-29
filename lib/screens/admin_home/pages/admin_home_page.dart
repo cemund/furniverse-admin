@@ -46,6 +46,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
         years.add(year);
       }
     }
+    if (years.isEmpty) {
+      AnalyticsServices().clearAnalytics();
+    }
 
     return ListView(
       children: [
@@ -215,6 +218,7 @@ class Analytics extends StatelessWidget {
     }
 
     if (fullOrders.isEmpty) {
+      AnalyticsServices().deleteAnalytics(year);
       return const Center(child: Text("No data for analysis"));
     }
 
