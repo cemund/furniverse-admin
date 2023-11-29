@@ -135,7 +135,7 @@ class _UpdateEmailState extends State<UpdateEmail> {
       final user = FirebaseAuth.instance.currentUser!;
       await user.verifyBeforeUpdateEmail(newEmail!);
       FirebaseAuth.instance.signOut();
-     Navigator.of(context).pushReplacement(
+     Navigator.of(context).push(
       MaterialPageRoute( builder: (context) =>const ChangeEmailNotice()),
      );
 

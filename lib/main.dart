@@ -57,8 +57,8 @@ class MyApp extends StatelessWidget {
       primaryIconTheme: const IconThemeData(color: Colors.black),
     );
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
+      debugShowCheckedModeBanner: false,
       initialRoute: '/',
       title: 'Furniverse',
       theme: customTheme,
