@@ -4,6 +4,36 @@ import 'package:furniverse_admin/models/analytics.dart';
 class AnalyticsServices {
   final _db = FirebaseFirestore.instance;
 
+  Future<void> deleteAnalytics(int year) async {
+    try {
+      // delete file in firestorage
+
+      await _db.collection('analytics').doc(year.toString()).delete();
+    } catch (e) {
+      print('Error deleting $year analytics: $e');
+    }
+  }
+
+  Future<void> clearAnalytics() async {
+    try {
+      // delete file in firestorage
+      print("clearing analytics");
+      final CollectionReference collectionReference =
+          FirebaseFirestore.instance.collection('analytics');
+
+      final QuerySnapshot querySnapshot = await collectionReference.get();
+      final List<DocumentSnapshot> documents = querySnapshot.docs;
+
+      for (var document in documents) {
+        await document.reference.delete();
+      }
+
+      // await _db.collection('analytics').doc().delete();
+    } catch (e) {
+      print('Error deleting analytics: $e');
+    }
+  }
+
   Future<void> updateAnalytics(int year, AnalyticsModel analytics) async {
     try {
       Map<String, dynamic> analyticsMap = analytics.getMap();
