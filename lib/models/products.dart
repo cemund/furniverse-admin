@@ -6,9 +6,12 @@ class Product {
   final String category;
   final String labor;
   final String expenses;
+  final double noMaterialsReq;
+  final double noPaintReq;
   final List<dynamic> images;
   final String description;
   final List<dynamic> variants;
+  final List<String> materialIds;
 
   Product({
     required this.id,
@@ -19,20 +22,27 @@ class Product {
     required this.description,
     required this.images,
     required this.variants,
+    required this.noMaterialsReq,
+    required this.noPaintReq,
+    required this.materialIds,
   });
 
   factory Product.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
     return Product(
-        id: doc.id,
-        name: data['product_name'] ?? '',
-        category: data['category'] ?? '',
-        description: data['description'] ?? '',
-        labor: data['labor_cost'] ?? '',
-        expenses: data['expenses'] ?? '',
-        images: data['product_images'],
-        variants: data['variants']);
+      id: doc.id,
+      name: data['product_name'] ?? '',
+      category: data['category'] ?? '',
+      description: data['description'] ?? '',
+      labor: data['labor_cost'] ?? '',
+      expenses: data['expenses'] ?? '',
+      images: data['product_images'],
+      variants: data['variants'],
+      noMaterialsReq: (data['noMaterialsReq'] ?? 0.0).toDouble(),
+      noPaintReq: (data['noPaintReq'] ?? 0.0).toDouble(),
+      materialIds: data['materialIds'] ?? [],
+    );
   }
 
   int getNumVariants() {
