@@ -43,6 +43,8 @@ class _AddProductState extends State<AddProduct> {
   final _colorController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _categoryController = TextEditingController();
+  final _laborController = TextEditingController();
+  final _expensesController = TextEditingController();
 
   UploadTask? uploadTask;
   File? file;
@@ -195,6 +197,8 @@ class _AddProductState extends State<AddProduct> {
     _colorController.dispose();
     _descriptionController.dispose();
     _categoryController.dispose();
+    _laborController.dispose();
+    _expensesController.dispose();
 
     super.dispose();
   }
@@ -240,568 +244,613 @@ class _AddProductState extends State<AddProduct> {
               body: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextFormField(
-                        controller: _productnameController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8))),
-                          labelText: 'Product Name',
-                        ),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) => value!.isEmpty
-                            ? 'Please input a product name.'
-                            : null,
-                      ),
-                      const SizedBox(height: 20),
-                      DropdownButtonFormField2<String>(
-                        buttonStyleData: const ButtonStyleData(
-                          padding: EdgeInsets.only(right: 8),
-                        ),
-                        hint: const Text(
-                          'Select Product Category',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        iconStyleData: const IconStyleData(
-                          icon: Icon(
-                            Icons.arrow_drop_down,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextFormField(
+                          controller: _productnameController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
+                            labelText: 'Product Name',
                           ),
-                          iconSize: 24,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                              ? 'Please input a product name.'
+                              : null,
                         ),
-                        dropdownStyleData: DropdownStyleData(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
+                        const SizedBox(height: 20),
+                        DropdownButtonFormField2<String>(
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.only(right: 8),
                           ),
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.symmetric(vertical: 16),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                          hint: const Text(
+                            'Select Product Category',
+                            style: TextStyle(fontSize: 16),
                           ),
-                        ),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) =>
-                            value!.isEmpty ? 'Please select a category.' : null,
-                        items: items
-                            .map((String item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      // fontWeight: FontWeight.bold,
-                                      // color: Colors.],
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ))
-                            .toList(),
-                        isExpanded: true,
-                        value: selectedCategory,
-                        onChanged: (String? value) {
-                          setState(() {
-                            selectedCategory = value;
-                          });
-                        },
-                      ),
-                  
-                      // DONT DELETE for backup
-                      // const SizedBox(height: 20),
-                      // TextFormField(
-                      //   controller: _categoryController,
-                      //   decoration: const InputDecoration(
-                      //     border: OutlineInputBorder(
-                      //         borderRadius: BorderRadius.all(Radius.circular(8))),
-                      //     labelText: 'Category',
-                      //   ),
-                      // ),
-                      const Gap(20),
-                      // TextFormField(
-                      //   controller: _colorController,
-                      //   decoration: const InputDecoration(
-                      //     border: OutlineInputBorder(
-                      //         borderRadius: BorderRadius.all(Radius.circular(8))),
-                      //     labelText: 'Color',
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 20),
-                      // TextFormField(
-                      //   controller: _materialController,
-                      //   decoration: const InputDecoration(
-                      //     border: OutlineInputBorder(
-                      //         borderRadius: BorderRadius.all(Radius.circular(8))),
-                      //     labelText: 'Material',
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 20),
-                      // TextFormField(
-                      //   controller: _dimensionController,
-                      //   decoration: const InputDecoration(
-                      //     border: OutlineInputBorder(
-                      //         borderRadius: BorderRadius.all(Radius.circular(8))),
-                      //     labelText: 'Dimension/Size',
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 20),
-                      // TextFormField(
-                      //   controller: _priceController,
-                      //   decoration: const InputDecoration(
-                      //     border: OutlineInputBorder(
-                      //         borderRadius: BorderRadius.all(Radius.circular(8))),
-                      //     labelText: 'Price',
-                      //   ),
-                      //   keyboardType: const TextInputType.numberWithOptions(
-                      //     signed: false,
-                      //     decimal: true,
-                      //   ),
-                      //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      // ),
-                      // const SizedBox(height: 20),
-                      // TextFormField(
-                      //   controller: _stocksController,
-                      //   decoration: const InputDecoration(
-                      //     border: OutlineInputBorder(
-                      //         borderRadius: BorderRadius.all(Radius.circular(8))),
-                      //     labelText: 'Stocks',
-                      //   ),
-                      //   keyboardType: const TextInputType.numberWithOptions(
-                      //     signed: false,
-                      //     decimal: true,
-                      //   ),
-                      //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      // ),
-                      // const SizedBox(height: 20),
-                      TextFormField(
-                        controller: _descriptionController,
-                        minLines: 3,
-                        maxLines: null,
-                        keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8))),
-                          hintText: 'Enter Product Description',
-                        ),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) => value!.isEmpty
-                            ? 'Please input a product description.'
-                            : null,
-                      ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'Product Images',
-                        style: TextStyle(
-                          color: Color(0xFF43464B),
-                          fontSize: 13,
-                          fontFamily: 'Nunito Sans',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: 80,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ListView.separated(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: listItems.length,
-                                separatorBuilder: (context, index) =>
-                                    const SizedBox(
-                                  width: 10,
-                                ),
-                                itemBuilder: (context, index) {
-                                  return listItems[index]['widget'];
-                                  // return null;
-                                },
-                                // children: [
-                  
-                                // ],
-                              ),
+                          iconStyleData: const IconStyleData(
+                            icon: Icon(
+                              Icons.arrow_drop_down,
                             ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      // const Text(
-                      //   'Product 3d Model',
-                      //   style: TextStyle(
-                      //     color: Color(0xFF43464B),
-                      //     fontSize: 13,
-                      //     fontFamily: 'Nunito Sans',
-                      //     fontWeight: FontWeight.w600,
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 10),
-                      // TextFormField(
-                      //   controller: _fileController,
-                      //   onTap: selectFile,
-                      //   decoration: const InputDecoration(
-                      //     border: OutlineInputBorder(
-                      //         borderRadius: BorderRadius.all(Radius.circular(8))),
-                      //     labelText: 'Upload 3d Model',
-                      //   ),
-                      // ),
-                      // const Gap(10),
-                      // GestureDetector(
-                      //   onTap: selectFile,
-                      //   child: Container(
-                      //     height: 60,
-                      //     width: double.infinity,
-                      //     decoration: BoxDecoration(
-                      //         borderRadius: BorderRadius.circular(8),
-                      //         border: Border.all(width: 2, color: borderColor)),
-                      //     child: Stack(
-                      //       children: [
-                      //         Center(
-                      //           child: Row(
-                      //             mainAxisAlignment: MainAxisAlignment.center,
-                      //             children: [
-                      //               SvgPicture.asset('assets/icons/model.svg'),
-                      //               const Gap(8),
-                      //               Text(
-                      //                 fileName,
-                      //                 textAlign: TextAlign.center,
-                      //                 style: const TextStyle(
-                      //                   color: foregroundColor,
-                      //                   fontSize: 16,
-                      //                   fontFamily: 'Nunito Sans',
-                      //                   fontWeight: FontWeight.w600,
-                      //                 ),
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ),
-                      //         if (file != null)
-                      //           Positioned(
-                      //             top: 5,
-                      //             right: 5,
-                      //             child: IconButton(
-                      //               padding: EdgeInsets.zero,
-                      //               iconSize: 18,
-                      //               constraints: const BoxConstraints(),
-                      //               color: foregroundColor,
-                      //               onPressed: () {
-                      //                 setState(() {
-                      //                   file = null;
-                      //                 });
-                      //               },
-                      //               icon: const Icon(
-                      //                 Icons.close,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 20),
-                      const Text(
-                        'Product Variants',
-                        style: TextStyle(
-                          color: Color(0xFF43464B),
-                          fontSize: 13,
-                          fontFamily: 'Nunito Sans',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                  
-                      if (variants.isNotEmpty)
-                        ListView.separated(
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          separatorBuilder: (context, index) =>
-                              Container(height: 8),
-                          itemCount: variants.length,
-                          itemBuilder: (context, index) {
-                            final variant = variants[index];
-                  
-                            return Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 80,
-                                      height: 80,
-                                      clipBehavior: Clip.hardEdge,
-                                      decoration: BoxDecoration(
-                                        color: foregroundColor,
-                                        borderRadius: BorderRadius.circular(8),
+                            iconSize: 24,
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 16),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          // autovalidateMode: AutovalidateMode.onUserInteraction,
+                          // validator: (value) =>
+                          //     value!.isEmpty ? 'Please select a category.' : null,
+                          items: items
+                              .map((String item) => DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        // fontWeight: FontWeight.bold,
+                                        // color: Colors.],
                                       ),
-                                      child: Image.file(
-                                        File(variant.image.path),
-                                        fit: BoxFit.cover,
-                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    const Gap(10),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          variant.variantName,
-                                          style: const TextStyle(
-                                            color: foregroundColor,
-                                            fontSize: 16,
-                                            fontFamily: 'Nunito Sans',
-                                            fontWeight: FontWeight.w800,
-                                          ),
+                                  ))
+                              .toList(),
+                          isExpanded: true,
+                          value: selectedCategory,
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedCategory = value;
+                            });
+                          },
+                        ),
+                    
+                        // DONT DELETE for backup
+                        // const SizedBox(height: 20),
+                        // TextFormField(
+                        //   controller: _categoryController,
+                        //   decoration: const InputDecoration(
+                        //     border: OutlineInputBorder(
+                        //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                        //     labelText: 'Category',
+                        //   ),
+                        // ),
+                        const Gap(20),
+                        // TextFormField(
+                        //   controller: _colorController,
+                        //   decoration: const InputDecoration(
+                        //     border: OutlineInputBorder(
+                        //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                        //     labelText: 'Color',
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 20),
+                        // TextFormField(
+                        //   controller: _materialController,
+                        //   decoration: const InputDecoration(
+                        //     border: OutlineInputBorder(
+                        //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                        //     labelText: 'Material',
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 20),
+                        // TextFormField(
+                        //   controller: _dimensionController,
+                        //   decoration: const InputDecoration(
+                        //     border: OutlineInputBorder(
+                        //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                        //     labelText: 'Dimension/Size',
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 20),
+                        // TextFormField(
+                        //   controller: _priceController,
+                        //   decoration: const InputDecoration(
+                        //     border: OutlineInputBorder(
+                        //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                        //     labelText: 'Price',
+                        //   ),
+                        //   keyboardType: const TextInputType.numberWithOptions(
+                        //     signed: false,
+                        //     decimal: true,
+                        //   ),
+                        //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        // ),
+                        // const SizedBox(height: 20),
+                        // TextFormField(
+                        //   controller: _stocksController,
+                        //   decoration: const InputDecoration(
+                        //     border: OutlineInputBorder(
+                        //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                        //     labelText: 'Stocks',
+                        //   ),
+                        //   keyboardType: const TextInputType.numberWithOptions(
+                        //     signed: false,
+                        //     decimal: true,
+                        //   ),
+                        //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        // ),
+                        // const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _descriptionController,
+                          minLines: 3,
+                          maxLines: null,
+                          keyboardType: TextInputType.multiline,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
+                            hintText: 'Enter Product Description',
+                          ),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                              ? 'Please input a product description.'
+                              : null,
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Product Images',
+                          style: TextStyle(
+                            color: Color(0xFF43464B),
+                            fontSize: 13,
+                            fontFamily: 'Nunito Sans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          height: 80,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: listItems.length,
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(
+                                    width: 10,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    return listItems[index]['widget'];
+                                    // return null;
+                                  },
+                                  // children: [
+                    
+                                  // ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // const Text(
+                        //   'Product 3d Model',
+                        //   style: TextStyle(
+                        //     color: Color(0xFF43464B),
+                        //     fontSize: 13,
+                        //     fontFamily: 'Nunito Sans',
+                        //     fontWeight: FontWeight.w600,
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 10),
+                        // TextFormField(
+                        //   controller: _fileController,
+                        //   onTap: selectFile,
+                        //   decoration: const InputDecoration(
+                        //     border: OutlineInputBorder(
+                        //         borderRadius: BorderRadius.all(Radius.circular(8))),
+                        //     labelText: 'Upload 3d Model',
+                        //   ),
+                        // ),
+                        // const Gap(10),
+                        // GestureDetector(
+                        //   onTap: selectFile,
+                        //   child: Container(
+                        //     height: 60,
+                        //     width: double.infinity,
+                        //     decoration: BoxDecoration(
+                        //         borderRadius: BorderRadius.circular(8),
+                        //         border: Border.all(width: 2, color: borderColor)),
+                        //     child: Stack(
+                        //       children: [
+                        //         Center(
+                        //           child: Row(
+                        //             mainAxisAlignment: MainAxisAlignment.center,
+                        //             children: [
+                        //               SvgPicture.asset('assets/icons/model.svg'),
+                        //               const Gap(8),
+                        //               Text(
+                        //                 fileName,
+                        //                 textAlign: TextAlign.center,
+                        //                 style: const TextStyle(
+                        //                   color: foregroundColor,
+                        //                   fontSize: 16,
+                        //                   fontFamily: 'Nunito Sans',
+                        //                   fontWeight: FontWeight.w600,
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //         if (file != null)
+                        //           Positioned(
+                        //             top: 5,
+                        //             right: 5,
+                        //             child: IconButton(
+                        //               padding: EdgeInsets.zero,
+                        //               iconSize: 18,
+                        //               constraints: const BoxConstraints(),
+                        //               color: foregroundColor,
+                        //               onPressed: () {
+                        //                 setState(() {
+                        //                   file = null;
+                        //                 });
+                        //               },
+                        //               icon: const Icon(
+                        //                 Icons.close,
+                        //               ),
+                        //             ),
+                        //           ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 20),
+                        const Text(
+                          'Product Variants',
+                          style: TextStyle(
+                            color: Color(0xFF43464B),
+                            fontSize: 13,
+                            fontFamily: 'Nunito Sans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                    
+                        if (variants.isNotEmpty)
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            separatorBuilder: (context, index) =>
+                                Container(height: 8),
+                            itemCount: variants.length,
+                            itemBuilder: (context, index) {
+                              final variant = variants[index];
+                    
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 80,
+                                        height: 80,
+                                        clipBehavior: Clip.hardEdge,
+                                        decoration: BoxDecoration(
+                                          color: foregroundColor,
+                                          borderRadius: BorderRadius.circular(8),
                                         ),
-                                        Text(
-                                          "Price: ₱${variant.price.toStringAsFixed(2)}",
-                                          style: const TextStyle(
-                                            color: foregroundColor,
-                                            fontSize: 12,
-                                            fontFamily: 'Nunito Sans',
-                                            fontWeight: FontWeight.w400,
-                                          ),
+                                        child: Image.file(
+                                          File(variant.image.path),
+                                          fit: BoxFit.cover,
                                         ),
-                                        Text(
-                                          "Stocks: ${variant.stocks}",
-                                          style: const TextStyle(
-                                            color: foregroundColor,
-                                            fontSize: 12,
-                                            fontFamily: 'Nunito Sans',
-                                            fontWeight: FontWeight.w400,
+                                      ),
+                                      const Gap(10),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            variant.variantName,
+                                            style: const TextStyle(
+                                              color: foregroundColor,
+                                              fontSize: 16,
+                                              fontFamily: 'Nunito Sans',
+                                              fontWeight: FontWeight.w800,
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          "3D Model: ${basename(variant.model.path)}",
-                                          style: const TextStyle(
-                                            color: foregroundColor,
-                                            fontSize: 12,
-                                            fontFamily: 'Nunito Sans',
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        SizedBox(
-                                          width: 200,
-                                          child: ReadMoreText(
-                                            "Size: ${variant.size} ${variant.metric}; Color: ${variant.color}; Material: ${variant.material}; ",
+                                          Text(
+                                            "Price: ₱${variant.price.toStringAsFixed(2)}",
                                             style: const TextStyle(
                                               color: foregroundColor,
                                               fontSize: 12,
                                               fontFamily: 'Nunito Sans',
                                               fontWeight: FontWeight.w400,
                                             ),
-                                            trimLines: 1,
-                                            trimMode: TrimMode.Line,
-                                            trimCollapsedText: 'More',
-                                            trimExpandedText: ' Less',
-                                            moreStyle: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold),
-                                            lessStyle: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold),
                                           ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
-                                        onPressed: () {
-                                          showDialog(
-                                              builder: (context) =>
-                                                  EditVariantWidget(
-                                                    productVariants: variant,
-                                                  ),
+                                          Text(
+                                            "Stocks: ${variant.stocks}",
+                                            style: const TextStyle(
+                                              color: foregroundColor,
+                                              fontSize: 12,
+                                              fontFamily: 'Nunito Sans',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          Text(
+                                            "3D Model: ${basename(variant.model.path)}",
+                                            style: const TextStyle(
+                                              color: foregroundColor,
+                                              fontSize: 12,
+                                              fontFamily: 'Nunito Sans',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(
+                                            width: 200,
+                                            child: ReadMoreText(
+                                              "Size: ${variant.length}L x ${variant.width}W x ${variant.height}H ${variant.metric}; Color: ${variant.color}; Material: ${variant.material}; ",
+                                              style: const TextStyle(
+                                                color: foregroundColor,
+                                                fontSize: 12,
+                                                fontFamily: 'Nunito Sans',
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                              trimLines: 1,
+                                              trimMode: TrimMode.Line,
+                                              trimCollapsedText: 'More',
+                                              trimExpandedText: ' Less',
+                                              moreStyle: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold),
+                                              lessStyle: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                          padding: EdgeInsets.zero,
+                                          constraints: const BoxConstraints(),
+                                          onPressed: () {
+                                            showDialog(
+                                                builder: (context) =>
+                                                    EditVariantWidget(
+                                                      productVariants: variant,
+                                                    ),
+                                                context: context,
+                                                barrierDismissible: false);
+                                          },
+                                          icon: const Icon(
+                                            Icons.edit,
+                                            color: foregroundColor,
+                                          )),
+                                      IconButton(
+                                          padding: EdgeInsets.zero,
+                                          constraints: const BoxConstraints(),
+                                          onPressed: () {
+                                            showDialog(
                                               context: context,
-                                              barrierDismissible: false);
-                                        },
-                                        icon: const Icon(
-                                          Icons.edit,
-                                          color: foregroundColor,
-                                        )),
-                                    IconButton(
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) =>
-                                                ConfirmationAlertDialog(
-                                                    title:
-                                                        "Are you sure you want to delete this variant?",
-                                                    onTapNo: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    onTapYes: () async {
-                                                      // final currentContext = context; // Capture the context outside the async block
-                                                      final provider = Provider
-                                                          .of<VariantsProvider>(
-                                                              context,
-                                                              listen: false);
-                                                      provider.removeVariant(
-                                                          variant);
+                                              builder: (context) =>
+                                                  ConfirmationAlertDialog(
+                                                      title:
+                                                          "Are you sure you want to delete this variant?",
+                                                      onTapNo: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      onTapYes: () async {
+                                                        // final currentContext = context; // Capture the context outside the async block
+                                                        final provider = Provider
+                                                            .of<VariantsProvider>(
+                                                                context,
+                                                                listen: false);
+                                                        provider.removeVariant(
+                                                            variant);
+                    
+                                                        Fluttertoast.showToast(
+                                                          msg:
+                                                              "Variant Deleted Successfully.",
+                                                          backgroundColor:
+                                                              Colors.grey,
+                                                        );
+                                                        Navigator.pop(context);
+                                                      },
+                                                      tapNoString: "No",
+                                                      tapYesString: "Yes"),
+                                            );
+                                          },
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            color: foregroundColor,
+                                          ))
+                                    ],
+                                  ),
+                                ],
+                              );
+                              // Column(
+                              //   children: [
+                              //     Text(variants.productname),
+                              //     Text(variants.material),
+                              //   //   SizedBox(
+                              //   //   width: double.infinity,
+                              //   //   height: 50,
+                              //   //   child: ElevatedButton(
+                              //   //     onPressed:(){showDialog(builder: (context) => const AddProductWidget(), context: context, barrierDismissible: false);},
+                              //   //     style: ElevatedButton.styleFrom(
+                              //   //       backgroundColor: Colors.black,
+                              //   //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
+                              //   //     ),
+                              //   //     child: const Text("Add Product",
+                              //   //       style: TextStyle(
+                              //   //         color: Colors.white,
+                              //   //         fontSize: 18,
+                              //   //         fontFamily: 'Nunito Sans',
+                              //   //         fontWeight: FontWeight.w600,
+                              //   //         height: 0,
+                              //   //       ),
+                              //   //     ),
+                              //   //   ),
+                              //   // ),
+                    
+                              //   ],
+                              // );
+                            },
+                          ),
+                        
+                        const Gap(10),
+                        const AddVariantButton(),
                   
-                                                      Fluttertoast.showToast(
-                                                        msg:
-                                                            "Variant Deleted Successfully.",
-                                                        backgroundColor:
-                                                            Colors.grey,
-                                                      );
-                                                      Navigator.pop(context);
-                                                    },
-                                                    tapNoString: "No",
-                                                    tapYesString: "Yes"),
-                                          );
-                                        },
-                                        icon: const Icon(
-                                          Icons.delete,
-                                          color: foregroundColor,
-                                        ))
-                                  ],
-                                ),
-                              ],
-                            );
-                            // Column(
-                            //   children: [
-                            //     Text(variants.productname),
-                            //     Text(variants.material),
-                            //   //   SizedBox(
-                            //   //   width: double.infinity,
-                            //   //   height: 50,
-                            //   //   child: ElevatedButton(
-                            //   //     onPressed:(){showDialog(builder: (context) => const AddProductWidget(), context: context, barrierDismissible: false);},
-                            //   //     style: ElevatedButton.styleFrom(
-                            //   //       backgroundColor: Colors.black,
-                            //   //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
-                            //   //     ),
-                            //   //     child: const Text("Add Product",
-                            //   //       style: TextStyle(
-                            //   //         color: Colors.white,
-                            //   //         fontSize: 18,
-                            //   //         fontFamily: 'Nunito Sans',
-                            //   //         fontWeight: FontWeight.w600,
-                            //   //         height: 0,
-                            //   //       ),
-                            //   //     ),
-                            //   //   ),
-                            //   // ),
-                  
-                            //   ],
-                            // );
-                          },
+                        const Gap(20),
+                        TextFormField(
+                          controller: _laborController,
+                          decoration: outlineInputBorder(label: 'Labor Cost'),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: false,
+                          ),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) =>
+                            value!.isEmpty
+                              ? 'Please input a Labor Cost.'
+                              : null,
                         ),
-                      const Gap(10),
-                      const AddVariantButton(),
-                      // SizedBox(
-                      //   width: double.infinity,
-                      //   height: 60,
-                      //   child: ElevatedButton(
-                      //     onPressed: () {
-                      //       showDialog(
-                      //           builder: (context) => const AddProductWidget(),
-                      //           context: context,
-                      //           barrierDismissible: false);
-                      //     },
-                      //     style: ElevatedButton.styleFrom(
-                      //         backgroundColor: Colors.black,
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(8))),
-                      //     child: const Text(
-                      //       "Add Variant",
-                      //       style: TextStyle(
-                      //         color: Colors.white,
-                      //         fontSize: 18,
-                      //         fontFamily: 'Nunito Sans',
-                      //         fontWeight: FontWeight.w600,
-                      //         height: 0,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                      const Gap(20),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 60,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => ConfirmationAlertDialog(
-                                  title:
-                                      "Are you sure you want to add this product?",
-                                  onTapNo: () {
-                                    Navigator.pop(context);
-                                  },
-                                  onTapYes: () async {
-                                    if (context.mounted) {
+                  
+                        const Gap(20),
+                        TextFormField(
+                          controller: _expensesController,
+                          decoration: outlineInputBorder(label: 'Other Expenses'),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: false,
+                          ),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) =>
+                            value!.isEmpty
+                              ? 'Please input a other expenses.'
+                              : null,
+                        ),
+                        // SizedBox(
+                        //   width: double.infinity,
+                        //   height: 60,
+                        //   child: ElevatedButton(
+                        //     onPressed: () {
+                        //       showDialog(
+                        //           builder: (context) => const AddProductWidget(),
+                        //           context: context,
+                        //           barrierDismissible: false);
+                        //     },
+                        //     style: ElevatedButton.styleFrom(
+                        //         backgroundColor: Colors.black,
+                        //         shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.circular(8))),
+                        //     child: const Text(
+                        //       "Add Variant",
+                        //       style: TextStyle(
+                        //         color: Colors.white,
+                        //         fontSize: 18,
+                        //         fontFamily: 'Nunito Sans',
+                        //         fontWeight: FontWeight.w600,
+                        //         height: 0,
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                        const Gap(20),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 60,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              final isValid = _formKey.currentState!.validate();
+                                if (!isValid || listSelectedImage.isEmpty || variants.isEmpty) {
+                                  Fluttertoast.showToast(
+                                    msg: "Please complete the information needed.",
+                                    backgroundColor: Colors.grey,
+                                  );
+                                  print("Input values are invalid");
+                                  return;
+                                } 
+                              showDialog(
+                                context: context,
+                                builder: (context) => ConfirmationAlertDialog(
+                                    title:
+                                        "Are you sure you want to add this product?",
+                                    onTapNo: () {
                                       Navigator.pop(context);
-                                      Navigator.pop(context);
-                                    }
-                  
-                                    // setState(() {
-                                    //   isSaving = true;
-                                    // });
-                                    Fluttertoast.showToast(
-                                      msg: "Adding New Product...",
-                                      backgroundColor: Colors.grey,
-                                    );
-                  
-                                    await saveproduct(context);
-                                    // setState(() {
-                                    //   isSaving =
-                                    //       false; // Set the flag back to false when saving is complete
-                                    // });
-                                    Fluttertoast.showToast(
-                                      msg: "Product Added Successfully",
-                                      backgroundColor: Colors.grey,
-                                    );
-                  
-                                    // saveproduct(context).then((_) {
-                  
-                                    //   // Show the "Upload Complete" snackbar
-                                    //   // ScaffoldMessenger.of(context).showSnackBar(
-                                    //   //   const SnackBar(
-                                    //   //     content: Text('Product Saved'),
-                                    //   //     duration: Duration(seconds: 2),
-                                    //   //   ),
-                                    //   // );
-                  
-                                    // });
-                                  },
-                                  tapNoString: "No",
-                                  tapYesString: "Yes"),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                                    },
+                                    onTapYes: () async {
+                                      if (context.mounted) {
+                                        Navigator.pop(context);
+                                        Navigator.pop(context);
+                                      }
+                    
+                                      // setState(() {
+                                      //   isSaving = true;
+                                      // });
+                                      Fluttertoast.showToast(
+                                        msg: "Adding New Product...",
+                                        backgroundColor: Colors.grey,
+                                      );
+                    
+                                      await saveproduct(context);
+                                      // setState(() {
+                                      //   isSaving =
+                                      //       false; // Set the flag back to false when saving is complete
+                                      // });
+                                      Fluttertoast.showToast(
+                                        msg: "Product Added Successfully",
+                                        backgroundColor: Colors.grey,
+                                      );
+                    
+                                      // saveproduct(context).then((_) {
+                    
+                                      //   // Show the "Upload Complete" snackbar
+                                      //   // ScaffoldMessenger.of(context).showSnackBar(
+                                      //   //   const SnackBar(
+                                      //   //     content: Text('Product Saved'),
+                                      //   //     duration: Duration(seconds: 2),
+                                      //   //   ),
+                                      //   // );
+                    
+                                      // });
+                                    },
+                                    tapNoString: "No",
+                                    tapYesString: "Yes"),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text(
+                              "Save Product",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontFamily: 'Nunito Sans',
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
-                          child: const Text(
-                            "Save Product",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontFamily: 'Nunito Sans',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -828,6 +877,8 @@ class _AddProductState extends State<AddProduct> {
       // 'dimension': _dimensionController.text,
       // 'price': _priceController.text,
       // 'product 3D model': model,
+      'labor_cost': _laborController.text,
+      'expenses' : _expensesController.text,
       'product_images': images,
       'category': selectedCategory,
       'description': _descriptionController.text,

@@ -1,65 +1,48 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:furniverse_admin/Provider/variant_provider.dart';
-import 'package:furniverse_admin/models/edit_product_variants_model.dart';
-import 'package:furniverse_admin/models/products.dart';
-import 'package:furniverse_admin/screens/admin_home/pages/admin_add_product.dart';
-import 'package:furniverse_admin/services/product_services.dart';
+import 'package:furniverse_admin/models/delivery_model.dart';
+import 'package:furniverse_admin/widgets/editcitywidget.dart';
+import 'package:furniverse_admin/services/delivery_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
-import 'package:furniverse_admin/screens/admin_home/pages/admin_edit_product.dart';
+import 'package:furniverse_admin/widgets/addcitywidget.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
-import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
-class AdminProdList extends StatefulWidget {
-  const AdminProdList({super.key});
+class DeliveryCostList extends StatefulWidget {
+  const DeliveryCostList({super.key});
 
   @override
-  State<AdminProdList> createState() => _AdminProdListState();
+  State<DeliveryCostList> createState() => _DeliveryCostListState();
 }
 
-class _AdminProdListState extends State<AdminProdList> {
-  bool value = false;
-  final List<String> categories = [
-    'All Products',
-    'Living Room',
-    'Bedroom',
-    'Dining Room',
-    'Office',
-    'Outdoor',
-    // 'Kids\' Furniture',
-    'Storage and Organization',
-    // 'Accent Furniture',
-  ];
+class _DeliveryCostListState extends State<DeliveryCostList> {
+  String? selectedAction;
   final List<String> actions = [
     'Delete',
   ];
 
-  String? selectedCategory = 'All Products';
-  String? selectedAction;
   int currentPage = 0;
   int itemsPerPage = 10;
 
-  List<Product> highlightedProducts = [];
+  List<Delivery> highlightedCity = [];
 
-  void highlightProduct(Product product) {
+  void highlightMaterial(Delivery delivery) {
     setState(() {
-      highlightedProducts.add(product);
+      highlightedCity.add(delivery);
     });
   }
 
-  void removeHighlight(Product product) {
+  void removeHighlight(Delivery delivery) {
     setState(() {
-      highlightedProducts.remove(product);
+      highlightedCity.remove(delivery);
     });
   }
-
+  
   @override
   Widget build(BuildContext context) {
-    var products = Provider.of<List<Product>?>(context);
+    var delivery = Provider.of<List<Delivery>?>(context);
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -73,54 +56,54 @@ class _AdminProdListState extends State<AdminProdList> {
                     Row(
                       children: [
                         const Text(
-                          "Show: ",
+                          "All Cities",
                           style: TextStyle(
-                            color: Color(0xFF92929D),
+                            color: Colors.black,
                             fontSize: 14,
                             fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        DropdownButtonHideUnderline(
-                          child: DropdownButton2<String>(
-                            isExpanded: true,
-                            hint: Text(
-                              selectedCategory ?? "All Products",
-                              style: const TextStyle(
-                                color: Color(0xFF44444F),
-                                fontSize: 14,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            items: categories
-                                .map((String item) => DropdownMenuItem<String>(
-                                      value: item,
-                                      child: Text(
-                                        item,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                      ),
-                                    ))
-                                .toList(),
-                            value: selectedCategory,
-                            onChanged: (String? value) {
-                              setState(() {
-                                selectedCategory = value;
-                              });
-                            },
-                            buttonStyleData: const ButtonStyleData(
-                              height: 40,
-                              width: 110,
-                            ),
-                            menuItemStyleData: const MenuItemStyleData(
-                              height: 40,
-                            ),
-                          ),
-                        ),
+                        // DropdownButtonHideUnderline(
+                        //   child: DropdownButton2<String>(
+                        //     isExpanded: true,
+                        //     hint: Text(
+                        //       selectedCategory ?? "All Products",
+                        //       style: const TextStyle(
+                        //         color: Color(0xFF44444F),
+                        //         fontSize: 14,
+                        //         fontFamily: 'Inter',
+                        //         fontWeight: FontWeight.w400,
+                        //       ),
+                        //     ),
+                        //     items: categories
+                        //         .map((String item) => DropdownMenuItem<String>(
+                        //               value: item,
+                        //               child: Text(
+                        //                 item,
+                        //                 style: const TextStyle(
+                        //                   fontSize: 14,
+                        //                 ),
+                        //                 overflow: TextOverflow.ellipsis,
+                        //                 maxLines: 2,
+                        //               ),
+                        //             ))
+                        //         .toList(),
+                        //     value: selectedCategory,
+                        //     onChanged: (String? value) {
+                        //       setState(() {
+                        //         selectedCategory = value;
+                        //       });
+                        //     },
+                        //     buttonStyleData: const ButtonStyleData(
+                        //       height: 40,
+                        //       width: 110,
+                        //     ),
+                        //     menuItemStyleData: const MenuItemStyleData(
+                        //       height: 40,
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ],
@@ -154,22 +137,25 @@ class _AdminProdListState extends State<AdminProdList> {
                           context: context,
                           builder: (context) => ConfirmationAlertDialog(
                               title:
-                                  "Are you sure you want to delete this product?",
+                                  "Are you sure you want to delete this city?",
                               onTapNo: () {
                                 Navigator.pop(context);
                               },
                               onTapYes: () async {
+                               
                                 // final currentContext = context; // Capture the context outside the async block
-                                int i = highlightedProducts.length - 1;
-                                while (highlightedProducts.isNotEmpty) {
-                                  await ProductService()
-                                      .deleteProduct(highlightedProducts[i].id);
-                                  highlightedProducts.removeAt(i);
+                                
+                                // DELETE MULTIPLE
+                                int i = highlightedCity.length - 1;
+                                while (highlightedCity.isNotEmpty) {
+                                  await DeliveryService()
+                                      .deleteDelivery(highlightedCity[i].id);
+                                  highlightedCity.removeAt(i);
                                   i--;
                                 }
 
                                 Fluttertoast.showToast(
-                                  msg: "Product Deleted Successfully.",
+                                  msg: "City Deleted Successfully.",
                                   backgroundColor: Colors.grey,
                                 );
                                 if (context.mounted) {
@@ -200,15 +186,15 @@ class _AdminProdListState extends State<AdminProdList> {
                     const SizedBox(width: 10),
                     GestureDetector(
                       onTap: () {
-                        final provider = Provider.of<VariantsProvider>(context,
-                            listen: false);
-                        provider.clearOldVariant();
-                        provider.clearVariant();
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return const AddProduct();
-                          },
-                        ));
+                        // final provider = Provider.of<VariantsProvider>(context,
+                        //     listen: false);
+                        // provider.clearOldVariant();
+                        // provider.clearVariant();
+                        showDialog(
+                          builder: (context) => const AddCityWidget(),
+                          context: context,
+                          barrierDismissible: false
+                        );
                       },
                       child: Container(
                           height: 32,
@@ -257,9 +243,9 @@ class _AdminProdListState extends State<AdminProdList> {
             //   ],
             // ),
             const SizedBox(height: 10),
-            products == null
+            delivery == null
                 ? const Loading()
-                : Expanded(child: _createProductList(products)),
+                : Expanded(child: _createMaterialList(delivery)),
 
             // Expanded(child: _createProductList(products))
           ],
@@ -268,19 +254,20 @@ class _AdminProdListState extends State<AdminProdList> {
     );
   }
 
-  _createProductList(List<Product> products) {
+  _createMaterialList(List<Delivery> delivery) {
     var finalList = [];
 
     // filter
-    if (selectedCategory == 'All Products') {
-      finalList = products;
-    } else {
-      for (int i = 0; i < products.length; i++) {
-        if (products[i].category == selectedCategory) {
-          finalList.add(products[i]);
-        }
-      }
-    }
+    // if (selectedCategory == 'All Products') {
+      finalList = delivery;
+      print(finalList);
+    // } else {
+      // for (int i = 0; i < material.length; i++) {
+      //   // if (products[i].category == selectedCategory) {
+      //     finalList.add(material[i]);
+      //   // }
+      // }
+    // }
 
     // pagination
     int start = currentPage * itemsPerPage;
@@ -291,7 +278,7 @@ class _AdminProdListState extends State<AdminProdList> {
     }
 
     if (finalList.isEmpty) {
-      return const Center(child: Text("No Products"));
+      return const Center(child: Text("No City"));
     } else {
       return ListView.builder(
         itemCount: end - start + 1,
@@ -299,11 +286,11 @@ class _AdminProdListState extends State<AdminProdList> {
           if (index == end - start) {
             return _createPageNavigation(end, start, finalList);
           } else {
-            return ProductDetailCard(
-              product: finalList[start + index],
-              highlight: highlightProduct,
+            return CityDetailCard(
+              delivery: finalList[start + index],
+              highlight: highlightMaterial,
               removeHighlight: removeHighlight,
-              highlightedProd: highlightedProducts,
+              highlightedCit: highlightedCity,
             );
           }
         },
@@ -332,11 +319,11 @@ class _AdminProdListState extends State<AdminProdList> {
               ),
               GestureDetector(
                 onTap: () {
-                  if (currentPage > 0) {
-                    setState(() {
-                      currentPage--;
-                    });
-                  }
+                  // if (currentPage > 0) {
+                  //   setState(() {
+                  //     currentPage--;
+                  //   });
+                  // }
                 },
                 child: Container(
                   height: 32,
@@ -359,7 +346,7 @@ class _AdminProdListState extends State<AdminProdList> {
                 onTap: () {
                   if (end < finalList.length) {
                     setState(() {
-                      currentPage++;
+                      // currentPage++;
                     });
                   }
                 },
@@ -379,41 +366,40 @@ class _AdminProdListState extends State<AdminProdList> {
               ),
             ],
           ),
-          const Gap(20),
         ],
       ),
     );
   }
 }
 
-class ProductDetailCard extends StatefulWidget {
-  final Product product;
+class CityDetailCard extends StatefulWidget {
+  final Delivery delivery;
   final Function highlight;
   final Function removeHighlight;
-  final List<Product> highlightedProd;
+  final List<Delivery> highlightedCit;
 
-  const ProductDetailCard({
+  const CityDetailCard({
     super.key,
-    required this.product,
+    required this.delivery,
     required this.highlight,
     required this.removeHighlight,
-    required this.highlightedProd,
+    required this.highlightedCit,
   });
 
   @override
-  State<ProductDetailCard> createState() => _ProductDetailCardState();
+  State<CityDetailCard> createState() => _CityDetailCardState();
 }
 
-class _ProductDetailCardState extends State<ProductDetailCard> {
+class _CityDetailCardState extends State<CityDetailCard> {
   bool? isChecked = false;
 
   @override
   Widget build(BuildContext context) {
-    isChecked = widget.highlightedProd.contains(widget.product);
-    final leastPrice = widget.product.getLeastPrice().toStringAsFixed(0);
-    final highPrice = widget.product.getHighestPrice().toStringAsFixed(0);
-    bool isPriceEqual = leastPrice == highPrice;
-    String price = isPriceEqual ? "₱$leastPrice" : "₱$leastPrice - ₱$highPrice";
+    isChecked = widget.highlightedCit.contains(widget.delivery);
+    // final leastPrice = widget.product.getLeastPrice().toStringAsFixed(0);
+    // final highPrice = widget.product.getHighestPrice().toStringAsFixed(0);
+    // bool isPriceEqual = leastPrice == highPrice;
+    // String price = isPriceEqual ? "₱$leastPrice" : "₱$leastPrice - ₱$highPrice";
 
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
@@ -438,9 +424,9 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                   setState(() {
                     isChecked = value;
                     if (isChecked == true) {
-                      widget.highlight(widget.product);
+                      widget.highlight(widget.delivery);
                     } else {
-                      widget.removeHighlight(widget.product);
+                      widget.removeHighlight(widget.delivery);
                     }
                   });
                 },
@@ -455,156 +441,40 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              height: 36,
-                              width: 36,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  image: DecorationImage(
-                                      image: CachedNetworkImageProvider(
-                                        widget.product.images[0] ??
-                                            "http://via.placeholder.com/350x150",
-                                      ),
-                                      fit: BoxFit.cover)),
-                            ),
-                            const SizedBox(
-                              width: 6,
-                            ),
-                            Text(
-                              widget.product.name,
-                              style: const TextStyle(
-                                color: Color(0xFF171625),
-                                fontSize: 14,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          widget.delivery.city,
+                          style: const TextStyle(
+                            color: Color(0xFF171625),
+                            fontSize: 14,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                         Text(
-                          price,
+                          "₱${widget.delivery.price}",
                           style: const TextStyle(
                             color: Color(0xFF171625),
                             fontSize: 14,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w700,
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const Text(
-                              "ID",
-                              style: TextStyle(
-                                color: Color(0xFF686873),
-                                fontSize: 12,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w600,
-                                height: 0,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            SizedBox(
-                              width: 100,
-                              child: Text(
-                                widget.product.id,
-                                style: const TextStyle(
-                                  color: Color(0xFF44444F),
-                                  fontSize: 14,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
-                                  letterSpacing: 0.20,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            )
-                          ],
                         ),
-                        Row(
-                          children: [
-                            const Text(
-                              "STOCK",
-                              style: TextStyle(
-                                color: Color(0xFF686873),
-                                fontSize: 12,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w600,
-                                height: 0,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              widget.product.getNumStocks().toString(),
-                              style: const TextStyle(
-                                color: Color(0xFF44444F),
-                                fontSize: 14,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
-                                height: 0,
-                                letterSpacing: 0.20,
-                              ),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const Text(
-                              "VAR",
-                              style: TextStyle(
-                                color: Color(0xFF686873),
-                                fontSize: 12,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w600,
-                                height: 0,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              widget.product.getNumVariants().toString(),
-                              style: const TextStyle(
-                                color: Color(0xFF44444F),
-                                fontSize: 14,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w400,
-                                height: 0,
-                                letterSpacing: 0.20,
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          PopupMenuButton(
+
+                        PopupMenuButton(
             onSelected: (value) {
               if (value == 1) {
                 showDialog(
                   context: context,
                   builder: (context) => ConfirmationAlertDialog(
-                      title: "Are you sure you want to delete this product?",
+                      title: "Are you sure you want to delete this city?",
                       onTapNo: () {
                         Navigator.pop(context);
                       },
                       onTapYes: () async {
                         // final currentContext = context; // Capture the context outside the async block
-                        ProductService().deleteProduct(widget.product.id);
+                        DeliveryService().deleteDelivery(widget.delivery.id);
                         Fluttertoast.showToast(
-                          msg: "Product Deleted Successfully.",
+                          msg: "City Deleted Successfully.",
                           backgroundColor: Colors.grey,
                         );
                         Navigator.pop(context);
@@ -614,39 +484,11 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                 );
               }
               if (value == 2) {
-                final variants =
-                    Provider.of<VariantsProvider>(context, listen: false);
-                variants.clearOldVariant();
-                variants.clearVariant();
 
-                // initialize old/original variant
-                // print(widget.product.variants);
-
-                for (var variant in widget.product.variants) {
-                  final oldvariants = EditProductVariants(
-                      variantName: variant['variant_name'],
-                      material: variant['material'],
-                      color: variant['color'],
-                      image: variant['image'],
-                      length: variant['length'],
-                      width: variant['width'],
-                      height: variant['height'],
-                      metric: variant['metric'],
-                      model: variant['model'],
-                      price: variant['price'].toDouble(),
-                      stocks: variant['stocks'],
-                      id: variant['id']);
-
-                  variants.addOldVariant(oldvariants);
-                }
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditProduct(
-                        id: widget.product.id.toString(),
-                        product: widget.product),
-                  ),
+                 showDialog(
+                  builder: (context) => EditCityWidget(id: widget.delivery.id.toString(), delivery: widget.delivery),
+                  context: context,
+                  barrierDismissible: false
                 );
               }
             },
@@ -693,11 +535,11 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                 ),
               ),
             ],
-            offset: const Offset(0, 50),
+            offset: const Offset(0, 30),
             color: backgroundColor,
             elevation: 3,
             child: Container(
-              margin: const EdgeInsets.only(top: 16),
+              margin: const EdgeInsets.only(top: 5),
               alignment: Alignment.centerRight,
               child: const Icon(
                 Icons.more_horiz,
@@ -705,6 +547,79 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
               ),
             ),
           ),
+                      ],
+                    ),
+                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 10),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  // //       Row(
+                  // //         children: [
+                  // //           const Text(
+                  // //             "ID",
+                  // //             style: TextStyle(
+                  // //               color: Color(0xFF686873),
+                  // //               fontSize: 12,
+                  // //               fontFamily: 'Inter',
+                  // //               fontWeight: FontWeight.w600,
+                  // //               height: 0,
+                  // //             ),
+                  // //           ),
+                  // //           const SizedBox(width: 6),
+                  // //           SizedBox(
+                  // //             width: 100,
+                  // //             child: Text(
+                  // //               "widget.product.id",
+                  // //               style: const TextStyle(
+                  // //                 color: Color(0xFF44444F),
+                  // //                 fontSize: 14,
+                  // //                 fontFamily: 'Inter',
+                  // //                 fontWeight: FontWeight.w400,
+                  // //                 height: 0,
+                  // //                 letterSpacing: 0.20,
+                  // //               ),
+                  // //               maxLines: 1,
+                  // //               overflow: TextOverflow.ellipsis,
+                  // //             ),
+                  // //           )
+                  // //         ],
+                  // //       ),
+                  //       Row(
+                  //         children: [
+                  //           const Text(
+                  //             "STOCK",
+                  //             style: TextStyle(
+                  //               color: Color(0xFF686873),
+                  //               fontSize: 12,
+                  //               fontFamily: 'Inter',
+                  //               fontWeight: FontWeight.w600,
+                  //               height: 0,
+                  //             ),
+                  //           ),
+                  //           const SizedBox(width: 6),
+                  //           Text(
+                  //             widget.colorModel.stocks.toString(),
+                  //             style: const TextStyle(
+                  //               color: Color(0xFF44444F),
+                  //               fontSize: 14,
+                  //               fontFamily: 'Inter',
+                  //               fontWeight: FontWeight.w400,
+                  //               height: 0,
+                  //               letterSpacing: 0.20,
+                  //             ),
+                  //           )
+                  //         ],
+                  //       ),
+                  //     ],
+                  //   ),
+                  // )
+                ],
+              ),
+            ),
+          ),
+          
         ],
       ),
     );

@@ -4,6 +4,8 @@ class Product {
   final String id;
   final String name;
   final String category;
+  final String labor;
+  final String expenses;
   final List<dynamic> images;
   final String description;
   final List<dynamic> variants;
@@ -12,6 +14,8 @@ class Product {
     required this.id,
     required this.name,
     required this.category,
+    required this.labor,
+    required this.expenses,
     required this.description,
     required this.images,
     required this.variants,
@@ -25,6 +29,8 @@ class Product {
         name: data['product_name'] ?? '',
         category: data['category'] ?? '',
         description: data['description'] ?? '',
+        labor: data['labor_cost'] ?? '',
+        expenses: data['expenses'] ?? '',
         images: data['product_images'],
         variants: data['variants']);
   }

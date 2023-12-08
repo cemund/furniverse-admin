@@ -28,7 +28,9 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
   final _nameController = TextEditingController();
   final _materialController = TextEditingController();
   final _colorController = TextEditingController();
-  final _dimensionController = TextEditingController();
+  final _lengthController = TextEditingController();
+  final _widthController = TextEditingController();
+  final _heightController = TextEditingController();
   final _priceController = TextEditingController();
   final _stocksController = TextEditingController();
 
@@ -77,7 +79,9 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
     _nameController.dispose();
     _materialController.dispose();
     _colorController.dispose();
-    _dimensionController.dispose();
+    _lengthController.dispose();
+    _widthController.dispose();
+    _heightController.dispose();
     _priceController.dispose();
     _stocksController.dispose();
 
@@ -90,6 +94,8 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
         ? basename(selectedModel!.path)
         : "Upload 3D Model";
     return AlertDialog(
+      insetPadding: EdgeInsets.all(10),
+      contentPadding: EdgeInsets.all(10),
       content: Form(
         key: _formKey,
         child: Column(
@@ -112,7 +118,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
             ),
             const Gap(20),
             SizedBox(
-              height: 250,
+              height: 400,
               width: double.maxFinite,
               child: ListView(
                 physics: const BouncingScrollPhysics(),
@@ -177,11 +183,10 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                     controller: _nameController,
                     decoration: outlineInputBorder(label: 'Variant Name'),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) 
-                      {print(value);
-                        return value!.isEmpty
+                    validator: (value) =>
+                      value!.isEmpty
                         ? 'Please input a variant name.'
-                        : null;}
+                        : null
                   ),
                   const Gap(20),
                   
@@ -207,34 +212,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                   ),
                   const Gap(20),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(child: TextFormField(
-                        controller: _dimensionController,
-                        decoration: outlineInputBorder(label: 'Dimension/Size'),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) =>
-                          value!.isEmpty
-                            ? 'Please input a dimension.'
-                            : null,
-                      ),),
-
-                      // const SizedBox(height: 10),
-
-                      // Flexible(child: TextFormField(
-                      //   controller: _dimensionController,
-                      //   decoration: outlineInputBorder(label: 'Length'),
-                      //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                      //   validator: (value) =>
-                      //     value!.isEmpty
-                      //       ? 'Please input a length.'
-                      //       : null,
-                      // ),),
-                      // const SizedBox(height: 10),
-
-                      Flexible(child: DropdownButtonFormField2<String>(
+                  DropdownButtonFormField2<String>(
                         buttonStyleData: const ButtonStyleData(
                           height: 26,
                           padding: EdgeInsets.only(right: 8),
@@ -289,7 +267,138 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                             selectedCategory = value;
                           });
                         },
-                      ),)
+                      ),
+
+                      Gap(20),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 100,
+                        child: TextFormField(
+                          controller: _lengthController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+                            labelText: 'Length',
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: true,
+                          ),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                            ? 'Please input a length.'
+                            : null,
+                        )
+                      ),
+
+                      Padding(padding: EdgeInsets.only(top: 25),
+                        child: Text("X")
+                      ),
+
+                      Container(
+                        width: 100,
+                        child: TextFormField(
+                          controller: _widthController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+                            labelText: 'Width',
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: true,
+                          ),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                            ? 'Please input a width.'
+                            : null,
+                        )
+                      ),
+
+                      Padding(padding: EdgeInsets.only(top: 25),
+                        child: Text("X")
+                      ),
+
+                      Container(
+                        width: 100,
+                        child: TextFormField(
+                          controller: _heightController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+                            labelText: 'Height',
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: true,
+                          ),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                            ? 'Please input a height.'
+                            : null,
+                        )
+                      ),
+
+                      // Flexible(child: DropdownButtonFormField2<String>(
+                      //   buttonStyleData: const ButtonStyleData(
+                      //     height: 26,
+                      //     padding: EdgeInsets.only(right: 8),
+                      //   ),
+                      //   hint: const Text(
+                      //     'Select Metric Length',
+                      //     style: TextStyle(fontSize: 16),
+                      //     overflow: TextOverflow.ellipsis,
+                      //   ),
+                      //   iconStyleData: const IconStyleData(
+                      //     icon: Icon(
+                      //       Icons.arrow_drop_down,
+                      //     ),
+                      //     iconSize: 24,
+                      //   ),
+                      //   dropdownStyleData: DropdownStyleData(
+                      //     decoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(8),
+                      //     ),
+                      //   ),
+                      //   menuItemStyleData: const MenuItemStyleData(
+                      //     padding: EdgeInsets.symmetric(horizontal: 16),
+                      //   ),
+                      //   decoration: InputDecoration(
+                      //     contentPadding:
+                      //         const EdgeInsets.symmetric(vertical: 16),
+                      //     border: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(8),
+                      //     ),
+                      //   ),
+                      //   // autovalidateMode: AutovalidateMode.onUserInteraction,
+                      //   // validator: (value) =>
+                      //   //     value!.isEmpty ? 'Please select a metric length.' : null,
+                      //   items: items
+                      //       .map((String item) => DropdownMenuItem<String>(
+                      //             value: item,
+                      //             child: Text(
+                      //               item,
+                      //               style: const TextStyle(
+                      //                 fontSize: 16,
+                      //                 // fontWeight: FontWeight.bold,
+                      //                 // color: Colors.],
+                      //               ),
+                      //               overflow: TextOverflow.ellipsis,
+                      //             ),
+                      //           ))
+                      //       .toList(),
+                      //   isExpanded: true,
+                      //   value: selectedCategory,
+                      //   onChanged: (String? value) {
+                      //     setState(() {
+                      //       selectedCategory = value;
+                      //     });
+                      //   },
+                      // ),)
                     ],
                   ),
                   
@@ -325,6 +434,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                         ? 'Please input a stock/s.'
                         : null,
                   ),
+                  
                   const Gap(20),
                   GestureDetector(
                     onTap: selectFile,
@@ -384,6 +494,8 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
+                        final isValid = _formKey.currentState!.validate();
+                           if (!isValid) return;
                         showDialog(
                           context: context,
                           builder: (context) => ConfirmationAlertDialog(
@@ -453,7 +565,9 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
           material: _materialController.text,
           color: _colorController.text,
           image: selectedImage!,
-          size: _dimensionController.text,
+          length: _lengthController.text,
+          width: _widthController.text,
+          height: _heightController.text,
           metric: selectedCategory.toString(),
           model: selectedModel!,
           price: double.parse(_priceController.text),

@@ -2,7 +2,9 @@ class ProductVariants {
   String id;
   String variantName;
   String color;
-  String size;
+  String length;
+  String width;
+  String height;
   String material;
   String metric;
   double price;
@@ -15,7 +17,9 @@ class ProductVariants {
     required this.variantName,
     required this.material,
     required this.color,
-    required this.size,
+    required this.length,
+    required this.width,
+    required this.height,
     required this.metric,
     required this.price,
     required this.stocks,

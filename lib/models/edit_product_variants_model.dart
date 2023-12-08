@@ -6,7 +6,9 @@ class EditProductVariants {
   String id;
   String variantName;
   String color;
-  String size;
+  String length;
+  String width;
+  String height;
   String metric;
   String material;
   double price;
@@ -21,7 +23,9 @@ class EditProductVariants {
     required this.variantName,
     required this.material,
     required this.color,
-    required this.size,
+    required this.length,
+    required this.width,
+    required this.height,
     required this.metric,
     required this.price,
     required this.stocks,
