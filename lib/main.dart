@@ -4,6 +4,7 @@ import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/firebasefiles/firebase_user_notification.dart';
 import 'package:furniverse_admin/services/auth_services.dart';
 import 'package:furniverse_admin/services/color_services.dart';
+import 'package:furniverse_admin/services/delivery_services.dart';
 import 'package:furniverse_admin/services/materials_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
@@ -31,8 +32,10 @@ void main() async {
             value: ProductService().streamProducts(), initialData: null),
         StreamProvider.value(
             value: MaterialsServices().streamMaterials(), initialData: null),
-            StreamProvider.value(
+        StreamProvider.value(
             value: ColorService().streamColor(), initialData: null),
+        StreamProvider.value(
+            value: DeliveryService().streamDelivery(), initialData: null),
         StreamProvider<User?>.value(
             value: AuthService().user, initialData: null),
       ],

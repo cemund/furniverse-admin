@@ -29,7 +29,9 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
   String name = "";
   String material = "";
   String color = "";
-  String size = "";
+  String lengths = "";
+  String widths = "";
+  String heights = "";
   String id = "";
   double price = 0.0;
   int stocks = 0;
@@ -53,7 +55,9 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
     name = variant.variantName;
     material = variant.material;
     color = variant.color;
-    size = variant.size;
+    lengths = variant.length;
+    widths = variant.width;
+    heights = variant.height;
     price = variant.price;
     stocks = variant.stocks;
     selectedImage = variant.image;
@@ -69,7 +73,9 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
   final _nameController = TextEditingController();
   final _materialController = TextEditingController();
   final _colorController = TextEditingController();
-  final _dimensionController = TextEditingController();
+  final _lengthController = TextEditingController();
+  final _widthController = TextEditingController();
+  final _heightController = TextEditingController();
   final _priceController = TextEditingController();
   final _stocksController = TextEditingController();
 
@@ -81,7 +87,9 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
     _nameController.dispose();
     _materialController.dispose();
     _colorController.dispose();
-    _dimensionController.dispose();
+    _lengthController.dispose();
+    _widthController.dispose();
+    _heightController.dispose();
     _priceController.dispose();
     _stocksController.dispose();
     super.dispose();
@@ -117,7 +125,9 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
     _nameController.text = name;
     _materialController.text = material;
     _colorController.text = color;
-    _dimensionController.text = size;
+    _lengthController.text = lengths;
+    _widthController.text = widths;
+    _heightController.text = heights;
     _priceController.text = price.toString();
     _stocksController.text = stocks.toString();
     // var fileName = selectedModel != null
@@ -128,6 +138,8 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
         : basename(selectedNewModel!.path);
 
     return AlertDialog(
+      insetPadding: EdgeInsets.all(10),
+      contentPadding: EdgeInsets.all(10),
       content: Form(
         key: _formKey,
         child: Column(
@@ -150,7 +162,7 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
             ),
             const Gap(20),
             SizedBox(
-              height: 250,
+              height: 400,
               width: double.maxFinite,
               child: ListView(
                 physics: const BouncingScrollPhysics(),
@@ -219,34 +231,7 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                     decoration: outlineInputBorder(label: 'Material'),
                   ),
                   const Gap(20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Flexible(child: TextFormField(
-                        controller: _dimensionController,
-                        decoration: outlineInputBorder(label: 'Dimension/Size'),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) =>
-                          value!.isEmpty
-                            ? 'Please input a dimension.'
-                            : null,
-                      ),),
-
-                      // const SizedBox(height: 10),
-
-                      // Flexible(child: TextFormField(
-                      //   controller: _dimensionController,
-                      //   decoration: outlineInputBorder(label: 'Length'),
-                      //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                      //   validator: (value) =>
-                      //     value!.isEmpty
-                      //       ? 'Please input a length.'
-                      //       : null,
-                      // ),),
-                      // const SizedBox(height: 10),
-
-                      Flexible(child: DropdownButtonFormField2<String>(
+                  DropdownButtonFormField2<String>(
                         buttonStyleData: const ButtonStyleData(
                           height: 26,
                           padding: EdgeInsets.only(right: 8),
@@ -301,7 +286,79 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                             selectedCategory = value;
                           });
                         },
-                      ),)
+                      ),
+                  Gap(20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                     Container(
+                        width: 100,
+                        child: TextFormField(
+                          controller: _lengthController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+                            labelText: 'Length',
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: true,
+                          ),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                            ? 'Please input a length.'
+                            : null,
+                        )
+                      ),
+
+                      Padding(padding: EdgeInsets.only(top: 25),
+                        child: Text("X")
+                      ),
+
+                      Container(
+                        width: 100,
+                        child: TextFormField(
+                          controller: _widthController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+                            labelText: 'Width',
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: true,
+                          ),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                            ? 'Please input a width.'
+                            : null,
+                        )
+                      ),
+
+                      Padding(padding: EdgeInsets.only(top: 25),
+                        child: Text("X")
+                      ),
+
+                      Container(
+                        width: 100,
+                        child: TextFormField(
+                          controller: _heightController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+                            labelText: 'Height',
+                          ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: true,
+                          ),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                            ? 'Please input a height.'
+                            : null,
+                        )
+                      ),
                     ],
                   ),
                   const Gap(20),
@@ -456,7 +513,9 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
         material: _materialController.text,
         color: _colorController.text,
         image: selectedImage!,
-        size: _dimensionController.text,
+        length: _lengthController.text,
+        width: _widthController.text,
+        height: _heightController.text,
         model: selectedModel!,
         metric: selectedCategory.toString(),
         price: double.parse(_priceController.text),

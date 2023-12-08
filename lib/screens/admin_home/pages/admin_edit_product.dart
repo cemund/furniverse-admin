@@ -51,6 +51,8 @@ class _EditProductState extends State<EditProduct> {
   final _colorController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _categoryController = TextEditingController();
+  final _laborController = TextEditingController();
+  final _expensesController = TextEditingController();
 
   String categoryHintText = "";
 
@@ -120,6 +122,8 @@ class _EditProductState extends State<EditProduct> {
     _productnameController.text = widget.product!.name;
     selectedCategory = widget.product!.category;
     _descriptionController.text = widget.product!.description;
+    _laborController.text = widget.product!.labor;
+    _expensesController.text = widget.product!.expenses;
 
     // put original product images
     originalProductImages = widget.product!.images;
@@ -281,6 +285,8 @@ class _EditProductState extends State<EditProduct> {
     _colorController.dispose();
     _descriptionController.dispose();
     _categoryController.dispose();
+    _laborController.dispose();
+    _expensesController.dispose();
 
     super.dispose();
   }
@@ -575,7 +581,7 @@ class _EditProductState extends State<EditProduct> {
                                               SizedBox(
                                                 width: 200,
                                                 child: ReadMoreText(
-                                                  "Size: ${variants.oldvariants[index].size} ${variants.oldvariants[index].metric}, Color: ${variants.oldvariants[index].color}, Material: ${variants.oldvariants[index].material} ",
+                                                  "Size: ${variants.oldvariants[index].length}L x ${variants.oldvariants[index].width}W x ${variants.oldvariants[index].height}H ${variants.oldvariants[index].metric}, Color: ${variants.oldvariants[index].color}, Material: ${variants.oldvariants[index].material} ",
                                                   style: const TextStyle(
                                                     color: foregroundColor,
                                                     fontSize: 12,
@@ -736,7 +742,7 @@ class _EditProductState extends State<EditProduct> {
                                             SizedBox(
                                               width: 200,
                                               child: ReadMoreText(
-                                                "Size: ${variant.size}; Color: ${variant.color}; Material: ${variant.material}; ",
+                                                "Size: ${variant.length}L x ${variant.width}W x ${variant.height}H ${variant.metric}; Color: ${variant.color}; Material: ${variant.material}; ",
                                                 style: const TextStyle(
                                                   color: foregroundColor,
                                                   fontSize: 12,
@@ -826,6 +832,39 @@ class _EditProductState extends State<EditProduct> {
                           ),
                         const Gap(10),
                         const AddVariantButton(),
+
+                        const Gap(20),
+                        TextFormField(
+                          controller: _laborController,
+                          decoration: outlineInputBorder(label: 'Labor Cost'),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: false,
+                          ),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) =>
+                            value!.isEmpty
+                              ? 'Please input a Labor Cost.'
+                              : null,
+                        ),
+                  
+                        const Gap(20),
+                        TextFormField(
+                          controller: _expensesController,
+                          decoration: outlineInputBorder(label: 'Other Expenses'),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: false,
+                          ),
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) =>
+                            value!.isEmpty
+                              ? 'Please input a other expenses.'
+                              : null,
+                        ),
+                        
                         const Gap(20),
                         SizedBox(
                           width: double.infinity,
@@ -911,6 +950,8 @@ class _EditProductState extends State<EditProduct> {
     Map<String, dynamic> productData = {
       'product_name': _productnameController.text,
       'product_images': images,
+      'labor_cost': _laborController.text,
+      'expenses' : _expensesController.text,
       'category': selectedCategory,
       'description': _descriptionController.text,
       'variants': productMaps,

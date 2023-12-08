@@ -18,7 +18,7 @@ class ColorList extends StatefulWidget {
 }
 
 class _ColorListState extends State<ColorList> {
-   String? selectedAction;
+  String? selectedAction;
   final List<String> actions = [
     'Delete',
   ];

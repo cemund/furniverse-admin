@@ -5,6 +5,7 @@ import 'package:furniverse_admin/screens/admin_home/pages/admin_customer_req_pag
 import 'package:furniverse_admin/screens/admin_home/pages/admin_home_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_prod_list_dart.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/color_list.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/deliverycost_list.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/materials_list.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/order_status_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/refundrequest.dart';
@@ -38,6 +39,7 @@ class _AdminMainState extends State<AdminMain> {
     const RefundPage(),
     const MaterialsList(),
     const ColorList(),
+    const DeliveryCostList(),
     const UpdateEmail()
   ];
 
@@ -343,8 +345,31 @@ class _AdminMainState extends State<AdminMain> {
                 ListTile(
                   onTap: () {
                     setState(() {
-                      pageName = "UPDATE EMAIL";
+                      pageName = "DELIVERY COST";
                       selectedIdxPage = 8;
+                      Navigator.pop(context);
+                    });
+                  },
+                  minLeadingWidth: 10,
+                  contentPadding: EdgeInsets.zero,
+                  leading:
+                      const Icon(Icons.delivery_dining_outlined, color: Colors.white),
+                  title: const Text(
+                    'Delivery Cost',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontFamily: 'Nunito Sans',
+                      fontWeight: FontWeight.w700,
+                      height: 0,
+                    ),
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
+                    setState(() {
+                      pageName = "UPDATE EMAIL";
+                      selectedIdxPage = 9;
                       Navigator.pop(context);
                     });
                   },
