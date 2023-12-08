@@ -23,22 +23,23 @@ class AuthService {
       );
       User? user = result.user;
 
-      FirebaseFirestore.instance
-        .collection('users')
-        .doc(user!.uid)
-        .get()
-        .then((ds) {
-           final samplee = "${ds["role"]}";
-           if (samplee != "admin") {
-            Fluttertoast.showToast(
-              msg: "Invalid Account",
-              backgroundColor: Colors.grey,
-            );
-            _auth.signOut();
-            SystemChannels.platform.invokeMethod('SystemNavigator.pop'); 
-           }
-        });
-        
+      //TODO: to uncomment
+      // FirebaseFirestore.instance
+      //   .collection('users')
+      //   .doc(user!.uid)
+      //   .get()
+      //   .then((ds) {
+      //      final samplee = "${ds["role"]}";
+      //      if (samplee != "admin") {
+      //       Fluttertoast.showToast(
+      //         msg: "Invalid Account",
+      //         backgroundColor: Colors.grey,
+      //       );
+      //       _auth.signOut();
+      //       SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+      //      }
+      //   });
+
       return user;
     } on FirebaseAuthException catch (e) {
       print(e.toString());

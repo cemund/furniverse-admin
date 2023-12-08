@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
+import 'package:furniverse_admin/models/materials_model.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/color_selection_page.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/material_selection_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/updateemail.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/upload_image_services.dart';
@@ -32,7 +35,6 @@ class AddProduct extends StatefulWidget {
 }
 
 class _AddProductState extends State<AddProduct> {
-  
   final _formKey = GlobalKey<FormState>();
   final _productnameController = TextEditingController();
   final _materialController = TextEditingController();
@@ -45,12 +47,15 @@ class _AddProductState extends State<AddProduct> {
   final _categoryController = TextEditingController();
   final _laborController = TextEditingController();
   final _expensesController = TextEditingController();
+  final _colorQuantityRequired = TextEditingController();
+  final _materialQuantityRequired = TextEditingController();
 
   UploadTask? uploadTask;
   File? file;
   List<ProductVariants> list = [];
   List<Map<String, dynamic>> listItems = [];
   List<String> productImages = [];
+  List<Materials> customizeMaterials = [];
 
   //image picker
   XFile? selectedImage;
@@ -72,6 +77,12 @@ class _AddProductState extends State<AddProduct> {
     // 'Accent Furniture',
   ];
   String? selectedCategory;
+
+  void setCustomizeMaterialsIds(List<Materials> materials) {
+    setState(() {
+      customizeMaterials = materials;
+    });
+  }
 
   Future<void> pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -318,7 +329,7 @@ class _AddProductState extends State<AddProduct> {
                             });
                           },
                         ),
-                    
+
                         // DONT DELETE for backup
                         // const SizedBox(height: 20),
                         // TextFormField(
@@ -429,7 +440,7 @@ class _AddProductState extends State<AddProduct> {
                                     // return null;
                                   },
                                   // children: [
-                    
+
                                   // ],
                                 ),
                               ),
@@ -520,7 +531,7 @@ class _AddProductState extends State<AddProduct> {
                           ),
                         ),
                         const SizedBox(height: 10),
-                    
+
                         if (variants.isNotEmpty)
                           ListView.separated(
                             shrinkWrap: true,
@@ -530,10 +541,11 @@ class _AddProductState extends State<AddProduct> {
                             itemCount: variants.length,
                             itemBuilder: (context, index) {
                               final variant = variants[index];
-                    
+
                               return Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -543,7 +555,8 @@ class _AddProductState extends State<AddProduct> {
                                         clipBehavior: Clip.hardEdge,
                                         decoration: BoxDecoration(
                                           color: foregroundColor,
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                         child: Image.file(
                                           File(variant.image.path),
@@ -658,7 +671,7 @@ class _AddProductState extends State<AddProduct> {
                                                                 listen: false);
                                                         provider.removeVariant(
                                                             variant);
-                    
+
                                                         Fluttertoast.showToast(
                                                           msg:
                                                               "Variant Deleted Successfully.",
@@ -703,16 +716,69 @@ class _AddProductState extends State<AddProduct> {
                               //   //     ),
                               //   //   ),
                               //   // ),
-                    
+
                               //   ],
                               // );
                             },
                           ),
-                        
-                        const Gap(10),
+
                         const AddVariantButton(),
-                  
                         const Gap(20),
+
+                        const Text(
+                          'USER CUSTOMIZATION',
+                          style: TextStyle(
+                            color: Color(0xFF43464B),
+                            fontSize: 13,
+                            fontFamily: 'Nunito Sans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Gap(10),
+
+                        SizedBox(
+                          height: 60,
+                          width: double.infinity,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return MaterialSelectionPage(
+                                      onTap: setCustomizeMaterialsIds,
+                                      materials: customizeMaterials,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: DottedBorder(
+                              color: foregroundColor,
+                              radius: const Radius.circular(8),
+                              borderType: BorderType.RRect,
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "${customizeMaterials.length} Materials Selected",
+                                      style: TextStyle(
+                                        color: foregroundColor,
+                                        fontSize: 16,
+                                        fontFamily: 'Nunito Sans',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Gap(20),
+
                         TextFormField(
                           controller: _laborController,
                           decoration: outlineInputBorder(label: 'Labor Cost'),
@@ -720,27 +786,74 @@ class _AddProductState extends State<AddProduct> {
                             signed: false,
                             decimal: false,
                           ),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) =>
-                            value!.isEmpty
+                          validator: (value) => value!.isEmpty
                               ? 'Please input a Labor Cost.'
                               : null,
                         ),
-                  
+
                         const Gap(20),
                         TextFormField(
                           controller: _expensesController,
-                          decoration: outlineInputBorder(label: 'Other Expenses'),
+                          decoration:
+                              outlineInputBorder(label: 'Other Expenses'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: false,
                           ),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) =>
-                            value!.isEmpty
+                          validator: (value) => value!.isEmpty
                               ? 'Please input a other expenses.'
+                              : null,
+                        ),
+                        const Gap(20),
+                        const Text(
+                          'Requrired Quantity of Resources for Customization',
+                          style: TextStyle(
+                            color: Color(0xFF43464B),
+                            fontSize: 13,
+                            fontFamily: 'Nunito Sans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Gap(10),
+                        TextFormField(
+                          controller: _materialQuantityRequired,
+                          decoration:
+                              outlineInputBorder(label: 'Number of Material'),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: true,
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                              ? 'Please input a required quantity for material.'
+                              : null,
+                        ),
+                        const Gap(10),
+                        TextFormField(
+                          controller: _colorQuantityRequired,
+                          decoration:
+                              outlineInputBorder(label: 'Number of Paint'),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: true,
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                              ? 'Please input a required quantity for paint.'
                               : null,
                         ),
                         // SizedBox(
@@ -776,14 +889,18 @@ class _AddProductState extends State<AddProduct> {
                           child: ElevatedButton(
                             onPressed: () {
                               final isValid = _formKey.currentState!.validate();
-                                if (!isValid || listSelectedImage.isEmpty || variants.isEmpty) {
-                                  Fluttertoast.showToast(
-                                    msg: "Please complete the information needed.",
-                                    backgroundColor: Colors.grey,
-                                  );
-                                  print("Input values are invalid");
-                                  return;
-                                } 
+                              if (!isValid ||
+                                  listSelectedImage.isEmpty ||
+                                  variants.isEmpty ||
+                                  customizeMaterials.isEmpty) {
+                                Fluttertoast.showToast(
+                                  msg:
+                                      "Please complete the information needed.",
+                                  backgroundColor: Colors.grey,
+                                );
+                                print("Input values are invalid");
+                                return;
+                              }
                               showDialog(
                                 context: context,
                                 builder: (context) => ConfirmationAlertDialog(
@@ -797,7 +914,7 @@ class _AddProductState extends State<AddProduct> {
                                         Navigator.pop(context);
                                         Navigator.pop(context);
                                       }
-                    
+
                                       // setState(() {
                                       //   isSaving = true;
                                       // });
@@ -805,7 +922,7 @@ class _AddProductState extends State<AddProduct> {
                                         msg: "Adding New Product...",
                                         backgroundColor: Colors.grey,
                                       );
-                    
+
                                       await saveproduct(context);
                                       // setState(() {
                                       //   isSaving =
@@ -815,9 +932,9 @@ class _AddProductState extends State<AddProduct> {
                                         msg: "Product Added Successfully",
                                         backgroundColor: Colors.grey,
                                       );
-                    
+
                                       // saveproduct(context).then((_) {
-                    
+
                                       //   // Show the "Upload Complete" snackbar
                                       //   // ScaffoldMessenger.of(context).showSnackBar(
                                       //   //   const SnackBar(
@@ -825,7 +942,7 @@ class _AddProductState extends State<AddProduct> {
                                       //   //     duration: Duration(seconds: 2),
                                       //   //   ),
                                       //   // );
-                    
+
                                       // });
                                     },
                                     tapNoString: "No",
@@ -871,6 +988,12 @@ class _AddProductState extends State<AddProduct> {
     // final model = await uploadModelToFirebase(file);
     final productMaps = await provider.getMap();
 
+    //get materialIds
+    List<String> materialIds = [];
+    for (Materials material in customizeMaterials) {
+      materialIds.add(material.id);
+    }
+
     Map<String, dynamic> productData = {
       'product_name': _productnameController.text,
       // 'material': _materialController.text,
@@ -878,11 +1001,14 @@ class _AddProductState extends State<AddProduct> {
       // 'price': _priceController.text,
       // 'product 3D model': model,
       'labor_cost': _laborController.text,
-      'expenses' : _expensesController.text,
+      'expenses': _expensesController.text,
       'product_images': images,
       'category': selectedCategory,
       'description': _descriptionController.text,
       'variants': productMaps,
+      'noMaterialsReq': double.parse(_materialQuantityRequired.text),
+      'noPaintReq': double.parse(_colorQuantityRequired.text),
+      'materialIds': materialIds,
     };
 
     // Add the product to Firestore
