@@ -11,7 +11,7 @@ class Product {
   final List<dynamic> images;
   final String description;
   final List<dynamic> variants;
-  final List<String> materialIds;
+  final List<dynamic> materialIds;
 
   Product({
     required this.id,
