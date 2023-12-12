@@ -122,8 +122,8 @@ class _EditProductState extends State<EditProduct> {
     _productnameController.text = widget.product!.name;
     selectedCategory = widget.product!.category;
     _descriptionController.text = widget.product!.description;
-    _laborController.text = widget.product!.labor;
-    _expensesController.text = widget.product!.expenses;
+    _laborController.text = widget.product!.labor.toStringAsFixed(0);
+    _expensesController.text = widget.product!.expenses.toStringAsFixed(0);
 
     // put original product images
     originalProductImages = widget.product!.images;
@@ -841,30 +841,33 @@ class _EditProductState extends State<EditProduct> {
                             signed: false,
                             decimal: false,
                           ),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) =>
-                            value!.isEmpty
+                          validator: (value) => value!.isEmpty
                               ? 'Please input a Labor Cost.'
                               : null,
                         ),
-                  
+
                         const Gap(20),
                         TextFormField(
                           controller: _expensesController,
-                          decoration: outlineInputBorder(label: 'Other Expenses'),
+                          decoration:
+                              outlineInputBorder(label: 'Other Expenses'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: false,
                           ),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) =>
-                            value!.isEmpty
+                          validator: (value) => value!.isEmpty
                               ? 'Please input a other expenses.'
                               : null,
                         ),
-                        
+
                         const Gap(20),
                         SizedBox(
                           width: double.infinity,
@@ -950,8 +953,8 @@ class _EditProductState extends State<EditProduct> {
     Map<String, dynamic> productData = {
       'product_name': _productnameController.text,
       'product_images': images,
-      'labor_cost': _laborController.text,
-      'expenses' : _expensesController.text,
+      'labor_cost': double.parse(_laborController.text),
+      'expenses': double.parse(_expensesController.text),
       'category': selectedCategory,
       'description': _descriptionController.text,
       'variants': productMaps,

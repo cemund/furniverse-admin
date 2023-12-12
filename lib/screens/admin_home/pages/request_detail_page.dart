@@ -112,6 +112,7 @@ class Body extends StatelessWidget {
     _quantityController.text = request.reqquantity.toString();
     _materialController.text = request.material;
     _othersController.text = request.others;
+    _priceController.text = (request.price ?? 0.0).toStringAsFixed(0);
 
     if (request.price != null) {
       _priceController.text = request.price?.toStringAsFixed(2) ?? "";
@@ -310,9 +311,7 @@ class Body extends StatelessWidget {
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: (value) =>
-              value!.isEmpty
-                ? 'Please input a price.'
-                : null,
+                value!.isEmpty ? 'Please input a price.' : null,
           ),
           const SizedBox(height: 20),
           if (request.reqStatus.toUpperCase() == 'PENDING')

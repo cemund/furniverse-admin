@@ -72,9 +72,7 @@ class _AddProductState extends State<AddProduct> {
     'Dining Room',
     'Office',
     'Outdoor',
-    // 'Kids\' Furniture',
     'Storage and Organization',
-    // 'Accent Furniture',
   ];
   String? selectedCategory;
 
@@ -1000,8 +998,8 @@ class _AddProductState extends State<AddProduct> {
       // 'dimension': _dimensionController.text,
       // 'price': _priceController.text,
       // 'product 3D model': model,
-      'labor_cost': _laborController.text,
-      'expenses': _expensesController.text,
+      'labor_cost': double.parse(_laborController.text),
+      'expenses': double.parse(_expensesController.text),
       'product_images': images,
       'category': selectedCategory,
       'description': _descriptionController.text,

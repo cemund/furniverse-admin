@@ -2,9 +2,9 @@ class ProductVariants {
   String id;
   String variantName;
   String color;
-  String length;
-  String width;
-  String height;
+  double length;
+  double width;
+  double height;
   String material;
   String metric;
   double price;
