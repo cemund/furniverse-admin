@@ -178,170 +178,166 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                           ],
                         )),
                   const Gap(20),
-
                   TextFormField(
-                    controller: _nameController,
-                    decoration: outlineInputBorder(label: 'Variant Name'),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) =>
-                      value!.isEmpty
-                        ? 'Please input a variant name.'
-                        : null
-                  ),
+                      controller: _nameController,
+                      decoration: outlineInputBorder(label: 'Variant Name'),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) => value!.isEmpty
+                          ? 'Please input a variant name.'
+                          : null),
                   const Gap(20),
-                  
                   TextFormField(
                     controller: _colorController,
                     decoration: outlineInputBorder(label: 'Color'),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
-                      value!.isEmpty
-                        ? 'Please input a color.'
-                        : null,
+                        value!.isEmpty ? 'Please input a color.' : null,
                   ),
                   const Gap(20),
-                  
                   TextFormField(
                     controller: _materialController,
                     decoration: outlineInputBorder(label: 'Material'),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
-                      value!.isEmpty
-                        ? 'Please input a material.'
-                        : null,
+                        value!.isEmpty ? 'Please input a material.' : null,
                   ),
                   const Gap(20),
-
                   DropdownButtonFormField2<String>(
-                        buttonStyleData: const ButtonStyleData(
-                          height: 26,
-                          padding: EdgeInsets.only(right: 8),
-                        ),
-                        hint: const Text(
-                          'Select Metric Length',
-                          style: TextStyle(fontSize: 16),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        iconStyleData: const IconStyleData(
-                          icon: Icon(
-                            Icons.arrow_drop_down,
-                          ),
-                          iconSize: 24,
-                        ),
-                        dropdownStyleData: DropdownStyleData(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.symmetric(vertical: 16),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        // autovalidateMode: AutovalidateMode.onUserInteraction,
-                        // validator: (value) =>
-                        //     value!.isEmpty ? 'Please select a metric length.' : null,
-                        items: items
-                            .map((String item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      // fontWeight: FontWeight.bold,
-                                      // color: Colors.],
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ))
-                            .toList(),
-                        isExpanded: true,
-                        value: selectedCategory,
-                        onChanged: (String? value) {
-                          setState(() {
-                            selectedCategory = value;
-                          });
-                        },
+                    buttonStyleData: const ButtonStyleData(
+                      height: 26,
+                      padding: EdgeInsets.only(right: 8),
+                    ),
+                    hint: const Text(
+                      'Select Metric Length',
+                      style: TextStyle(fontSize: 16),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    iconStyleData: const IconStyleData(
+                      icon: Icon(
+                        Icons.arrow_drop_down,
                       ),
-
-                      Gap(20),
-
+                      iconSize: 24,
+                    ),
+                    dropdownStyleData: DropdownStyleData(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    // autovalidateMode: AutovalidateMode.onUserInteraction,
+                    // validator: (value) =>
+                    //     value!.isEmpty ? 'Please select a metric length.' : null,
+                    items: items
+                        .map((String item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  // fontWeight: FontWeight.bold,
+                                  // color: Colors.],
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ))
+                        .toList(),
+                    isExpanded: true,
+                    value: selectedCategory,
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedCategory = value;
+                      });
+                    },
+                  ),
+                  Gap(20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: 100,
-                        child: TextFormField(
-                          controller: _lengthController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-                            labelText: 'Length',
-                          ),
-                          keyboardType: const TextInputType.numberWithOptions(
-                            signed: false,
-                            decimal: true,
-                          ),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) => value!.isEmpty
-                            ? 'Please input a length.'
-                            : null,
-                        )
-                      ),
+                          width: 100,
+                          child: TextFormField(
+                            controller: _lengthController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              labelText: 'Length',
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              signed: false,
+                              decimal: true,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) => value!.isEmpty
+                                ? 'Please input a length.'
+                                : null,
+                          )),
 
-                      Padding(padding: EdgeInsets.only(top: 25),
-                        child: Text("X")
-                      ),
-
-                      Container(
-                        width: 100,
-                        child: TextFormField(
-                          controller: _widthController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-                            labelText: 'Width',
-                          ),
-                          keyboardType: const TextInputType.numberWithOptions(
-                            signed: false,
-                            decimal: true,
-                          ),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) => value!.isEmpty
-                            ? 'Please input a width.'
-                            : null,
-                        )
-                      ),
-
-                      Padding(padding: EdgeInsets.only(top: 25),
-                        child: Text("X")
-                      ),
+                      Padding(
+                          padding: EdgeInsets.only(top: 25), child: Text("X")),
 
                       Container(
-                        width: 100,
-                        child: TextFormField(
-                          controller: _heightController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-                            labelText: 'Height',
-                          ),
-                          keyboardType: const TextInputType.numberWithOptions(
-                            signed: false,
-                            decimal: true,
-                          ),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) => value!.isEmpty
-                            ? 'Please input a height.'
-                            : null,
-                        )
-                      ),
+                          width: 100,
+                          child: TextFormField(
+                            controller: _widthController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              labelText: 'Width',
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              signed: false,
+                              decimal: true,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) =>
+                                value!.isEmpty ? 'Please input a width.' : null,
+                          )),
+
+                      Padding(
+                          padding: EdgeInsets.only(top: 25), child: Text("X")),
+
+                      Container(
+                          width: 100,
+                          child: TextFormField(
+                            controller: _heightController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              labelText: 'Height',
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              signed: false,
+                              decimal: true,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) => value!.isEmpty
+                                ? 'Please input a height.'
+                                : null,
+                          )),
 
                       // Flexible(child: DropdownButtonFormField2<String>(
                       //   buttonStyleData: const ButtonStyleData(
@@ -401,9 +397,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                       // ),)
                     ],
                   ),
-                  
                   const Gap(20),
-                  
                   TextFormField(
                     controller: _priceController,
                     decoration: outlineInputBorder(label: 'Price'),
@@ -414,11 +408,8 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
-                      value!.isEmpty
-                        ? 'Please input a price.'
-                        : null,
+                        value!.isEmpty ? 'Please input a price.' : null,
                   ),
-                  
                   const Gap(20),
                   TextFormField(
                     controller: _stocksController,
@@ -430,11 +421,8 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
-                      value!.isEmpty
-                        ? 'Please input a stock/s.'
-                        : null,
+                        value!.isEmpty ? 'Please input a stock/s.' : null,
                   ),
-                  
                   const Gap(20),
                   GestureDetector(
                     onTap: selectFile,
@@ -495,22 +483,22 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                     child: ElevatedButton(
                       onPressed: () {
                         final isValid = _formKey.currentState!.validate();
-                           if (!isValid) return;
+                        if (!isValid) return;
                         showDialog(
                           context: context,
                           builder: (context) => ConfirmationAlertDialog(
-                            title: "Are you sure you want to add this variant?",
-                            onTapNo: () {
-                              Navigator.pop(context);
-                            },
-                            onTapYes: () async {
-                            // final currentContext = context; // Capture the context outside the async block
-                              addVariant(context);
-                              Navigator.pop(context);
-                            },
-                            tapNoString: "No",
-                            tapYesString: "Yes"
-                          ),
+                              title:
+                                  "Are you sure you want to add this variant?",
+                              onTapNo: () {
+                                Navigator.pop(context);
+                              },
+                              onTapYes: () async {
+                                // final currentContext = context; // Capture the context outside the async block
+                                addVariant(context);
+                                Navigator.pop(context);
+                              },
+                              tapNoString: "No",
+                              tapYesString: "Yes"),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -565,9 +553,9 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
           material: _materialController.text,
           color: _colorController.text,
           image: selectedImage!,
-          length: _lengthController.text,
-          width: _widthController.text,
-          height: _heightController.text,
+          length: double.parse(_lengthController.text),
+          width: double.parse(_widthController.text),
+          height: double.parse(_heightController.text),
           metric: selectedCategory.toString(),
           model: selectedModel!,
           price: double.parse(_priceController.text),

@@ -4,8 +4,8 @@ class Product {
   final String id;
   final String name;
   final String category;
-  final String labor;
-  final String expenses;
+  final double labor;
+  final double expenses;
   final double noMaterialsReq;
   final double noPaintReq;
   final List<dynamic> images;
@@ -35,8 +35,8 @@ class Product {
       name: data['product_name'] ?? '',
       category: data['category'] ?? '',
       description: data['description'] ?? '',
-      labor: data['labor_cost'] ?? '',
-      expenses: data['expenses'] ?? '',
+      labor: (data['labor_cost'] ?? 0.0).toDouble() ?? '',
+      expenses: (data['expenses'] ?? 0.0).toDouble() ?? '',
       images: data['product_images'],
       variants: data['variants'],
       noMaterialsReq: (data['noMaterialsReq'] ?? 0.0).toDouble(),

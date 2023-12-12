@@ -29,9 +29,9 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
   String name = "";
   String material = "";
   String color = "";
-  String lengths = "";
-  String widths = "";
-  String heights = "";
+  double lengths = 0.0;
+  double widths = 0.0;
+  double heights = 0.0;
   String id = "";
   double price = 0.0;
   int stocks = 0;
@@ -125,9 +125,9 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
     _nameController.text = name;
     _materialController.text = material;
     _colorController.text = color;
-    _lengthController.text = lengths;
-    _widthController.text = widths;
-    _heightController.text = heights;
+    _lengthController.text = lengths.toStringAsFixed(0);
+    _widthController.text = widths.toStringAsFixed(0);
+    _heightController.text = heights.toStringAsFixed(0);
     _priceController.text = price.toString();
     _stocksController.text = stocks.toString();
     // var fileName = selectedModel != null
@@ -232,133 +232,137 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                   ),
                   const Gap(20),
                   DropdownButtonFormField2<String>(
-                        buttonStyleData: const ButtonStyleData(
-                          height: 26,
-                          padding: EdgeInsets.only(right: 8),
-                        ),
-                        hint: const Text(
-                          'Select Metric Length',
-                          style: TextStyle(fontSize: 16),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        iconStyleData: const IconStyleData(
-                          icon: Icon(
-                            Icons.arrow_drop_down,
-                          ),
-                          iconSize: 24,
-                        ),
-                        dropdownStyleData: DropdownStyleData(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.symmetric(vertical: 16),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        // validator: (value) =>
-                        //     value!.isEmpty ? 'Please select a metric length.' : null,
-                        items: items
-                            .map((String item) => DropdownMenuItem<String>(
-                                  value: item,
-                                  child: Text(
-                                    item,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      // fontWeight: FontWeight.bold,
-                                      // color: Colors.],
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ))
-                            .toList(),
-                        isExpanded: true,
-                        value: selectedCategory,
-                        onChanged: (String? value) {
-                          setState(() {
-                            selectedCategory = value;
-                          });
-                        },
+                    buttonStyleData: const ButtonStyleData(
+                      height: 26,
+                      padding: EdgeInsets.only(right: 8),
+                    ),
+                    hint: const Text(
+                      'Select Metric Length',
+                      style: TextStyle(fontSize: 16),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    iconStyleData: const IconStyleData(
+                      icon: Icon(
+                        Icons.arrow_drop_down,
                       ),
+                      iconSize: 24,
+                    ),
+                    dropdownStyleData: DropdownStyleData(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    // validator: (value) =>
+                    //     value!.isEmpty ? 'Please select a metric length.' : null,
+                    items: items
+                        .map((String item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  // fontWeight: FontWeight.bold,
+                                  // color: Colors.],
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ))
+                        .toList(),
+                    isExpanded: true,
+                    value: selectedCategory,
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedCategory = value;
+                      });
+                    },
+                  ),
                   Gap(20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                     Container(
-                        width: 100,
-                        child: TextFormField(
-                          controller: _lengthController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-                            labelText: 'Length',
-                          ),
-                          keyboardType: const TextInputType.numberWithOptions(
-                            signed: false,
-                            decimal: true,
-                          ),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) => value!.isEmpty
-                            ? 'Please input a length.'
-                            : null,
-                        )
-                      ),
-
-                      Padding(padding: EdgeInsets.only(top: 25),
-                        child: Text("X")
-                      ),
-
                       Container(
-                        width: 100,
-                        child: TextFormField(
-                          controller: _widthController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-                            labelText: 'Width',
-                          ),
-                          keyboardType: const TextInputType.numberWithOptions(
-                            signed: false,
-                            decimal: true,
-                          ),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) => value!.isEmpty
-                            ? 'Please input a width.'
-                            : null,
-                        )
-                      ),
-
-                      Padding(padding: EdgeInsets.only(top: 25),
-                        child: Text("X")
-                      ),
-
+                          width: 100,
+                          child: TextFormField(
+                            controller: _lengthController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              labelText: 'Length',
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              signed: false,
+                              decimal: true,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) => value!.isEmpty
+                                ? 'Please input a length.'
+                                : null,
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(top: 25), child: Text("X")),
                       Container(
-                        width: 100,
-                        child: TextFormField(
-                          controller: _heightController,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-                            labelText: 'Height',
-                          ),
-                          keyboardType: const TextInputType.numberWithOptions(
-                            signed: false,
-                            decimal: true,
-                          ),
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) => value!.isEmpty
-                            ? 'Please input a height.'
-                            : null,
-                        )
-                      ),
+                          width: 100,
+                          child: TextFormField(
+                            controller: _widthController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              labelText: 'Width',
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              signed: false,
+                              decimal: true,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) =>
+                                value!.isEmpty ? 'Please input a width.' : null,
+                          )),
+                      Padding(
+                          padding: EdgeInsets.only(top: 25), child: Text("X")),
+                      Container(
+                          width: 100,
+                          child: TextFormField(
+                            controller: _heightController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8))),
+                              labelText: 'Height',
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              signed: false,
+                              decimal: true,
+                            ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) => value!.isEmpty
+                                ? 'Please input a height.'
+                                : null,
+                          )),
                     ],
                   ),
                   const Gap(20),
@@ -449,23 +453,23 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                         showDialog(
                           context: context,
                           builder: (context) => ConfirmationAlertDialog(
-                            title: "Are you sure you want to save the changes in this variant?",
-                            onTapNo: () {
-                              Navigator.pop(context);
-                            },
-                            onTapYes: () async {
-                            // final currentContext = context; // Capture the context outside the async block
-                              editVariant(context);
-                                    
-                              Fluttertoast.showToast(
-                                msg: "Variant Changed Successfully.",
-                                backgroundColor: Colors.grey,
-                              );
-                              Navigator.pop(context);
-                            },
-                            tapNoString: "No",
-                            tapYesString: "Yes"
-                          ),
+                              title:
+                                  "Are you sure you want to save the changes in this variant?",
+                              onTapNo: () {
+                                Navigator.pop(context);
+                              },
+                              onTapYes: () async {
+                                // final currentContext = context; // Capture the context outside the async block
+                                editVariant(context);
+
+                                Fluttertoast.showToast(
+                                  msg: "Variant Changed Successfully.",
+                                  backgroundColor: Colors.grey,
+                                );
+                                Navigator.pop(context);
+                              },
+                              tapNoString: "No",
+                              tapYesString: "Yes"),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -513,9 +517,9 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
         material: _materialController.text,
         color: _colorController.text,
         image: selectedImage!,
-        length: _lengthController.text,
-        width: _widthController.text,
-        height: _heightController.text,
+        length: double.parse(_lengthController.text),
+        width: double.parse(_widthController.text),
+        height: double.parse(_heightController.text),
         model: selectedModel!,
         metric: selectedCategory.toString(),
         price: double.parse(_priceController.text),
