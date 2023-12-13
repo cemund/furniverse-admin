@@ -11,8 +11,7 @@ class ColorService {
           FieldValue.serverTimestamp(); // Get a server-side timestamp
       colorsData['timestamp'] =
           colorTimestamp; // Add the timestamp to your data
-      DocumentReference productDocRef =
-          await _colorCollection.add(colorsData);
+      DocumentReference productDocRef = await _colorCollection.add(colorsData);
 
       // for (int i = 0; i < materialVariations.length; i++) {
       //   await materialDocRef.collection('variants').add(materialVariations[i]);
@@ -55,61 +54,53 @@ class ColorService {
     }
   }
 
-  Future<void> reducedQuantity(List<dynamic> color) async {
+  Future<void> reducedQuantity(String colorId, double quantity) async {
     try {
-      // await _materialsCollection
-      //     .doc(materialId)
-      //     .update({'quantity': FieldValue.increment(-quantity)});
-      // print(materials);
-      if (color[0]['materialId'] == "") return;
-      for (var material in color) {
-        DocumentSnapshot doc =
-            await _colorCollection.doc(material['materialId']).get();
-        Map data = doc.data() as Map;
-        var variants = data['variants'];
-        List<Map> newVariants = [];
-        for (var variant in variants) {
-          if (variant['id'] == material['variationId']) {
-            variant['stocks'] = variant['stocks'] - material['quantity'];
-          }
-          newVariants.add(variant);
+      final colors = await _colorCollection.doc(colorId).get();
+      if (colors.exists) {
+        double currentStocks = (colors.data() as Map)['stocks'].toDouble() ?? 0;
+
+        if (currentStocks >= quantity) {
+          await _colorCollection
+              .doc(colorId)
+              .update({'stocks': FieldValue.increment(-quantity)});
+        } else {
+          // Handle the case where there are not enough stocks
+          print('Not enough stocks available for ColorId: $colorId.');
         }
+
         await _colorCollection
-            .doc(material['materialId'])
-            .update({'variants': newVariants});
-        // .update({'quantity': FieldValue.increment(-quantity)});
+            .doc(colorId)
+            .update({'sales': FieldValue.increment(1)});
+      } else {
+        print("Color Id: $colorId does not exist.");
       }
     } catch (e) {
-      print('Error updating material quantity: $e');
+      print('Error updating color quantity: $e');
     }
   }
 
-  Future<void> addQuantity(List<dynamic> color) async {
+  Future<void> addQuantity(String colorId, double quantity) async {
     try {
-      // await _materialsCollection
-      //     .doc(materialId)
-      //     .update({'quantity': FieldValue.increment(-quantity)});
-      // print(materials);
-      if (color[0]['materialId'] == "") return;
-      for (var material in color) {
-        DocumentSnapshot doc =
-            await _colorCollection.doc(material['materialId']).get();
-        Map data = doc.data() as Map;
-        var variants = data['variants'];
-        List<Map> newVariants = [];
-        for (var variant in variants) {
-          if (variant['id'] == material['variationId']) {
-            variant['stocks'] = variant['stocks'] + material['quantity'];
-          }
-          newVariants.add(variant);
-        }
+      final colors = await _colorCollection.doc(colorId).get();
+      if (colors.exists) {
         await _colorCollection
-            .doc(material['materialId'])
-            .update({'variants': newVariants});
-        // .update({'quantity': FieldValue.increment(-quantity)});
+            .doc(colorId)
+            .update({'stocks': FieldValue.increment(quantity)});
+
+        int sales = (colors.data() as Map)['sales'] ?? 0;
+        if (sales > 0) {
+          await _colorCollection
+              .doc(colorId)
+              .update({'sales': FieldValue.increment(-1)});
+        }
+      } else {
+        print("Color Id: $colorId does not exist.");
       }
+
+      //TODO: add sales
     } catch (e) {
-      print('Error updating material quantity: $e');
+      print('Error updating color quantity: $e');
     }
   }
 
