@@ -55,61 +55,54 @@ class MaterialsServices {
     }
   }
 
-  Future<void> reducedQuantity(List<dynamic> materials) async {
+  Future<void> reducedQuantity(String materialId, double quantity) async {
     try {
-      // await _materialsCollection
-      //     .doc(materialId)
-      //     .update({'quantity': FieldValue.increment(-quantity)});
-      // print(materials);
-      if (materials[0]['materialId'] == "") return;
-      for (var material in materials) {
-        DocumentSnapshot doc =
-            await _materialsCollection.doc(material['materialId']).get();
-        Map data = doc.data() as Map;
-        var variants = data['variants'];
-        List<Map> newVariants = [];
-        for (var variant in variants) {
-          if (variant['id'] == material['variationId']) {
-            variant['stocks'] = variant['stocks'] - material['quantity'];
-          }
-          newVariants.add(variant);
+      final materials = await _materialsCollection.doc(materialId).get();
+      if (materials.exists) {
+        double currentStocks =
+            (materials.data() as Map)['stocks'].toDouble() ?? 0;
+
+        if (currentStocks >= quantity) {
+          await _materialsCollection
+              .doc(materialId)
+              .update({'stocks': FieldValue.increment(-quantity)});
+        } else {
+          // Handle the case where there are not enough stocks
+          print('Not enough stocks available for Material Id: $materialId.');
         }
+
         await _materialsCollection
-            .doc(material['materialId'])
-            .update({'variants': newVariants});
-        // .update({'quantity': FieldValue.increment(-quantity)});
+            .doc(materialId)
+            .update({'sales': FieldValue.increment(1)});
+      } else {
+        print("Material Id: $materialId does not exist.");
       }
     } catch (e) {
-      print('Error updating material quantity: $e');
+      print('Error updating color quantity: $e');
     }
   }
 
-  Future<void> addQuantity(List<dynamic> materials) async {
+  Future<void> addQuantity(String materialId, double quantity) async {
     try {
-      // await _materialsCollection
-      //     .doc(materialId)
-      //     .update({'quantity': FieldValue.increment(-quantity)});
-      // print(materials);
-      if (materials[0]['materialId'] == "") return;
-      for (var material in materials) {
-        DocumentSnapshot doc =
-            await _materialsCollection.doc(material['materialId']).get();
-        Map data = doc.data() as Map;
-        var variants = data['variants'];
-        List<Map> newVariants = [];
-        for (var variant in variants) {
-          if (variant['id'] == material['variationId']) {
-            variant['stocks'] = variant['stocks'] + material['quantity'];
-          }
-          newVariants.add(variant);
-        }
+      final materials = await _materialsCollection.doc(materialId).get();
+      if (materials.exists) {
         await _materialsCollection
-            .doc(material['materialId'])
-            .update({'variants': newVariants});
-        // .update({'quantity': FieldValue.increment(-quantity)});
+            .doc(materialId)
+            .update({'stocks': FieldValue.increment(quantity)});
+
+        int sales = (materials.data() as Map)['sales'] ?? 0;
+        if (sales > 0) {
+          await _materialsCollection
+              .doc(materialId)
+              .update({'sales': FieldValue.increment(-1)});
+        }
+      } else {
+        print("Material Id: $materialId does not exist.");
       }
+
+      //TODO: add sales
     } catch (e) {
-      print('Error updating material quantity: $e');
+      print('Error updating color quantity: $e');
     }
   }
 

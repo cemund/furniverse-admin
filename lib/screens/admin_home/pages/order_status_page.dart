@@ -4,6 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/models/notification.dart';
 import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/order_detail_screen.dart';
+import 'package:furniverse_admin/services/color_services.dart';
+import 'package:furniverse_admin/services/materials_services.dart';
 import 'package:furniverse_admin/services/messaging_services.dart';
 import 'package:furniverse_admin/services/notification_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
@@ -405,11 +407,15 @@ class _OrdersCardState extends State<OrdersCard> {
                                                                                 () async {
                                                                               setState(() {});
 
-                                                                              // initialize fields
                                                                               String title = "";
                                                                               String subtitile = "";
                                                                               String? notifImage = await ProductService().getProductImage(order.products[0]['productId']);
-                                                                              await ProductService().addQuantity(order.products);
+                                                                              if (order.requestDetails.isEmpty) {
+                                                                                await ProductService().addQuantity(order.products);
+                                                                              } else {
+                                                                                await ColorService().addQuantity(widget.order.requestDetails['colorId'], widget.order.requestDetails['colorQuantity']);
+                                                                                await MaterialsServices().addQuantity(widget.order.requestDetails['materialId'], widget.order.requestDetails['materialQuantity']);
+                                                                              }
 
                                                                               title = "Your order #${order.orderId.toUpperCase()} has been cancelled by the seller.";
                                                                               subtitile = "Your order #${order.orderId.toUpperCase()} has been canceled by the seller. Please click here for more details.";
@@ -504,16 +510,29 @@ class _OrdersCardState extends State<OrdersCard> {
                                                         "Your order #${order.orderId.toUpperCase()} has been confirmed.";
                                                     subtitile =
                                                         "Seller has confirmed your order! Please expect your item to be shipped within 5-7 days.";
-                                                    //TODO: reduce variant & resourcess
                                                     if (order.requestDetails
                                                         .isEmpty) {
-                                                      print("reduce variant");
+                                                      await ProductService()
+                                                          .reducedQuantity(
+                                                              order.products);
                                                     } else {
-                                                      print("reduce resources");
+                                                      await ColorService().reducedQuantity(
+                                                          widget.order
+                                                                  .requestDetails[
+                                                              'colorId'],
+                                                          widget.order
+                                                                  .requestDetails[
+                                                              'colorQuantity']);
+                                                      await MaterialsServices()
+                                                          .reducedQuantity(
+                                                              widget.order
+                                                                      .requestDetails[
+                                                                  'materialId'],
+                                                              widget.order
+                                                                      .requestDetails[
+                                                                  'materialQuantity']);
                                                     }
-                                                    // await ProductService()
-                                                    //     .reducedQuantity(
-                                                    //         order.products);
+
                                                     break;
                                                   }
                                                 case "ON DELIVERY":
