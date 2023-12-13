@@ -11,7 +11,7 @@ class OrderModel {
   final String shippingMethod;
   final String shippingStatus;
   final Timestamp completedDate;
-  final dynamic requestDetails;
+  final Map requestDetails;
   final String shippingCity;
   final String shippingStreet;
   final String shippingZipCode;

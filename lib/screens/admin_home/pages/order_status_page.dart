@@ -20,13 +20,6 @@ class OrderStatus extends StatefulWidget {
 }
 
 class _OrderStatusState extends State<OrderStatus> {
-  // final List<String> items = [
-  //   'Processing',
-  //   'On Delivery',
-  //   'Delivered',
-  // ];
-  // String? selectedValue;
-
   @override
   Widget build(BuildContext context) {
     final orders = Provider.of<List<OrderModel>?>(context);
@@ -40,36 +33,6 @@ class _OrderStatusState extends State<OrderStatus> {
     return Scaffold(
       body: Column(
         children: [
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     GestureDetector(
-          //       onTap: () {
-          //         Navigator.pop(context);
-          //       },
-          //       child: SvgPicture.asset('assets/icons/chevron_left.svg'),
-          //     ),
-          //     const Column(
-          //       children: [
-          //         Text(
-          //           'ORDERS',
-          //           textAlign: TextAlign.center,
-          //           style: TextStyle(
-          //             color: Color(0xFF303030),
-          //             fontSize: 16,
-          //             fontFamily: 'Avenir Next LT Pro',
-          //             fontWeight: FontWeight.w700,
-          //             height: 0,
-          //           ),
-          //         )
-          //       ],
-          //     ),
-          //     const SizedBox(
-          //       width: 24,
-          //     )
-          //   ],
-          // ),
-          // const SizedBox(height: 28),
           Expanded(
             child: ListView.builder(
               itemCount: orders.length,
@@ -231,7 +194,7 @@ class _OrdersCardState extends State<OrdersCard> {
                       ),
                     ),
                     TextSpan(
-                      text: '₱${order.totalPrice.toStringAsFixed(2)}',
+                      text: '₱${order.totalPrice.toStringAsFixed(0)}',
                       style: const TextStyle(
                         color: Color(0xFF303030),
                         fontSize: 16,
@@ -541,9 +504,16 @@ class _OrdersCardState extends State<OrdersCard> {
                                                         "Your order #${order.orderId.toUpperCase()} has been confirmed.";
                                                     subtitile =
                                                         "Seller has confirmed your order! Please expect your item to be shipped within 5-7 days.";
-                                                    await ProductService()
-                                                        .reducedQuantity(
-                                                            order.products);
+                                                    //TODO: reduce variant & resourcess
+                                                    if (order.requestDetails
+                                                        .isEmpty) {
+                                                      print("reduce variant");
+                                                    } else {
+                                                      print("reduce resources");
+                                                    }
+                                                    // await ProductService()
+                                                    //     .reducedQuantity(
+                                                    //         order.products);
                                                     break;
                                                   }
                                                 case "ON DELIVERY":
