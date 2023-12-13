@@ -35,12 +35,12 @@ class Product {
       name: data['product_name'] ?? '',
       category: data['category'] ?? '',
       description: data['description'] ?? '',
-      labor: (data['labor_cost'] ?? 0.0).toDouble() ?? '',
-      expenses: (data['expenses'] ?? 0.0).toDouble() ?? '',
-      images: data['product_images'],
-      variants: data['variants'],
-      noMaterialsReq: (data['noMaterialsReq'] ?? 0.0).toDouble(),
-      noPaintReq: (data['noPaintReq'] ?? 0.0).toDouble(),
+      labor: (data['labor_cost'] ?? 0.0).toDouble() ?? 0.0,
+      expenses: (data['expenses'] ?? 0.0).toDouble() ?? 0.0,
+      images: data['product_images'] ?? [],
+      variants: data['variants'] ?? [],
+      noMaterialsReq: (data['noMaterialsReq'] ?? 0.0).toDouble() ?? 0.0,
+      noPaintReq: (data['noPaintReq'] ?? 0.0).toDouble() ?? 0.0,
       materialIds: data['materialIds'] ?? [],
     );
   }
