@@ -116,6 +116,7 @@ class _BodyState extends State<Body> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+                Gap(10),
                 if (order.products[0]['variationId'] != "")
                   for (int i = 0; i < orderedProducts.length; i++) ...[
                     OrderListTile(
@@ -265,7 +266,7 @@ class _BodyState extends State<Body> {
                     ),
                     const Gap(10),
                     Text(
-                      "₱${deliveryFee.toStringAsFixed(2)}",
+                      "₱${deliveryFee.toStringAsFixed(0)}",
                       style: const TextStyle(
                         color: Color(0xFF303030),
                         fontSize: 18,
@@ -289,7 +290,7 @@ class _BodyState extends State<Body> {
                     ),
                     const Gap(10),
                     Text(
-                      "₱${order.totalPrice.toStringAsFixed(2)}",
+                      "₱${order.totalPrice.toStringAsFixed(0)}",
                       style: const TextStyle(
                         color: Color(0xFF303030),
                         fontSize: 18,
@@ -347,22 +348,17 @@ class _BodyState extends State<Body> {
                     ),
                   ],
                 ),
-
-                if (order.shippingStatus.toUpperCase() == 'CANCELLED')
-                   ...[
-                        const Text("Reason:",
-                        style: TextStyle(
-                          color: Color(0xFF909090),
-                          fontSize: 16,
-                          fontFamily: 'Nunito Sans',
-                          fontWeight: FontWeight.w600,
-                        )
-                      ),
-        
-                      const Gap(10),
-              
-                      Text(order.reason),
-                      ],
+                if (order.shippingStatus.toUpperCase() == 'CANCELLED') ...[
+                  const Text("Reason:",
+                      style: TextStyle(
+                        color: Color(0xFF909090),
+                        fontSize: 16,
+                        fontFamily: 'Nunito Sans',
+                        fontWeight: FontWeight.w600,
+                      )),
+                  const Gap(10),
+                  Text(order.reason),
+                ],
               ],
             ),
           ),
@@ -404,7 +400,7 @@ class _OrderListTileState extends State<OrderListTile> {
     title =
         "${widget.product.name} (${widget.product.variants[selectedVariantIndex]['variant_name']})";
     price =
-        "₱${(widget.product.variants[selectedVariantIndex]['price'] * widget.quantity as double).toStringAsFixed(2)}";
+        "₱${(widget.product.variants[selectedVariantIndex]['price'] * widget.quantity as double).toStringAsFixed(0)}";
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
       leading: Container(
@@ -515,7 +511,7 @@ class _OrderRequestTileState extends State<OrderRequestTile> {
         ),
       ),
       subtitle: Text(
-        "color: ${widget.order.requestDetails['color']}; size: ${widget.order.requestDetails['size']}; material: ${widget.order.requestDetails['material']}; ${widget.order.requestDetails['others']}",
+        "color: ${widget.order.requestDetails['color']}; lwh: ${widget.order.requestDetails['size']}; material: ${widget.order.requestDetails['material']}; ${widget.order.requestDetails['others']}",
         style: const TextStyle(
           color: Color(0xFF808080),
           fontSize: 12,
