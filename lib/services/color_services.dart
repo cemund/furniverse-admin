@@ -11,6 +11,8 @@ class ColorService {
           FieldValue.serverTimestamp(); // Get a server-side timestamp
       colorsData['timestamp'] =
           colorTimestamp; // Add the timestamp to your data
+      colorsData['sales'] = 0;
+
       DocumentReference productDocRef = await _colorCollection.add(colorsData);
 
       // for (int i = 0; i < materialVariations.length; i++) {
@@ -127,51 +129,19 @@ class ColorService {
         );
   }
 
-  // Future<String?> getProductImage(String productId) async {
-  //   try {
-  //     DocumentSnapshot productDoc =
-  //         await _materialsCollection.doc(productId).get();
+  Future<List<ColorModel>> getTopColors() async {
+    List<ColorModel> listColors = [];
+    try {
+      final colors =
+          await _colorCollection.orderBy("sales", descending: true).get();
+      for (var color in colors.docs) {
+        final col = ColorModel.fromFirestore(color);
+        if (col.sales > 0) listColors.add(col);
+      }
+    } catch (e) {
+      print("Error getting top colors:$e");
+    }
 
-  //     if (productDoc.exists) {
-  //       // Check if the product document exists
-  //       Map<String, dynamic> productData =
-  //           productDoc.data() as Map<String, dynamic>;
-
-  //       // Retrieve the image URL from the product data
-  //       String imageUrl = productData['product_images'][0];
-
-  //       return imageUrl;
-  //     } else {
-  //       // Handle the case where the product doesn't exist
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     print('Error getting product image: $e');
-  //     return null;
-  //   }
-  // }
-
-  // Future<String?> getProductName(String productId) async {
-  //   try {
-  //     DocumentSnapshot productDoc =
-  //         await _materialsCollection.doc(productId).get();
-
-  //     if (productDoc.exists) {
-  //       // Check if the product document exists
-  //       Map<String, dynamic> productData =
-  //           productDoc.data() as Map<String, dynamic>;
-
-  //       // Retrieve the image URL from the product data
-  //       String productName = productData['product_name'];
-
-  //       return productName;
-  //     } else {
-  //       // Handle the case where the product doesn't exist
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     print('Error getting product image: $e');
-  //     return null;
-  //   }
-  // }
+    return listColors;
+  }
 }

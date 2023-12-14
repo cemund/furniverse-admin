@@ -11,6 +11,7 @@ class MaterialsServices {
           FieldValue.serverTimestamp(); // Get a server-side timestamp
       materialsData['timestamp'] =
           materialsTimestamp; // Add the timestamp to your data
+      materialsData['sales'] = 0;
       DocumentReference productDocRef =
           await _materialsCollection.add(materialsData);
 
@@ -104,6 +105,21 @@ class MaterialsServices {
     } catch (e) {
       print('Error updating color quantity: $e');
     }
+  }
+
+  Future<List<Materials>> getTopMaterials() async {
+    List<Materials> listMaterials = [];
+    try {
+      final materials =
+          await _materialsCollection.orderBy("sales", descending: true).get();
+      for (var material in materials.docs) {
+        final mat = Materials.fromFirestore(material);
+        if (mat.sales > 0) listMaterials.add(mat);
+      }
+    } catch (e) {
+      print("Error getting top materials");
+    }
+    return listMaterials;
   }
 
   Stream<QuerySnapshot> getAllmaterials() {
