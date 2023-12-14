@@ -12,12 +12,8 @@ class MaterialsServices {
       materialsData['timestamp'] =
           materialsTimestamp; // Add the timestamp to your data
       materialsData['sales'] = 0;
-      DocumentReference productDocRef =
-          await _materialsCollection.add(materialsData);
 
-      // for (int i = 0; i < materialVariations.length; i++) {
-      //   await materialDocRef.collection('variants').add(materialVariations[i]);
-      // }
+      await _materialsCollection.add(materialsData);
     } catch (e) {
       print('Error adding a material: $e');
     }
@@ -100,8 +96,6 @@ class MaterialsServices {
       } else {
         print("Material Id: $materialId does not exist.");
       }
-
-      //TODO: add sales
     } catch (e) {
       print('Error updating color quantity: $e');
     }
@@ -126,14 +120,6 @@ class MaterialsServices {
     return _materialsCollection.snapshots();
   }
 
-  // Stream<QuerySnapshot> getProductVariations(String productId) {
-  //   return _materialsCollection
-  //       .doc(productId)
-  //       .collection('variations')
-  //       .snapshots();
-  // }
-
-  // Query a subcollection
   Stream<List<Materials>> streamMaterials() {
     return _materialsCollection.orderBy('material').snapshots().map(
           (event) => event.docs
@@ -144,52 +130,4 @@ class MaterialsServices {
               .cast(),
         );
   }
-
-  // Future<String?> getProductImage(String productId) async {
-  //   try {
-  //     DocumentSnapshot productDoc =
-  //         await _materialsCollection.doc(productId).get();
-
-  //     if (productDoc.exists) {
-  //       // Check if the product document exists
-  //       Map<String, dynamic> productData =
-  //           productDoc.data() as Map<String, dynamic>;
-
-  //       // Retrieve the image URL from the product data
-  //       String imageUrl = productData['product_images'][0];
-
-  //       return imageUrl;
-  //     } else {
-  //       // Handle the case where the product doesn't exist
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     print('Error getting product image: $e');
-  //     return null;
-  //   }
-  // }
-
-  // Future<String?> getProductName(String productId) async {
-  //   try {
-  //     DocumentSnapshot productDoc =
-  //         await _materialsCollection.doc(productId).get();
-
-  //     if (productDoc.exists) {
-  //       // Check if the product document exists
-  //       Map<String, dynamic> productData =
-  //           productDoc.data() as Map<String, dynamic>;
-
-  //       // Retrieve the image URL from the product data
-  //       String productName = productData['product_name'];
-
-  //       return productName;
-  //     } else {
-  //       // Handle the case where the product doesn't exist
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     print('Error getting product image: $e');
-  //     return null;
-  //   }
-  // }
 }
