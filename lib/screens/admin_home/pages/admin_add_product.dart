@@ -146,6 +146,7 @@ class _AddProductState extends State<AddProduct> {
                 children: [
                   Container(
                     width: 80,
+                    height: 80,
                     clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
                       // border:
@@ -169,10 +170,17 @@ class _AddProductState extends State<AddProduct> {
                           listSelectedImage.remove(selectedImage);
                         });
                       },
-                      child: const Icon(
-                        Icons.close_rounded,
-                        size: 18,
-                        color: backgroundColor,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: foregroundColor),
+                        height: 16,
+                        width: 16,
+                        child: const Icon(
+                          Icons.close_rounded,
+                          size: 14,
+                          color: backgroundColor,
+                        ),
                       ),
                     ),
                   ),
@@ -719,6 +727,7 @@ class _AddProductState extends State<AddProduct> {
                               // );
                             },
                           ),
+                        Gap(10),
 
                         const AddVariantButton(),
                         const Gap(20),
