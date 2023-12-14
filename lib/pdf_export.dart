@@ -155,6 +155,125 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerCity,
     },
   ));
 
+  // sized box
+  widgets.add(SizedBox(height: 20));
+
+  // product table title
+  widgets.add(
+    Table(
+      children: [
+        TableRow(
+          decoration: const BoxDecoration(
+            border: TableBorder(
+              bottom: BorderSide(color: PdfColors.white),
+            ),
+          ),
+          children: [
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 1),
+                padding: const EdgeInsets.all(10),
+                decoration:
+                    const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+                child: Text(
+                  "Material Inventory Report",
+                  style: const TextStyle(
+                    color: PdfColor.fromInt(0xFFFFFFFF),
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ],
+    ),
+  );
+
+  // material table
+  widgets.add(Table(
+    children: [
+      // Headers
+      TableRow(
+        children: [
+          _buildIdHeader(title: "Material ID"),
+          Expanded(
+            child: _buildHeader(title: "Name"),
+          ),
+          _buildHeader(title: "Stocks"),
+          _buildHeader(title: "Sales"),
+        ],
+      ),
+
+      for (var material in listMaterials) ...[
+        _buildResourceRow(
+            id: material.id,
+            name: material.material,
+            stocks: material.stocks,
+            sales: material.sales)
+      ]
+    ],
+  ));
+
+  // sized box
+  widgets.add(SizedBox(height: 20));
+
+  // product table title
+  widgets.add(
+    Table(
+      children: [
+        TableRow(
+          decoration: const BoxDecoration(
+            border: TableBorder(
+              bottom: BorderSide(color: PdfColors.white),
+            ),
+          ),
+          children: [
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 1),
+                padding: const EdgeInsets.all(10),
+                decoration:
+                    const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+                child: Text(
+                  "Color Inventory Report",
+                  style: const TextStyle(
+                    color: PdfColor.fromInt(0xFFFFFFFF),
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ],
+    ),
+  );
+  // material table
+  widgets.add(Table(
+    children: [
+      // Headers
+      TableRow(
+        children: [
+          _buildIdHeader(title: "Color ID"),
+          Expanded(
+            child: _buildHeader(title: "Name"),
+          ),
+          _buildHeader(title: "Stocks"),
+          _buildHeader(title: "Sales"),
+        ],
+      ),
+
+      for (var color in listColors) ...[
+        _buildResourceRow(
+            id: color.id,
+            name: color.color,
+            stocks: color.stocks.toInt(),
+            sales: color.sales)
+      ]
+    ],
+  ));
+
   pdf.addPage(MultiPage(
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
       build: (context) => widgets));
@@ -173,8 +292,6 @@ Table _buildCityTable(Map<String, dynamic> ordersPerCity) {
       _buildHeader(title: "No. of Customers"),
       _buildHeader(title: "No. of Orders"),
       _buildHeader(title: "Total Revenue"),
-      // _buildHeader(title: "Trade Area Capture"),
-      // _buildHeader(title: "Total Sales Pull Factor"),
     ]),
     for (var province in provinces) ...[
       _buildCityRow(
@@ -183,8 +300,6 @@ Table _buildCityTable(Map<String, dynamic> ordersPerCity) {
           quantity: ordersPerCity[province]['quantity'],
           totalRevenue: ordersPerCity[province]['total'])
     ],
-    // _buildCityRow("Malolos"),
-    // _buildCityRow("Hagonoy"),
   ]);
 }
 
@@ -223,6 +338,57 @@ TableRow _buildCityRow(
       ]);
 }
 
+TableRow _buildResourceRow({
+  required String id,
+  required String name,
+  required int stocks,
+  required int sales,
+}) {
+  return TableRow(
+      decoration: const BoxDecoration(
+        border: TableBorder(
+          bottom: BorderSide(color: PdfColors.black),
+        ),
+      ),
+      children: [
+        // _buildNextCell(value: productId),
+        Container(
+          height: 25,
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              id,
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: PdfColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ),
+
+        Expanded(
+          child: Container(
+            height: 25,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                name,
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  color: PdfColors.black,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ),
+        ),
+        _buildNextCell(value: stocks),
+        _buildNextCell(value: sales),
+      ]);
+}
+
 TableRow _buildProductRow(
     {required String productId,
     required String productName,
@@ -242,12 +408,15 @@ TableRow _buildProductRow(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              productId,
-              textAlign: TextAlign.left,
-              style: const TextStyle(
-                color: PdfColors.black,
-                fontSize: 12,
+            child: FittedBox(
+              child: Text(
+                productId,
+                textAlign: TextAlign.left,
+                style: const TextStyle(
+                  color: PdfColors.black,
+                  fontSize: 12,
+                ),
+                softWrap: false,
               ),
             ),
           ),
@@ -265,6 +434,7 @@ TableRow _buildProductRow(
                   color: PdfColors.black,
                   fontSize: 12,
                 ),
+                softWrap: false,
               ),
             ),
           ),
