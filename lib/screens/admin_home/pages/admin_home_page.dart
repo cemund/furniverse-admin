@@ -207,7 +207,7 @@ class Analytics extends StatefulWidget {
 }
 
 class _AnalyticsState extends State<Analytics> {
-  int selectedIndex = 0;
+  // int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -314,7 +314,7 @@ class _AnalyticsState extends State<Analytics> {
     }
 
     // NOTE: SHIPPING PRICE IS STATIC HERE
-    double shippingPrice = 200;
+    // double shippingPrice = 200;
     // products
     int totalQuantity = 0;
     Map<String, dynamic> ordersPerProduct = {};
@@ -328,7 +328,8 @@ class _AnalyticsState extends State<Analytics> {
     for (var order in fullOrders) {
       if (order.products.isNotEmpty) {
         // Calculate shipping cost per product
-        final shippingCostPerProduct = shippingPrice / order.products.length;
+        final shippingCostPerProduct =
+            order.shippingFee / order.products.length;
         for (var product in order.products) {
           final productId = product['productId'];
           ordersPerProduct.putIfAbsent(
@@ -471,6 +472,30 @@ class _AnalyticsState extends State<Analytics> {
             ],
           ),
         ),
+        TopSellingList(products: products),
+      ],
+    );
+  }
+}
+
+class TopSellingList extends StatefulWidget {
+  const TopSellingList({
+    super.key,
+    required this.products,
+  });
+
+  final Map<String, int> products;
+
+  @override
+  State<TopSellingList> createState() => _TopSellingListState();
+}
+
+class _TopSellingListState extends State<TopSellingList> {
+  int selectedIndex = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
         const Text(
           'Top Selling',
           style: TextStyle(
@@ -576,10 +601,10 @@ class _AnalyticsState extends State<Analytics> {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (int i = 0; i < products.length; i++) ...[
+                    for (int i = 0; i < widget.products.length; i++) ...[
                       TopProducts(
-                          productId: products.keys.elementAt(i),
-                          quantity: products.values.elementAt(i),
+                          productId: widget.products.keys.elementAt(i),
+                          quantity: widget.products.values.elementAt(i),
                           index: i)
                     ],
                   ],
@@ -599,7 +624,6 @@ class _AnalyticsState extends State<Analytics> {
                             ),
                           );
                         } else {
-                          print("hi");
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
