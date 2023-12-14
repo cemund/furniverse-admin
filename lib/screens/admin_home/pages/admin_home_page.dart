@@ -2,11 +2,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:furniverse_admin/models/analytics.dart';
+import 'package:furniverse_admin/models/color_model.dart';
+import 'package:furniverse_admin/models/materials_model.dart';
 import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/models/products.dart';
 import 'package:furniverse_admin/models/refund.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/pdf_preview_page.dart';
 import 'package:furniverse_admin/services/analytics_services.dart';
+import 'package:furniverse_admin/services/color_services.dart';
+import 'package:furniverse_admin/services/materials_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/refund_services.dart';
@@ -189,7 +193,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
   }
 }
 
-class Analytics extends StatelessWidget {
+class Analytics extends StatefulWidget {
   const Analytics({
     super.key,
     required this.year,
@@ -197,6 +201,13 @@ class Analytics extends StatelessWidget {
   });
   final int year;
   final List<int> years;
+
+  @override
+  State<Analytics> createState() => _AnalyticsState();
+}
+
+class _AnalyticsState extends State<Analytics> {
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -218,7 +229,7 @@ class Analytics extends StatelessWidget {
     }
 
     if (fullOrders.isEmpty) {
-      AnalyticsServices().deleteAnalytics(year);
+      AnalyticsServices().deleteAnalytics(widget.year);
       return const Center(child: Text("No data for analysis"));
     }
 
@@ -378,10 +389,10 @@ class Analytics extends StatelessWidget {
     }
 
     AnalyticsServices().updateAnalytics(
-      year,
+      widget.year,
       AnalyticsModel(
         totalQuantity: totalQuantity,
-        year: year,
+        year: widget.year,
         totalRevenue: sales,
         averageOrderValue: amountPerTransaction.average,
         topProducts: products,
@@ -396,7 +407,7 @@ class Analytics extends StatelessWidget {
       children: [
         SizedBox(
           // height: 250,
-          height: years.contains(year - 1) ? 125 : 80,
+          height: widget.years.contains(widget.year - 1) ? 125 : 80,
           child: GridView.count(
             physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: 2,
@@ -409,16 +420,16 @@ class Analytics extends StatelessWidget {
                 previous: 21340,
                 percent: 2.5,
                 price: sales,
-                hasPrevious: years.contains(year - 1),
-                year: year,
+                hasPrevious: widget.years.contains(widget.year - 1),
+                year: widget.year,
               ),
               AOVReport(
                 title: 'Average Order Value',
                 previous: 21340,
                 percent: 2.5,
                 price: amountPerTransaction.average,
-                hasPrevious: years.contains(year - 1),
-                year: year,
+                hasPrevious: widget.years.contains(widget.year - 1),
+                year: widget.year,
               ),
               // const Report(
               //   title: 'Return',
@@ -454,51 +465,180 @@ class Analytics extends StatelessWidget {
               ),
               LineChartWidget(
                 monthlySales: monthlySales,
-                year: year,
-                hasPrevious: years.contains(year - 1),
+                year: widget.year,
+                hasPrevious: widget.years.contains(widget.year - 1),
               ),
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Top Selling Products',
-                style: TextStyle(
-                  color: Color(0xFF171625),
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w600,
+        const Text(
+          'Top Selling',
+          style: TextStyle(
+            color: Color(0xFF171625),
+            fontSize: 16,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Gap(10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedIndex = 0;
+                });
+              },
+              child: Container(
+                width: 94,
+                height: 28,
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  color: selectedIndex == 0
+                      ? const Color(0xFFF6BE2C)
+                      : Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                child: Text(
+                  'Products',
+                  style: TextStyle(
+                    color: selectedIndex == 0 ? Colors.white : Colors.black,
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
-              const SizedBox(
-                height: 14,
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedIndex = 1;
+                });
+              },
+              child: Container(
+                width: 94,
+                height: 28,
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  color: selectedIndex == 1
+                      ? const Color(0xFFF6BE2C)
+                      : Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                child: Text(
+                  'Materials',
+                  style: TextStyle(
+                    color: selectedIndex == 1 ? Colors.white : Colors.black,
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
               ),
-              for (int i = 0; i < products.length; i++) ...[
-                TopProducts(
-                    productId: products.keys.elementAt(i),
-                    quantity: products.values.elementAt(i),
-                    index: i)
-              ],
-              // Align(
-              //   alignment: Alignment.center,
-              //   child: TextButton(
-              //       onPressed: () {},
-              //       child: const Text(
-              //         'VIEW MORE PRODUCTS',
-              //         style: TextStyle(
-              //           color: Color(0xFFF6BE2C),
-              //           fontSize: 12,
-              //           fontFamily: 'Inter',
-              //           fontWeight: FontWeight.w500,
-              //         ),
-              //       )),
-              // )
-            ],
-          ),
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedIndex = 2;
+                });
+              },
+              child: Container(
+                width: 94,
+                height: 28,
+                alignment: Alignment.center,
+                decoration: ShapeDecoration(
+                  color: selectedIndex == 2
+                      ? const Color(0xFFF6BE2C)
+                      : Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+                child: Text(
+                  'Colors',
+                  style: TextStyle(
+                    color: selectedIndex == 2 ? Colors.white : Colors.black,
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: selectedIndex == 0
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (int i = 0; i < products.length; i++) ...[
+                      TopProducts(
+                          productId: products.keys.elementAt(i),
+                          quantity: products.values.elementAt(i),
+                          index: i)
+                    ],
+                  ],
+                )
+              : selectedIndex == 1
+                  ? FutureBuilder<List<Materials>>(
+                      future: MaterialsServices().getTopMaterials(),
+                      builder: (context, snapshot) {
+                        if ((snapshot.data ?? []).isEmpty &&
+                            snapshot.data != null) {
+                          return Center(
+                            child: Column(
+                              children: [
+                                Gap(10),
+                                Text("No Sales."),
+                              ],
+                            ),
+                          );
+                        } else {
+                          print("hi");
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (int i = 0;
+                                  i < (snapshot.data ?? []).length;
+                                  i++) ...[
+                                TopMaterials(
+                                    index: i, materials: snapshot.data![i])
+                              ],
+                            ],
+                          );
+                        }
+                      })
+                  : FutureBuilder<List<ColorModel>>(
+                      future: ColorService().getTopColors(),
+                      builder: (context, snapshot) {
+                        if ((snapshot.data ?? []).isEmpty &&
+                            snapshot.data != null) {
+                          return Center(
+                            child: Column(
+                              children: [
+                                Gap(10),
+                                Text("No Sales."),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (int i = 0;
+                                  i < (snapshot.data ?? []).length;
+                                  i++) ...[
+                                TopColors(index: i, colors: snapshot.data![i])
+                              ],
+                            ],
+                          );
+                        }
+                      }),
         )
       ],
     );
@@ -573,6 +713,129 @@ class TopProducts extends StatelessWidget {
                       child: Image.asset('assets/images/top3.png'),
                     )
                   : const SizedBox(),
+    );
+  }
+}
+
+Color hexToColor(String hexString, {String alphaChannel = 'FF'}) {
+  return Color(int.parse(hexString.replaceFirst('#', '0x$alphaChannel')));
+}
+
+class TopColors extends StatelessWidget {
+  const TopColors({
+    super.key,
+    required this.index,
+    required this.colors,
+  });
+
+  final int index;
+  final ColorModel colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: const EdgeInsets.all(0),
+      leading: CircleAvatar(
+        backgroundColor: hexToColor(colors.hexValue),
+      ),
+      title: Text(
+        colors.color,
+        style: const TextStyle(
+          color: Color(0xFF171625),
+          fontSize: 14,
+          fontFamily: 'Inter',
+          fontWeight: FontWeight.w600,
+          height: 0,
+        ),
+      ),
+      subtitle: Text(
+        'Sales: ${colors.sales}',
+        style: const TextStyle(
+          color: Color(0xFF92929D),
+          fontSize: 12,
+          fontFamily: 'Inter',
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      trailing: (colors.sales != 0)
+          ? index == 0
+              ? SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: Image.asset('assets/images/top1.png'),
+                )
+              : index == 1
+                  ? SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: Image.asset('assets/images/top2.png'),
+                    )
+                  : index == 2
+                      ? SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: Image.asset('assets/images/top3.png'),
+                        )
+                      : const SizedBox()
+          : null,
+    );
+  }
+}
+
+class TopMaterials extends StatelessWidget {
+  const TopMaterials({
+    super.key,
+    required this.index,
+    required this.materials,
+  });
+
+  final int index;
+  final Materials materials;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: const EdgeInsets.all(0),
+      title: Text(
+        materials.material,
+        style: const TextStyle(
+          color: Color(0xFF171625),
+          fontSize: 14,
+          fontFamily: 'Inter',
+          fontWeight: FontWeight.w600,
+          height: 0,
+        ),
+      ),
+      subtitle: Text(
+        'Sales: ${materials.sales}',
+        style: const TextStyle(
+          color: Color(0xFF92929D),
+          fontSize: 12,
+          fontFamily: 'Inter',
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      trailing: (materials.sales != 0)
+          ? index == 0
+              ? SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: Image.asset('assets/images/top1.png'),
+                )
+              : index == 1
+                  ? SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: Image.asset('assets/images/top2.png'),
+                    )
+                  : index == 2
+                      ? SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: Image.asset('assets/images/top3.png'),
+                        )
+                      : const SizedBox()
+          : null,
     );
   }
 }

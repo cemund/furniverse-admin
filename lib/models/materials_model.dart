@@ -5,12 +5,14 @@ class Materials {
   String material;
   double price;
   int stocks;
+  int sales;
 
   Materials({
     required this.id,
     required this.material,
     required this.price,
     required this.stocks,
+    required this.sales,
   });
 
   factory Materials.fromFirestore(DocumentSnapshot doc) {
@@ -21,9 +23,9 @@ class Materials {
       material: data['material'] ?? '',
       stocks: data['stocks'] ?? '',
       price: data['price'] ?? '',
+      sales: data['sales'] ?? 0,
     );
   }
-
 
   // int getNumStocks() {
   //   int numOfStocks = 0;
