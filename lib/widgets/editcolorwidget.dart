@@ -22,6 +22,7 @@ class _EditColorWidgetState extends State<EditColorWidget> {
   final _nameController = TextEditingController();
   final _materialController = TextEditingController();
   final _colorController = TextEditingController();
+  final _hexController = TextEditingController();
   final _dimensionController = TextEditingController();
   final _priceController = TextEditingController();
   final _stocksController = TextEditingController();
@@ -62,9 +63,10 @@ class _EditColorWidgetState extends State<EditColorWidget> {
 
   @override
   void initState() {
-    _materialController.text = widget.colorModel!.color;
+    _colorController.text = widget.colorModel!.color;
     _priceController.text = widget.colorModel!.price.toString();
     _stocksController.text = widget.colorModel!.stocks.toString();
+    _hexController.text = widget.colorModel!.hexValue.toString();
     
     super.initState();
   }
@@ -77,6 +79,7 @@ class _EditColorWidgetState extends State<EditColorWidget> {
     _dimensionController.dispose();
     _priceController.dispose();
     _stocksController.dispose();
+    _hexController.dispose();
 
     super.dispose();
   }
@@ -178,6 +181,18 @@ class _EditColorWidgetState extends State<EditColorWidget> {
                       {print(value);
                         return value!.isEmpty
                         ? 'Please input a color.'
+                        : null;}
+                  ),
+                  const Gap(20),
+
+                  TextFormField(
+                    controller: _hexController,
+                    decoration: outlineInputBorder(label: 'Color Hex Value'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) 
+                      {print(value);
+                        return value!.isEmpty
+                        ? 'Please input a color hex value.'
                         : null;}
                   ),
                   const Gap(20),
@@ -433,6 +448,7 @@ class _EditColorWidgetState extends State<EditColorWidget> {
 
     Map<String, dynamic> colorData = {
       'color': _colorController.text,
+      'hexValue' : _hexController.text,
       // 'material': _materialController.text,
       // 'dimension': _dimensionController.text,
       // 'price': _priceController.text,
