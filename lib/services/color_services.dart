@@ -13,11 +13,7 @@ class ColorService {
           colorTimestamp; // Add the timestamp to your data
       colorsData['sales'] = 0;
 
-      DocumentReference productDocRef = await _colorCollection.add(colorsData);
-
-      // for (int i = 0; i < materialVariations.length; i++) {
-      //   await materialDocRef.collection('variants').add(materialVariations[i]);
-      // }
+      await _colorCollection.add(colorsData);
     } catch (e) {
       print('Error adding a material: $e');
     }
@@ -47,10 +43,6 @@ class ColorService {
           materialTimestamp; // Add the timestamp to your data
 
       await _colorCollection.doc(colorId).set(colorData);
-
-      // for (int i = 0; i < materialVariations.length; i++) {
-      //   await materialDocRef.collection('variants').add(materialVariations[i]);
-      // }
     } catch (e) {
       print('Error adding a material: $e');
     }
@@ -99,8 +91,6 @@ class ColorService {
       } else {
         print("Color Id: $colorId does not exist.");
       }
-
-      //TODO: add sales
     } catch (e) {
       print('Error updating color quantity: $e');
     }
@@ -109,13 +99,6 @@ class ColorService {
   Stream<QuerySnapshot> getAllcolor() {
     return _colorCollection.snapshots();
   }
-
-  // Stream<QuerySnapshot> getProductVariations(String productId) {
-  //   return _materialsCollection
-  //       .doc(productId)
-  //       .collection('variations')
-  //       .snapshots();
-  // }
 
   // Query a subcollection
   Stream<List<ColorModel>> streamColor() {

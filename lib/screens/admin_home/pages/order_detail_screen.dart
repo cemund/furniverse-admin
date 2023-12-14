@@ -131,7 +131,7 @@ class _BodyState extends State<Body> {
                     quantity: order.products[0]['quantity'],
                     order: order,
                   ),
-                const Gap(10),
+                const Gap(20),
                 const Text(
                   "Shipping Address",
                   style: TextStyle(
@@ -178,7 +178,7 @@ class _BodyState extends State<Body> {
                     ],
                   ),
                 ),
-                const Gap(10),
+                const Gap(20),
                 const Text(
                   "Payment",
                   style: TextStyle(
@@ -213,44 +213,6 @@ class _BodyState extends State<Body> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Delivery Method",
-                  style: TextStyle(
-                    color: Color(0xFF909090),
-                    fontSize: 16,
-                    fontFamily: 'Nunito Sans',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: order.shippingMethod == 'J&T'
-                          ? Image.asset('assets/images/jandt.jpg')
-                          : Image.asset('assets/images/ninjavan.jpg'),
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          order.shippingMethod == 'J&T'
-                              ? "Fast (5 - 7 days)"
-                              : "NinjaVan (10 days)",
-                          style: const TextStyle(
-                            color: Color(0xFF303030),
-                            fontSize: 14,
-                            fontFamily: 'Nunito Sans',
-                            fontWeight: FontWeight.w700,
-                            height: 0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
                 const Gap(20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -266,7 +228,7 @@ class _BodyState extends State<Body> {
                     ),
                     const Gap(10),
                     Text(
-                      "₱${deliveryFee.toStringAsFixed(0)}",
+                      "₱${order.shippingFee.toStringAsFixed(0)}",
                       style: const TextStyle(
                         color: Color(0xFF303030),
                         fontSize: 18,
@@ -276,6 +238,7 @@ class _BodyState extends State<Body> {
                     ),
                   ],
                 ),
+                const Gap(10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -300,6 +263,7 @@ class _BodyState extends State<Body> {
                     ),
                   ],
                 ),
+                const Gap(10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -324,6 +288,7 @@ class _BodyState extends State<Body> {
                     ),
                   ],
                 ),
+                const Gap(10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -348,6 +313,7 @@ class _BodyState extends State<Body> {
                     ),
                   ],
                 ),
+                const Gap(10),
                 if (order.shippingStatus.toUpperCase() == 'CANCELLED') ...[
                   const Text("Reason:",
                       style: TextStyle(
@@ -357,7 +323,15 @@ class _BodyState extends State<Body> {
                         fontWeight: FontWeight.w600,
                       )),
                   const Gap(10),
-                  Text(order.reason),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(order.reason,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontFamily: 'Nunito Sans',
+                        )),
+                  ),
                 ],
               ],
             ),
