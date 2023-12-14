@@ -96,10 +96,6 @@ class ColorService {
     }
   }
 
-  Stream<QuerySnapshot> getAllcolor() {
-    return _colorCollection.snapshots();
-  }
-
   // Query a subcollection
   Stream<List<ColorModel>> streamColor() {
     return _colorCollection.orderBy('color').snapshots().map(
@@ -123,6 +119,22 @@ class ColorService {
       }
     } catch (e) {
       print("Error getting top colors:$e");
+    }
+
+    return listColors;
+  }
+
+  Future<List<ColorModel>> getAllColors() async {
+    List<ColorModel> listColors = [];
+    try {
+      final colors =
+          await _colorCollection.orderBy("sales", descending: true).get();
+      for (var color in colors.docs) {
+        final col = ColorModel.fromFirestore(color);
+        listColors.add(col);
+      }
+    } catch (e) {
+      print("Error getting all colors:$e");
     }
 
     return listColors;

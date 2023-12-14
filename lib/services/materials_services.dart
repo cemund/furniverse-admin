@@ -116,8 +116,19 @@ class MaterialsServices {
     return listMaterials;
   }
 
-  Stream<QuerySnapshot> getAllmaterials() {
-    return _materialsCollection.snapshots();
+  Future<List<Materials>> getAllMaterials() async {
+    List<Materials> listMaterials = [];
+    try {
+      final materials =
+          await _materialsCollection.orderBy("sales", descending: true).get();
+      for (var material in materials.docs) {
+        final mat = Materials.fromFirestore(material);
+        listMaterials.add(mat);
+      }
+    } catch (e) {
+      print("Error getting all materials");
+    }
+    return listMaterials;
   }
 
   Stream<List<Materials>> streamMaterials() {

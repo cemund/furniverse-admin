@@ -1,5 +1,9 @@
 import 'dart:typed_data';
+import 'package:furniverse_admin/models/color_model.dart';
+import 'package:furniverse_admin/models/materials_model.dart';
 import 'package:furniverse_admin/services/analytics_services.dart';
+import 'package:furniverse_admin/services/color_services.dart';
+import 'package:furniverse_admin/services/materials_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/shared/company_info.dart';
 import 'package:pdf/pdf.dart';
@@ -10,6 +14,8 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerCity,
   final pdf = Document();
 
   List<Widget> widgets = [];
+  List<Materials> listMaterials = [];
+  List<ColorModel> listColors = [];
 
   final totalQuantity = await AnalyticsServices().getTotalQuantity(year);
   final totalRevenue = await AnalyticsServices().getTotalRevenue(year);
@@ -21,6 +27,9 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerCity,
     ordersWithName[key]['productName'] =
         await ProductService().getProductName(key);
   });
+
+  listColors = await ColorService().getAllColors();
+  listMaterials = await MaterialsServices().getAllMaterials();
 
   // company name
   var companyInfo = Container(
