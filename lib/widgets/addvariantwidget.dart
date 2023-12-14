@@ -208,7 +208,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                       padding: EdgeInsets.only(right: 8),
                     ),
                     hint: const Text(
-                      'Select Metric Length',
+                      'Select Metric',
                       style: TextStyle(fontSize: 16),
                       overflow: TextOverflow.ellipsis,
                     ),
