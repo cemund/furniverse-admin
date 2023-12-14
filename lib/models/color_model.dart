@@ -5,12 +5,14 @@ class ColorModel {
   String color;
   double price;
   int stocks;
+  String hexValue;
 
   ColorModel({
     required this.id,
     required this.color,
     required this.price,
     required this.stocks,
+    required this.hexValue,
   });
 
   factory ColorModel.fromFirestore(DocumentSnapshot doc) {
@@ -21,6 +23,7 @@ class ColorModel {
       color: data['color'] ?? '',
       stocks: data['stocks'] ?? '',
       price: data['price'] ?? '',
+      hexValue: data['hexValue'] ?? '',
     );
   }
 

@@ -15,10 +15,11 @@ class AddColorWidget extends StatefulWidget {
 
 class _AddCollorWidgetState extends State<AddColorWidget> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _materialController = TextEditingController();
+  // final _nameController = TextEditingController();
+  // final _materialController = TextEditingController();
   final _colorController = TextEditingController();
-  final _dimensionController = TextEditingController();
+  final _hexController = TextEditingController();
+  // final _dimensionController = TextEditingController();
   final _priceController = TextEditingController();
   final _stocksController = TextEditingController();
 
@@ -58,10 +59,10 @@ class _AddCollorWidgetState extends State<AddColorWidget> {
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _materialController.dispose();
+    // _nameController.dispose();
+    // _materialController.dispose();
     _colorController.dispose();
-    _dimensionController.dispose();
+    // _dimensionController.dispose();
     _priceController.dispose();
     _stocksController.dispose();
 
@@ -165,6 +166,18 @@ class _AddCollorWidgetState extends State<AddColorWidget> {
                       {print(value);
                         return value!.isEmpty
                         ? 'Please input a color.'
+                        : null;}
+                  ),
+                  const Gap(20),
+                  
+                  TextFormField(
+                    controller: _hexController,
+                    decoration: outlineInputBorder(label: 'Color Hex Value'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) 
+                      {print(value);
+                        return value!.isEmpty
+                        ? 'Please input a color hex value.'
                         : null;}
                   ),
                   const Gap(20),
@@ -421,6 +434,7 @@ class _AddCollorWidgetState extends State<AddColorWidget> {
 
     Map<String, dynamic> colorData = {
       'color': _colorController.text,
+      'hexValue': _hexController.text,
       // 'material': _materialController.text,
       // 'dimension': _dimensionController.text,
       // 'price': _priceController.text,
