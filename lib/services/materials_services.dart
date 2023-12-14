@@ -62,10 +62,10 @@ class MaterialsServices {
         double currentStocks =
             (materials.data() as Map)['stocks'].toDouble() ?? 0;
 
-        if (currentStocks >= quantity) {
+        if (currentStocks >= quantity.ceil()) {
           await _materialsCollection
               .doc(materialId)
-              .update({'stocks': FieldValue.increment(-quantity)});
+              .update({'stocks': FieldValue.increment(-quantity.ceil())});
         } else {
           // Handle the case where there are not enough stocks
           print('Not enough stocks available for Material Id: $materialId.');
@@ -88,7 +88,7 @@ class MaterialsServices {
       if (materials.exists) {
         await _materialsCollection
             .doc(materialId)
-            .update({'stocks': FieldValue.increment(quantity)});
+            .update({'stocks': FieldValue.increment(quantity.ceil())});
 
         int sales = (materials.data() as Map)['sales'] ?? 0;
         if (sales > 0) {

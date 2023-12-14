@@ -60,10 +60,10 @@ class ColorService {
       if (colors.exists) {
         double currentStocks = (colors.data() as Map)['stocks'].toDouble() ?? 0;
 
-        if (currentStocks >= quantity) {
+        if (currentStocks >= quantity.ceil()) {
           await _colorCollection
               .doc(colorId)
-              .update({'stocks': FieldValue.increment(-quantity)});
+              .update({'stocks': FieldValue.increment(-quantity.ceil())});
         } else {
           // Handle the case where there are not enough stocks
           print('Not enough stocks available for ColorId: $colorId.');
@@ -86,7 +86,7 @@ class ColorService {
       if (colors.exists) {
         await _colorCollection
             .doc(colorId)
-            .update({'stocks': FieldValue.increment(quantity)});
+            .update({'stocks': FieldValue.increment(quantity.ceil())});
 
         int sales = (colors.data() as Map)['sales'] ?? 0;
         if (sales > 0) {
