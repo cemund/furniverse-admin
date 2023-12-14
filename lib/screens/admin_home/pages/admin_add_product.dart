@@ -821,7 +821,7 @@ class _AddProductState extends State<AddProduct> {
                         ),
                         const Gap(20),
                         const Text(
-                          'Requrired Quantity of Resources for Customization',
+                          'Required Quantity of Resources for Customization',
                           style: TextStyle(
                             color: Color(0xFF43464B),
                             fontSize: 13,

@@ -53,6 +53,8 @@ class _EditProductState extends State<EditProduct> {
   final _categoryController = TextEditingController();
   final _laborController = TextEditingController();
   final _expensesController = TextEditingController();
+  final _colorQuantityRequired = TextEditingController();
+  final _materialQuantityRequired = TextEditingController();
 
   String categoryHintText = "";
 
@@ -124,6 +126,8 @@ class _EditProductState extends State<EditProduct> {
     _descriptionController.text = widget.product!.description;
     _laborController.text = widget.product!.labor.toStringAsFixed(0);
     _expensesController.text = widget.product!.expenses.toStringAsFixed(0);
+    _colorQuantityRequired.text = widget.product!.noPaintReq.toString();
+    _materialQuantityRequired.text = widget.product!.noMaterialsReq.toString();
 
     // put original product images
     originalProductImages = widget.product!.images;
@@ -287,6 +291,8 @@ class _EditProductState extends State<EditProduct> {
     _categoryController.dispose();
     _laborController.dispose();
     _expensesController.dispose();
+    _colorQuantityRequired.dispose();
+    _materialQuantityRequired.dispose();
 
     super.dispose();
   }
@@ -867,6 +873,50 @@ class _EditProductState extends State<EditProduct> {
                               ? 'Please input a other expenses.'
                               : null,
                         ),
+                        const Gap(20),
+                        const Text(
+                          'Required Quantity of Resources for Customization',
+                          style: TextStyle(
+                            color: Color(0xFF43464B),
+                            fontSize: 13,
+                            fontFamily: 'Nunito Sans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Gap(10),
+                        TextFormField(
+                          controller: _materialQuantityRequired,
+                          decoration:
+                              outlineInputBorder(label: 'Number of Material'),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: true,
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                              ? 'Please input a required quantity for material.'
+                              : null,
+                        ),
+                        const Gap(10),
+                        TextFormField(
+                          controller: _colorQuantityRequired,
+                          decoration:
+                              outlineInputBorder(label: 'Number of Paint'),
+                          keyboardType: const TextInputType.numberWithOptions(
+                            signed: false,
+                            decimal: true,
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          validator: (value) => value!.isEmpty
+                              ? 'Please input a required quantity for paint.'
+                              : null,
+                        ),
 
                         const Gap(20),
                         SizedBox(
@@ -958,6 +1008,9 @@ class _EditProductState extends State<EditProduct> {
       'category': selectedCategory,
       'description': _descriptionController.text,
       'variants': productMaps,
+      'noMaterialsReq': double.parse(_materialQuantityRequired.text),
+      'noPaintReq': double.parse(_colorQuantityRequired.text),
+      // 'materialIds': materialIds,
     };
 
     // Add the product to Firestore
