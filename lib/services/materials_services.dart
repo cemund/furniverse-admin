@@ -141,4 +141,21 @@ class MaterialsServices {
               .cast(),
         );
   }
+
+  Future<List<Materials>> getSpecificMaterialsById(
+      List<String> materialIds) async {
+    final docRef =
+        await _materialsCollection.orderBy('sales', descending: true).get();
+
+    List<Materials> specificMaterials = [];
+
+    for (var docSnapshot in docRef.docs) {
+      final material = Materials.fromFirestore(docSnapshot);
+      if (materialIds.contains(material.id) && material.stocks > 0) {
+        specificMaterials.add(material);
+      }
+    }
+
+    return specificMaterials;
+  }
 }

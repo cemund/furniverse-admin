@@ -37,7 +37,7 @@ class _MaterialSelectionPageState extends State<MaterialSelectionPage> {
 
   void removeHighlight(Materials materials) {
     setState(() {
-      highlightedMaterials.remove(materials);
+      highlightedMaterials.removeWhere((element) => element.id == materials.id);
     });
   }
 
@@ -249,7 +249,10 @@ class _MaterialDetailCardState extends State<MaterialDetailCard> {
 
   @override
   Widget build(BuildContext context) {
-    isChecked = widget.highlightedMat.contains(widget.materials);
+    isChecked = false;
+    for (var mat in widget.highlightedMat) {
+      if (mat.id == widget.materials.id) isChecked = true;
+    }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
