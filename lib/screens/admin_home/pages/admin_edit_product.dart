@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
+import 'package:furniverse_admin/models/materials_model.dart';
 import 'package:furniverse_admin/models/products.dart';
 import 'package:furniverse_admin/services/delete_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
@@ -837,7 +838,9 @@ class _EditProductState extends State<EditProduct> {
                             },
                           ),
                         const Gap(10),
-                        const AddVariantButton(),
+                        const AddVariantButton(
+                          materials: [],
+                        ),
 
                         const Gap(20),
                         TextFormField(
@@ -1046,7 +1049,9 @@ class _EditProductState extends State<EditProduct> {
 class AddVariantButton extends StatelessWidget {
   const AddVariantButton({
     super.key,
+    required this.materials,
   });
+  final List<Materials> materials;
 
   @override
   Widget build(BuildContext context) {
@@ -1056,7 +1061,9 @@ class AddVariantButton extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           showDialog(
-              builder: (context) => const AddVariantWidget(),
+              builder: (context) => const AddVariantWidget(
+                    materials: [],
+                  ),
               context: context,
               barrierDismissible: false);
         },

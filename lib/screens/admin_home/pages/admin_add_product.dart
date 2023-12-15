@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/materials_model.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
-import 'package:furniverse_admin/screens/admin_home/pages/color_selection_page.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/material_selection_page.dart';
-import 'package:furniverse_admin/screens/admin_home/pages/updateemail.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/upload_image_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
@@ -273,7 +270,7 @@ class _AddProductState extends State<AddProduct> {
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(8))),
-                            labelText: 'Product Name',
+                            labelText: 'Enter Product Name',
                           ),
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
@@ -420,7 +417,7 @@ class _AddProductState extends State<AddProduct> {
                         ),
                         const SizedBox(height: 20),
                         const Text(
-                          'Product Images',
+                          'Upload Product Images:',
                           style: TextStyle(
                             color: Color(0xFF43464B),
                             fontSize: 13,
@@ -526,9 +523,62 @@ class _AddProductState extends State<AddProduct> {
                         //     ),
                         //   ),
                         // ),
-                        // const SizedBox(height: 20),
+                        // const SizedBox(height: 20),\
                         const Text(
-                          'Product Variants',
+                          'Select Product Materials:',
+                          style: TextStyle(
+                            color: Color(0xFF43464B),
+                            fontSize: 13,
+                            fontFamily: 'Nunito Sans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          height: 60,
+                          width: double.infinity,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return MaterialSelectionPage(
+                                      onTap: setCustomizeMaterialsIds,
+                                      materials: customizeMaterials,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: DottedBorder(
+                              color: foregroundColor,
+                              radius: const Radius.circular(8),
+                              borderType: BorderType.RRect,
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "${customizeMaterials.length} Materials Selected",
+                                      style: TextStyle(
+                                        color: foregroundColor,
+                                        fontSize: 16,
+                                        fontFamily: 'Nunito Sans',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Gap(20),
+
+                        const Text(
+                          'Add Product Variants:',
                           style: TextStyle(
                             color: Color(0xFF43464B),
                             fontSize: 13,
@@ -698,42 +748,17 @@ class _AddProductState extends State<AddProduct> {
                                   ),
                                 ],
                               );
-                              // Column(
-                              //   children: [
-                              //     Text(variants.productname),
-                              //     Text(variants.material),
-                              //   //   SizedBox(
-                              //   //   width: double.infinity,
-                              //   //   height: 50,
-                              //   //   child: ElevatedButton(
-                              //   //     onPressed:(){showDialog(builder: (context) => const AddProductWidget(), context: context, barrierDismissible: false);},
-                              //   //     style: ElevatedButton.styleFrom(
-                              //   //       backgroundColor: Colors.black,
-                              //   //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))
-                              //   //     ),
-                              //   //     child: const Text("Add Product",
-                              //   //       style: TextStyle(
-                              //   //         color: Colors.white,
-                              //   //         fontSize: 18,
-                              //   //         fontFamily: 'Nunito Sans',
-                              //   //         fontWeight: FontWeight.w600,
-                              //   //         height: 0,
-                              //   //       ),
-                              //   //     ),
-                              //   //   ),
-                              //   // ),
-
-                              //   ],
-                              // );
                             },
                           ),
                         Gap(10),
 
-                        const AddVariantButton(),
+                        AddVariantButton(
+                          materials: customizeMaterials,
+                        ),
                         const Gap(20),
 
                         const Text(
-                          'USER CUSTOMIZATION',
+                          'CUSTOMER CUSTOMIZATION FORM',
                           style: TextStyle(
                             color: Color(0xFF43464B),
                             fontSize: 13,
@@ -743,52 +768,10 @@ class _AddProductState extends State<AddProduct> {
                         ),
                         Gap(10),
 
-                        SizedBox(
-                          height: 60,
-                          width: double.infinity,
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return MaterialSelectionPage(
-                                      onTap: setCustomizeMaterialsIds,
-                                      materials: customizeMaterials,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            child: DottedBorder(
-                              color: foregroundColor,
-                              radius: const Radius.circular(8),
-                              borderType: BorderType.RRect,
-                              child: Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "${customizeMaterials.length} Materials Selected",
-                                      style: TextStyle(
-                                        color: foregroundColor,
-                                        fontSize: 16,
-                                        fontFamily: 'Nunito Sans',
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        Gap(20),
-
                         TextFormField(
                           controller: _laborController,
-                          decoration: outlineInputBorder(label: 'Labor Cost'),
+                          decoration:
+                              outlineInputBorder(label: 'Enter Labor Cost'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: false,
@@ -806,7 +789,7 @@ class _AddProductState extends State<AddProduct> {
                         TextFormField(
                           controller: _expensesController,
                           decoration:
-                              outlineInputBorder(label: 'Other Expenses'),
+                              outlineInputBorder(label: 'Enter Other Expenses'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: false,
@@ -832,8 +815,8 @@ class _AddProductState extends State<AddProduct> {
                         Gap(10),
                         TextFormField(
                           controller: _materialQuantityRequired,
-                          decoration:
-                              outlineInputBorder(label: 'Number of Material'),
+                          decoration: outlineInputBorder(
+                              label: 'Enter the Number of Material Stocks'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: true,
@@ -849,8 +832,8 @@ class _AddProductState extends State<AddProduct> {
                         const Gap(10),
                         TextFormField(
                           controller: _colorQuantityRequired,
-                          decoration:
-                              outlineInputBorder(label: 'Number of Paint'),
+                          decoration: outlineInputBorder(
+                              label: 'Enter the Number of Color Stocks'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: true,
@@ -1062,7 +1045,9 @@ class _AddProductState extends State<AddProduct> {
 class AddVariantButton extends StatelessWidget {
   const AddVariantButton({
     super.key,
+    required this.materials,
   });
+  final List<Materials> materials;
 
   @override
   Widget build(BuildContext context) {
@@ -1072,7 +1057,9 @@ class AddVariantButton extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           showDialog(
-              builder: (context) => const AddVariantWidget(),
+              builder: (context) => AddVariantWidget(
+                    materials: materials,
+                  ),
               context: context,
               barrierDismissible: false);
         },

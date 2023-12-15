@@ -7,8 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
+import 'package:furniverse_admin/models/color_model.dart';
+import 'package:furniverse_admin/models/materials_model.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/shared/constants.dart';
+import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,7 +20,8 @@ import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
 class AddVariantWidget extends StatefulWidget {
-  const AddVariantWidget({super.key});
+  const AddVariantWidget({super.key, required this.materials});
+  final List<Materials> materials;
 
   @override
   State<AddVariantWidget> createState() => _AddVariantWidgetState();
@@ -47,7 +51,19 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
     'ft',
     'm',
   ];
+  // final List<Map> itemMaterials = [];
   String? selectedCategory;
+  String? selectedMaterial;
+  String? selectedColor;
+
+  @override
+  void initState() {
+    super.initState();
+    // if (widget.materials.isNotEmpty) {
+    //   // selectedMaterial = widget.materials[0].id;
+    //   selectedMaterial = widget.materials[0].material;
+    // }
+  }
 
   Future<void> pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -90,6 +106,8 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Provider.of<List<ColorModel>?>(context);
+
     var fileName = selectedModel != null
         ? basename(selectedModel!.path)
         : "Upload 3D Model";
@@ -186,20 +204,132 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                           ? 'Please input a variant name.'
                           : null),
                   const Gap(20),
-                  TextFormField(
-                    controller: _colorController,
-                    decoration: outlineInputBorder(label: 'Color'),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) =>
-                        value!.isEmpty ? 'Please input a color.' : null,
+                  // TextFormField(
+                  //   controller: _colorController,
+                  //   decoration: outlineInputBorder(label: 'Color'),
+                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                  //   validator: (value) =>
+                  //       value!.isEmpty ? 'Please input a color.' : null,
+                  // ),
+                  DropdownButtonFormField2<String>(
+                    buttonStyleData: const ButtonStyleData(
+                      height: 26,
+                      padding: EdgeInsets.only(right: 8),
+                    ),
+                    hint: const Text(
+                      'Select Color',
+                      style: TextStyle(fontSize: 16),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    iconStyleData: const IconStyleData(
+                      icon: Icon(
+                        Icons.arrow_drop_down,
+                      ),
+                      iconSize: 24,
+                    ),
+                    dropdownStyleData: DropdownStyleData(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    items: [
+                      for (var color in colors ?? [])
+                        DropdownMenuItem<String>(
+                          value: color.color,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.brightness_1,
+                                color: hexToColor(color.hexValue),
+                              ),
+                              Gap(10),
+                              Text(
+                                color.color,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                    isExpanded: true,
+                    value: selectedColor,
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedColor = value;
+                      });
+                    },
                   ),
+
                   const Gap(20),
-                  TextFormField(
-                    controller: _materialController,
-                    decoration: outlineInputBorder(label: 'Material'),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) =>
-                        value!.isEmpty ? 'Please input a material.' : null,
+                  // TextFormField(
+                  //   controller: _materialController,
+                  //   decoration: outlineInputBorder(label: 'Material'),
+                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                  //   validator: (value) =>
+                  //       value!.isEmpty ? 'Please input a material.' : null,
+                  // ),
+                  DropdownButtonFormField2<String>(
+                    buttonStyleData: const ButtonStyleData(
+                      height: 26,
+                      padding: EdgeInsets.only(right: 8),
+                    ),
+                    hint: const Text(
+                      'Select Material',
+                      style: TextStyle(fontSize: 16),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    iconStyleData: const IconStyleData(
+                      icon: Icon(
+                        Icons.arrow_drop_down,
+                      ),
+                      iconSize: 24,
+                    ),
+                    dropdownStyleData: DropdownStyleData(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    items: [
+                      for (var material in widget.materials)
+                        DropdownMenuItem<String>(
+                          value: material.material,
+                          child: Text(
+                            material.material,
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                    ],
+                    isExpanded: true,
+                    value: selectedMaterial,
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedMaterial = value;
+                      });
+                    },
                   ),
                   const Gap(20),
                   DropdownButtonFormField2<String>(
@@ -534,7 +664,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
     final id = const Uuid().v4();
     print(isValid.toString());
 
-    if (!isValid || selectedImage == null || selectedModel == null) {
+    if (validateInputs(isValid)) {
       setState(() {
         error = "Input values are invalid";
       });
@@ -549,23 +679,22 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
         error = "";
       });
       final variant = ProductVariants(
-          variantName: _nameController.text,
-          material: _materialController.text,
-          color: _colorController.text,
-          image: selectedImage!,
-          length: double.parse(_lengthController.text),
-          width: double.parse(_widthController.text),
-          height: double.parse(_heightController.text),
-          metric: selectedCategory.toString(),
-          model: selectedModel!,
-          price: double.parse(_priceController.text),
-          stocks: int.parse(_stocksController.text),
-          id: id);
+        variantName: _nameController.text,
+        material: selectedMaterial ?? "",
+        color: selectedColor ?? "",
+        image: selectedImage!,
+        length: double.parse(_lengthController.text),
+        width: double.parse(_widthController.text),
+        height: double.parse(_heightController.text),
+        metric: selectedCategory.toString(),
+        model: selectedModel!,
+        price: double.parse(_priceController.text),
+        stocks: int.parse(_stocksController.text),
+        id: id,
+      );
 
       final provider = Provider.of<VariantsProvider>(context, listen: false);
       provider.addVariant(variant);
-
-      print(selectedCategory.toString());
 
       Navigator.of(context).pop();
       Fluttertoast.showToast(
@@ -574,4 +703,16 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
       );
     }
   }
+
+  Color hexToColor(String hexString, {String alphaChannel = 'FF'}) {
+    return Color(int.parse(hexString.replaceFirst('#', '0x$alphaChannel')));
+  }
+
+  bool validateInputs(bool isValid) =>
+      !isValid ||
+      selectedImage == null ||
+      selectedModel == null ||
+      selectedColor == null ||
+      selectedCategory == null ||
+      selectedMaterial == null;
 }
