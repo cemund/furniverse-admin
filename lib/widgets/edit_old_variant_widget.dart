@@ -8,7 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
+import 'package:furniverse_admin/models/color_model.dart';
 import 'package:furniverse_admin/models/edit_product_variants_model.dart';
+import 'package:furniverse_admin/models/materials_model.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:gap/gap.dart';
@@ -18,8 +20,10 @@ import 'package:path/path.dart';
 
 class EditOldVariantWidget extends StatefulWidget {
   final EditProductVariants productVariants;
+  final List<Materials> materials;
 
-  const EditOldVariantWidget({super.key, required this.productVariants});
+  const EditOldVariantWidget(
+      {super.key, required this.productVariants, required this.materials});
 
   @override
   State<EditOldVariantWidget> createState() => _EditOldVariantWidgetState();
@@ -47,6 +51,8 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
     'm',
   ];
   String? selectedCategory;
+  String? selectedMaterial;
+  String? selectedColor;
 
   @override
   void initState() {
@@ -62,7 +68,7 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
     stocks = variant.stocks;
     selectedImage = variant.image;
     selectedModel = variant.model;
-    selectedCategory = variant.metric;
+    // selectedCategory = variant.metric;
     id = variant.id;
     selectedNewImage = variant.selectedNewImage;
     selectedNewModel = variant.selectedNewModel;
@@ -71,8 +77,8 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
 
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _materialController = TextEditingController();
-  final _colorController = TextEditingController();
+  // final _materialController = TextEditingController();
+  // final _colorController = TextEditingController();
   final _lengthController = TextEditingController();
   final _widthController = TextEditingController();
   final _heightController = TextEditingController();
@@ -85,8 +91,8 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
   @override
   void dispose() {
     _nameController.dispose();
-    _materialController.dispose();
-    _colorController.dispose();
+    // _materialController.dispose();
+    // _colorController.dispose();
     _lengthController.dispose();
     _widthController.dispose();
     _heightController.dispose();
@@ -122,9 +128,11 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Provider.of<List<ColorModel>?>(context);
+
     _nameController.text = name;
-    _materialController.text = material;
-    _colorController.text = color;
+    // _materialController.text = material;
+    // _colorController.text = color;
     _lengthController.text = lengths.toStringAsFixed(0);
     _widthController.text = widths.toStringAsFixed(0);
     _heightController.text = heights.toStringAsFixed(0);
@@ -136,6 +144,13 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
     var fileName = selectedNewModel == null
         ? "$name's 3D Model"
         : basename(selectedNewModel!.path);
+    String hintTextColor = "#000000";
+
+    for (var col in colors ?? []) {
+      if (color == col.color) {
+        hintTextColor = col.hexValue;
+      }
+    }
 
     return AlertDialog(
       insetPadding: EdgeInsets.all(10),
@@ -221,14 +236,134 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                     decoration: outlineInputBorder(label: 'Variant Name'),
                   ),
                   const Gap(20),
-                  TextFormField(
-                    controller: _colorController,
-                    decoration: outlineInputBorder(label: 'Color'),
+                  // TextFormField(
+                  //   controller: _colorController,
+                  //   decoration: outlineInputBorder(label: 'Color'),
+                  // ),
+                  DropdownButtonFormField2<String>(
+                    buttonStyleData: const ButtonStyleData(
+                      height: 26,
+                      padding: EdgeInsets.only(right: 8),
+                    ),
+                    hint: Row(
+                      children: [
+                        Icon(
+                          Icons.brightness_1,
+                          color: hexToColor(hintTextColor),
+                        ),
+                        Gap(10),
+                        Text(
+                          color,
+                          style: TextStyle(fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                    iconStyleData: const IconStyleData(
+                      icon: Icon(
+                        Icons.arrow_drop_down,
+                      ),
+                      iconSize: 24,
+                    ),
+                    dropdownStyleData: DropdownStyleData(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    items: [
+                      for (var color in colors ?? [])
+                        DropdownMenuItem<String>(
+                          value: color.color,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.brightness_1,
+                                color: hexToColor(color.hexValue),
+                              ),
+                              Gap(10),
+                              Text(
+                                color.color,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                    isExpanded: true,
+                    value: selectedColor,
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedColor = value;
+                      });
+                    },
                   ),
                   const Gap(20),
-                  TextFormField(
-                    controller: _materialController,
-                    decoration: outlineInputBorder(label: 'Material'),
+                  // TextFormField(
+                  //   controller: _materialController,
+                  //   decoration: outlineInputBorder(label: 'Material'),
+                  // ),
+                  DropdownButtonFormField2<String>(
+                    buttonStyleData: const ButtonStyleData(
+                      height: 26,
+                      padding: EdgeInsets.only(right: 8),
+                    ),
+                    hint: Text(
+                      material,
+                      style: TextStyle(fontSize: 16),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    iconStyleData: const IconStyleData(
+                      icon: Icon(
+                        Icons.arrow_drop_down,
+                      ),
+                      iconSize: 24,
+                    ),
+                    dropdownStyleData: DropdownStyleData(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    items: [
+                      for (var material in widget.materials)
+                        DropdownMenuItem<String>(
+                          value: material.material,
+                          child: Text(
+                            material.material,
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                    ],
+                    isExpanded: true,
+                    value: selectedMaterial,
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedMaterial = value;
+                      });
+                    },
                   ),
                   const Gap(20),
                   DropdownButtonFormField2<String>(
@@ -236,8 +371,8 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                       height: 26,
                       padding: EdgeInsets.only(right: 8),
                     ),
-                    hint: const Text(
-                      'Select Metric Length',
+                    hint: Text(
+                      widget.productVariants.metric,
                       style: TextStyle(fontSize: 16),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -514,14 +649,14 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
       final newVariant = EditProductVariants(
         id: widget.productVariants.id,
         variantName: _nameController.text,
-        material: _materialController.text,
-        color: _colorController.text,
-        image: selectedImage!,
+        material: selectedMaterial ?? material,
+        color: selectedColor ?? color,
+        image: selectedImage ?? "",
         length: double.parse(_lengthController.text),
         width: double.parse(_widthController.text),
         height: double.parse(_heightController.text),
-        model: selectedModel!,
-        metric: selectedCategory.toString(),
+        model: selectedModel ?? "",
+        metric: selectedCategory ?? widget.productVariants.metric,
         price: double.parse(_priceController.text),
         stocks: int.parse(_stocksController.text),
         selectedNewImage: selectedNewImage,
@@ -533,5 +668,9 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
 
       Navigator.of(context).pop();
     }
+  }
+
+  Color hexToColor(String hexString, {String alphaChannel = 'FF'}) {
+    return Color(int.parse(hexString.replaceFirst('#', '0x$alphaChannel')));
   }
 }

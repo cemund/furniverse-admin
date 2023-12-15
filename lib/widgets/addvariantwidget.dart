@@ -11,7 +11,6 @@ import 'package:furniverse_admin/models/color_model.dart';
 import 'package:furniverse_admin/models/materials_model.dart';
 import 'package:furniverse_admin/models/product_variants_model.dart';
 import 'package:furniverse_admin/shared/constants.dart';
-import 'package:furniverse_admin/shared/loading.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';

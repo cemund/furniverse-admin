@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/materials_model.dart';
 import 'package:furniverse_admin/models/products.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/material_selection_page.dart';
 import 'package:furniverse_admin/services/delete_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/upload_image_services.dart';
@@ -27,9 +28,11 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:readmore/readmore.dart';
 
 class EditProduct extends StatefulWidget {
-  const EditProduct({super.key, this.id, required this.product});
+  const EditProduct(
+      {super.key, this.id, required this.product, required this.materialList});
   final id;
   final Product? product;
+  final List<Materials> materialList;
 
   @override
   State<EditProduct> createState() => _EditProductState();
@@ -66,6 +69,7 @@ class _EditProductState extends State<EditProduct> {
   List<String> productImages = [];
   List<dynamic> originalProductImages = [];
   List<dynamic> toDeleteOriginalProductImages = [];
+  List<Materials> customizeMaterials = [];
 
   //image picker
   XFile? selectedImage;
@@ -98,6 +102,12 @@ class _EditProductState extends State<EditProduct> {
     }
   }
 
+  void setCustomizeMaterials(List<Materials> materials) {
+    setState(() {
+      customizeMaterials = materials;
+    });
+  }
+
   Future<List<String>> uploadSelectedImages() async {
     productImages = [];
     for (int i = 0; i < originalProductImages.length; i++) {
@@ -121,6 +131,7 @@ class _EditProductState extends State<EditProduct> {
   @override
   void initState() {
     super.initState();
+    customizeMaterials = widget.materialList;
 
     _productnameController.text = widget.product!.name;
     selectedCategory = widget.product!.category;
@@ -459,9 +470,60 @@ class _EditProductState extends State<EditProduct> {
                             ],
                           ),
                         ),
+                        Gap(20),
+                        const Text(
+                          'Selected Product Materials:',
+                          style: TextStyle(
+                            color: Color(0xFF43464B),
+                            fontSize: 13,
+                            fontFamily: 'Nunito Sans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          height: 60,
+                          width: double.infinity,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return MaterialSelectionPage(
+                                      onTap: setCustomizeMaterials,
+                                      materials: customizeMaterials,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: DottedBorder(
+                              color: foregroundColor,
+                              radius: const Radius.circular(8),
+                              borderType: BorderType.RRect,
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "${customizeMaterials.length} Materials Selected",
+                                      style: TextStyle(
+                                        color: foregroundColor,
+                                        fontSize: 16,
+                                        fontFamily: 'Nunito Sans',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                         const SizedBox(height: 20),
                         const Text(
-                          'Original Product Variants',
+                          'Original Product Variants:',
                           style: TextStyle(
                             color: Color(0xFF43464B),
                             fontSize: 13,
@@ -625,6 +687,8 @@ class _EditProductState extends State<EditProduct> {
                                                     EditOldVariantWidget(
                                                       productVariants: variants
                                                           .oldvariants[index],
+                                                      materials:
+                                                          customizeMaterials,
                                                     ),
                                                 context: context,
                                                 barrierDismissible: false);
@@ -659,7 +723,7 @@ class _EditProductState extends State<EditProduct> {
                         ],
                         const Gap(20),
                         const Text(
-                          'New Product Variants',
+                          'Add Product Variants:',
                           style: TextStyle(
                             color: Color(0xFF43464B),
                             fontSize: 13,
@@ -785,7 +849,8 @@ class _EditProductState extends State<EditProduct> {
                                                 builder: (context) =>
                                                     EditVariantWidget(
                                                       productVariants: variant,
-                                                      materials: [],
+                                                      materials:
+                                                          customizeMaterials,
                                                     ),
                                                 context: context,
                                                 barrierDismissible: false);
@@ -839,14 +904,25 @@ class _EditProductState extends State<EditProduct> {
                             },
                           ),
                         const Gap(10),
-                        const AddVariantButton(
-                          materials: [],
+                        AddVariantButton(
+                          materials: customizeMaterials,
                         ),
 
                         const Gap(20),
+                        const Text(
+                          'CUSTOMER CUSTOMIZATION FORM',
+                          style: TextStyle(
+                            color: Color(0xFF43464B),
+                            fontSize: 13,
+                            fontFamily: 'Nunito Sans',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Gap(10),
                         TextFormField(
                           controller: _laborController,
-                          decoration: outlineInputBorder(label: 'Labor Cost'),
+                          decoration:
+                              outlineInputBorder(label: 'Enter Labor Cost:'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: false,
@@ -863,8 +939,8 @@ class _EditProductState extends State<EditProduct> {
                         const Gap(20),
                         TextFormField(
                           controller: _expensesController,
-                          decoration:
-                              outlineInputBorder(label: 'Other Expenses'),
+                          decoration: outlineInputBorder(
+                              label: 'Enter Other Expenses:'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: false,
@@ -890,8 +966,8 @@ class _EditProductState extends State<EditProduct> {
                         Gap(10),
                         TextFormField(
                           controller: _materialQuantityRequired,
-                          decoration:
-                              outlineInputBorder(label: 'Number of Material'),
+                          decoration: outlineInputBorder(
+                              label: 'Enter the Number of Material Stocks:'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: true,
@@ -907,8 +983,8 @@ class _EditProductState extends State<EditProduct> {
                         const Gap(10),
                         TextFormField(
                           controller: _colorQuantityRequired,
-                          decoration:
-                              outlineInputBorder(label: 'Number of Paint'),
+                          decoration: outlineInputBorder(
+                              label: 'Enter the Number of Color Stocks:'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: true,
@@ -918,7 +994,7 @@ class _EditProductState extends State<EditProduct> {
                           ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
-                              ? 'Please input a required quantity for paint.'
+                              ? 'Please input a required quantity for color.'
                               : null,
                         ),
 
@@ -1062,8 +1138,8 @@ class AddVariantButton extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           showDialog(
-              builder: (context) => const AddVariantWidget(
-                    materials: [],
+              builder: (context) => AddVariantWidget(
+                    materials: materials,
                   ),
               context: context,
               barrierDismissible: false);

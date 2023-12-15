@@ -11,7 +11,7 @@ class Product {
   final List<dynamic> images;
   final String description;
   final List<dynamic> variants;
-  final List<dynamic> materialIds;
+  final List<String> materialIds;
 
   Product({
     required this.id,
@@ -30,6 +30,11 @@ class Product {
   factory Product.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
+    // Ensure materialIds is List<String>
+    List<dynamic> rawMaterialIds = data['materialIds'] ?? [];
+    List<String> materialIds =
+        List<String>.from(rawMaterialIds.map((item) => item.toString()));
+
     return Product(
       id: doc.id,
       name: data['product_name'] ?? '',
@@ -41,7 +46,7 @@ class Product {
       variants: data['variants'] ?? [],
       noMaterialsReq: (data['noMaterialsReq'] ?? 0.0).toDouble() ?? 0.0,
       noPaintReq: (data['noPaintReq'] ?? 0.0).toDouble() ?? 0.0,
-      materialIds: data['materialIds'] ?? [],
+      materialIds: materialIds,
     );
   }
 

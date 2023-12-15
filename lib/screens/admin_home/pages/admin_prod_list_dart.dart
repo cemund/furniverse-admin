@@ -6,6 +6,7 @@ import 'package:furniverse_admin/Provider/variant_provider.dart';
 import 'package:furniverse_admin/models/edit_product_variants_model.dart';
 import 'package:furniverse_admin/models/products.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/admin_add_product.dart';
+import 'package:furniverse_admin/services/materials_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
@@ -591,7 +592,7 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
             ),
           ),
           PopupMenuButton(
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 1) {
                 showDialog(
                   context: context,
@@ -640,12 +641,17 @@ class _ProductDetailCardState extends State<ProductDetailCard> {
                   variants.addOldVariant(oldvariants);
                 }
 
+                final materialList = await MaterialsServices()
+                    .getSpecificMaterialsById(widget.product.materialIds);
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => EditProduct(
-                        id: widget.product.id.toString(),
-                        product: widget.product),
+                      id: widget.product.id.toString(),
+                      product: widget.product,
+                      materialList: materialList,
+                    ),
                   ),
                 );
               }

@@ -73,7 +73,7 @@ class _AddProductState extends State<AddProduct> {
   ];
   String? selectedCategory;
 
-  void setCustomizeMaterialsIds(List<Materials> materials) {
+  void setCustomizeMaterials(List<Materials> materials) {
     setState(() {
       customizeMaterials = materials;
     });
@@ -544,7 +544,7 @@ class _AddProductState extends State<AddProduct> {
                                 MaterialPageRoute(
                                   builder: (context) {
                                     return MaterialSelectionPage(
-                                      onTap: setCustomizeMaterialsIds,
+                                      onTap: setCustomizeMaterials,
                                       materials: customizeMaterials,
                                     );
                                   },
