@@ -665,7 +665,7 @@ class _AddProductState extends State<AddProduct> {
                                           SizedBox(
                                             width: 200,
                                             child: ReadMoreText(
-                                              "Size: ${variant.length}L x ${variant.width}W x ${variant.height}H ${variant.metric}; Color: ${variant.color}; Material: ${variant.material}; ",
+                                              "LWH: ${variant.length} x ${variant.width} x ${variant.height} ${variant.metric}; Color: ${variant.color}; Material: ${variant.material}; ",
                                               style: const TextStyle(
                                                 color: foregroundColor,
                                                 fontSize: 12,
@@ -691,21 +691,24 @@ class _AddProductState extends State<AddProduct> {
                                   Row(
                                     children: [
                                       IconButton(
-                                          padding: EdgeInsets.zero,
-                                          constraints: const BoxConstraints(),
-                                          onPressed: () {
-                                            showDialog(
-                                                builder: (context) =>
-                                                    EditVariantWidget(
-                                                      productVariants: variant,
-                                                    ),
-                                                context: context,
-                                                barrierDismissible: false);
-                                          },
-                                          icon: const Icon(
-                                            Icons.edit,
-                                            color: foregroundColor,
-                                          )),
+                                        padding: EdgeInsets.zero,
+                                        constraints: const BoxConstraints(),
+                                        onPressed: () {
+                                          showDialog(
+                                              builder: (context) =>
+                                                  EditVariantWidget(
+                                                    productVariants: variant,
+                                                    materials:
+                                                        customizeMaterials,
+                                                  ),
+                                              context: context,
+                                              barrierDismissible: false);
+                                        },
+                                        icon: const Icon(
+                                          Icons.edit,
+                                          color: foregroundColor,
+                                        ),
+                                      ),
                                       IconButton(
                                           padding: EdgeInsets.zero,
                                           constraints: const BoxConstraints(),

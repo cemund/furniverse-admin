@@ -785,6 +785,7 @@ class _EditProductState extends State<EditProduct> {
                                                 builder: (context) =>
                                                     EditVariantWidget(
                                                       productVariants: variant,
+                                                      materials: [],
                                                     ),
                                                 context: context,
                                                 barrierDismissible: false);

@@ -168,6 +168,7 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                           children: [
                             Container(
                               width: 80,
+                              height: 80,
                               clipBehavior: Clip.hardEdge,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
@@ -186,10 +187,17 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                                     selectedImage = null;
                                   });
                                 },
-                                child: const Icon(
-                                  Icons.close_rounded,
-                                  size: 18,
-                                  color: backgroundColor,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: foregroundColor),
+                                  height: 16,
+                                  width: 16,
+                                  child: const Icon(
+                                    Icons.close_rounded,
+                                    size: 14,
+                                    color: backgroundColor,
+                                  ),
                                 ),
                               ),
                             ),
@@ -682,12 +690,12 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
         variantName: _nameController.text,
         material: selectedMaterial ?? "",
         color: selectedColor ?? "",
-        image: selectedImage!,
+        image: selectedImage ?? "",
         length: double.parse(_lengthController.text),
         width: double.parse(_widthController.text),
         height: double.parse(_heightController.text),
         metric: selectedCategory.toString(),
-        model: selectedModel!,
+        model: selectedModel ?? "",
         price: double.parse(_priceController.text),
         stocks: int.parse(_stocksController.text),
         id: id,
@@ -708,6 +716,8 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
     return Color(int.parse(hexString.replaceFirst('#', '0x$alphaChannel')));
   }
 
+  // bool validateInputs(bool isValid) =>
+  //     selectedColor == null || selectedMaterial == null;
   bool validateInputs(bool isValid) =>
       !isValid ||
       selectedImage == null ||
