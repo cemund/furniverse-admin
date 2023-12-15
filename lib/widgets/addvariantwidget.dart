@@ -245,12 +245,21 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                       for (var color in colors ?? [])
                         DropdownMenuItem<String>(
                           value: color.color,
-                          child: Text(
-                            color.color,
-                            style: const TextStyle(
-                              fontSize: 16,
-                            ),
-                            overflow: TextOverflow.ellipsis,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.brightness_1,
+                                color: hexToColor(color.hexValue),
+                              ),
+                              Gap(10),
+                              Text(
+                                color.color,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
                         ),
                     ],
@@ -693,6 +702,10 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
         backgroundColor: Colors.grey,
       );
     }
+  }
+
+  Color hexToColor(String hexString, {String alphaChannel = 'FF'}) {
+    return Color(int.parse(hexString.replaceFirst('#', '0x$alphaChannel')));
   }
 
   bool validateInputs(bool isValid) =>
