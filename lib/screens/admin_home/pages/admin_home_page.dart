@@ -492,6 +492,19 @@ class TopSellingList extends StatefulWidget {
 
 class _TopSellingListState extends State<TopSellingList> {
   int selectedIndex = 0;
+  Map<String, int> topProducts = {};
+
+  @override
+  void initState() {
+    for (int i = 0; i < widget.products.length; i++) {
+      if (widget.products.values.elementAt(i) > 0) {
+        topProducts[widget.products.keys.elementAt(i)] =
+            widget.products.values.elementAt(i);
+      }
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -601,10 +614,10 @@ class _TopSellingListState extends State<TopSellingList> {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (int i = 0; i < widget.products.length; i++) ...[
+                    for (int i = 0; i < topProducts.length; i++) ...[
                       TopProducts(
-                          productId: widget.products.keys.elementAt(i),
-                          quantity: widget.products.values.elementAt(i),
+                          productId: topProducts.keys.elementAt(i),
+                          quantity: topProducts.values.elementAt(i),
                           index: i)
                     ],
                   ],
