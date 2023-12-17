@@ -133,10 +133,10 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
     _nameController.text = name;
     // _materialController.text = material;
     // _colorController.text = color;
-    _lengthController.text = lengths.toStringAsFixed(0);
-    _widthController.text = widths.toStringAsFixed(0);
-    _heightController.text = heights.toStringAsFixed(0);
-    _priceController.text = price.toString();
+    _lengthController.text = lengths.toStringAsFixed(2);
+    _widthController.text = widths.toStringAsFixed(2);
+    _heightController.text = heights.toStringAsFixed(2);
+    _priceController.text = price.toStringAsFixed(2);
     _stocksController.text = stocks.toString();
     // var fileName = selectedModel != null
     //     ? basename(selectedModel!.path)
@@ -440,9 +440,6 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                               signed: false,
                               decimal: true,
                             ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) => value!.isEmpty
@@ -465,9 +462,6 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                               signed: false,
                               decimal: true,
                             ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) =>
@@ -489,9 +483,6 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                               signed: false,
                               decimal: true,
                             ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) => value!.isEmpty
@@ -508,7 +499,6 @@ class _EditOldVariantWidgetState extends State<EditOldVariantWidget> {
                       signed: false,
                       decimal: true,
                     ),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                   const Gap(20),
                   TextFormField(

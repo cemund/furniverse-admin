@@ -777,11 +777,8 @@ class _AddProductState extends State<AddProduct> {
                               outlineInputBorder(label: 'Enter Labor Cost'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
-                            decimal: false,
+                            decimal: true,
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
                               ? 'Please input a Labor Cost.'
@@ -795,11 +792,8 @@ class _AddProductState extends State<AddProduct> {
                               outlineInputBorder(label: 'Enter Other Expenses'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
-                            decimal: false,
+                            decimal: true,
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
                               ? 'Please input a other expenses.'
@@ -824,9 +818,6 @@ class _AddProductState extends State<AddProduct> {
                             signed: false,
                             decimal: true,
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
                               ? 'Please input a required quantity for material.'
@@ -841,9 +832,6 @@ class _AddProductState extends State<AddProduct> {
                             signed: false,
                             decimal: true,
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
                               ? 'Please input a required quantity for paint.'

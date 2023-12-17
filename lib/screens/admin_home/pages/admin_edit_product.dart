@@ -928,9 +928,6 @@ class _EditProductState extends State<EditProduct> {
                             signed: false,
                             decimal: true,
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
                               ? 'Please input a Labor Cost.'
@@ -946,9 +943,6 @@ class _EditProductState extends State<EditProduct> {
                             signed: false,
                             decimal: true,
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
                               ? 'Please input a other expenses.'
@@ -973,9 +967,6 @@ class _EditProductState extends State<EditProduct> {
                             signed: false,
                             decimal: true,
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
                               ? 'Please input a required quantity for material.'
@@ -990,9 +981,6 @@ class _EditProductState extends State<EditProduct> {
                             signed: false,
                             decimal: true,
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
                               ? 'Please input a required quantity for color.'

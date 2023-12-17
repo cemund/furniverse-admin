@@ -465,9 +465,6 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
                               signed: false,
                               decimal: true,
                             ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) => value!.isEmpty
@@ -492,9 +489,6 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
                               signed: false,
                               decimal: true,
                             ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) =>
@@ -518,9 +512,6 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
                               signed: false,
                               decimal: true,
                             ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) => value!.isEmpty
@@ -594,7 +585,6 @@ class _EditVariantWidgetState extends State<EditVariantWidget> {
                       signed: false,
                       decimal: true,
                     ),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
                         value!.isEmpty ? 'Please input a price.' : null,

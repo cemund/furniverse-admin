@@ -413,9 +413,6 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                               signed: false,
                               decimal: true,
                             ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) => value!.isEmpty
@@ -440,9 +437,6 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                               signed: false,
                               decimal: true,
                             ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) =>
@@ -466,9 +460,6 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                               signed: false,
                               decimal: true,
                             ),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) => value!.isEmpty
@@ -542,7 +533,6 @@ class _AddVariantWidgetState extends State<AddVariantWidget> {
                       signed: false,
                       decimal: true,
                     ),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
                         value!.isEmpty ? 'Please input a price.' : null,

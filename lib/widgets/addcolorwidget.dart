@@ -102,97 +102,36 @@ class _AddCollorWidgetState extends State<AddColorWidget> {
               child: ListView(
                 physics: const BouncingScrollPhysics(),
                 children: [
-                  // selectedImage == null
-                  //     ? Center(
-                  //         child: GestureDetector(
-                  //           onTap: () async {
-                  //             await pickImage();
-                  //             setState(() {});
-                  //           },
-                  //           child: Container(
-                  //             height: 80,
-                  //             width: 80,
-                  //             decoration: BoxDecoration(
-                  //               border: Border.all(
-                  //                   width: 2, color: const Color(0xFFA9ADB2)),
-                  //               borderRadius: BorderRadius.circular(8),
-                  //             ),
-                  //             child: const Icon(
-                  //               Icons.add_a_photo_rounded,
-                  //               color: foregroundColor,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       )
-                  //     : Center(
-                  //         child: Stack(
-                  //         children: [
-                  //           Container(
-                  //             width: 80,
-                  //             clipBehavior: Clip.hardEdge,
-                  //             decoration: BoxDecoration(
-                  //               borderRadius: BorderRadius.circular(8),
-                  //             ),
-                  //             child: Image.file(
-                  //               File(selectedImage!.path),
-                  //               fit: BoxFit.cover,
-                  //             ),
-                  //           ),
-                  //           Positioned(
-                  //             top: 5,
-                  //             right: 5,
-                  //             child: GestureDetector(
-                  //               onTap: () {
-                  //                 setState(() {
-                  //                   selectedImage = null;
-                  //                 });
-                  //               },
-                  //               child: const Icon(
-                  //                 Icons.close_rounded,
-                  //                 size: 18,
-                  //                 color: backgroundColor,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ],
-                  //       )),
-                  // const Gap(20),
-
                   TextFormField(
-                    controller: _colorController,
-                    decoration: outlineInputBorder(label: 'Color'),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) 
-                      {print(value);
-                        return value!.isEmpty
-                        ? 'Please input a color.'
-                        : null;}
-                  ),
+                      controller: _colorController,
+                      decoration: outlineInputBorder(label: 'Color'),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        print(value);
+                        return value!.isEmpty ? 'Please input a color.' : null;
+                      }),
                   const Gap(20),
-
                   const Text(
                     "Note: Hex color must have # (Ex. #bf4930)",
                     style: TextStyle(
-                      color: Color(0xFF808080),
-                      fontSize: 12,
-                      fontFamily: 'Avenir Next LT Pro',
-                      fontWeight: FontWeight.w500,
-                      fontStyle: FontStyle.italic
-                    ),
+                        color: Color(0xFF808080),
+                        fontSize: 12,
+                        fontFamily: 'Avenir Next LT Pro',
+                        fontWeight: FontWeight.w500,
+                        fontStyle: FontStyle.italic),
                   ),
                   const Gap(5),
                   TextFormField(
-                    controller: _hexController,
-                    decoration: outlineInputBorder(label: 'Color Hex Value'),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) 
-                      {print(value);
+                      controller: _hexController,
+                      decoration: outlineInputBorder(label: 'Color Hex Value'),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        print(value);
                         return value!.isEmpty
-                        ? 'Please input a color hex value.'
-                        : null;}
-                  ),
+                            ? 'Please input a color hex value.'
+                            : null;
+                      }),
                   const Gap(20),
-                  
                   TextFormField(
                     controller: _priceController,
                     decoration: outlineInputBorder(label: 'Price'),
@@ -200,14 +139,10 @@ class _AddCollorWidgetState extends State<AddColorWidget> {
                       signed: false,
                       decimal: true,
                     ),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
-                      value!.isEmpty
-                        ? 'Please input a price.'
-                        : null,
+                        value!.isEmpty ? 'Please input a price.' : null,
                   ),
-                  
                   const Gap(20),
                   TextFormField(
                     controller: _stocksController,
@@ -219,189 +154,184 @@ class _AddCollorWidgetState extends State<AddColorWidget> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
-                      value!.isEmpty
-                        ? 'Please input a stock/s.'
-                        : null,
+                        value!.isEmpty ? 'Please input a stock/s.' : null,
                   ),
                   const Gap(20),
-
                   ...[
-                  // TextFormField(
-                  //   controller: _colorController,
-                  //   decoration: outlineInputBorder(label: 'Color'),
-                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //   validator: (value) =>
-                  //     value!.isEmpty
-                  //       ? 'Please input a color.'
-                  //       : null,
-                  // ),
-                  // const Gap(20),
-                  
-                  // TextFormField(
-                  //   controller: _materialController,
-                  //   decoration: outlineInputBorder(label: 'Material'),
-                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //   validator: (value) =>
-                  //     value!.isEmpty
-                  //       ? 'Please input a material.'
-                  //       : null,
-                  // ),
-                  // const Gap(20),
+                    // TextFormField(
+                    //   controller: _colorController,
+                    //   decoration: outlineInputBorder(label: 'Color'),
+                    //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                    //   validator: (value) =>
+                    //     value!.isEmpty
+                    //       ? 'Please input a color.'
+                    //       : null,
+                    // ),
+                    // const Gap(20),
 
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     Flexible(child: TextFormField(
-                  //       controller: _dimensionController,
-                  //       decoration: outlineInputBorder(label: 'Dimension/Size'),
-                  //       autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //       validator: (value) =>
-                  //         value!.isEmpty
-                  //           ? 'Please input a dimension.'
-                  //           : null,
-                  //     ),),
+                    // TextFormField(
+                    //   controller: _materialController,
+                    //   decoration: outlineInputBorder(label: 'Material'),
+                    //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                    //   validator: (value) =>
+                    //     value!.isEmpty
+                    //       ? 'Please input a material.'
+                    //       : null,
+                    // ),
+                    // const Gap(20),
 
-                  //     Flexible(child: DropdownButtonFormField2<String>(
-                  //       buttonStyleData: const ButtonStyleData(
-                  //         height: 26,
-                  //         padding: EdgeInsets.only(right: 8),
-                  //       ),
-                  //       hint: const Text(
-                  //         'Select Metric Length',
-                  //         style: TextStyle(fontSize: 16),
-                  //         overflow: TextOverflow.ellipsis,
-                  //       ),
-                  //       iconStyleData: const IconStyleData(
-                  //         icon: Icon(
-                  //           Icons.arrow_drop_down,
-                  //         ),
-                  //         iconSize: 24,
-                  //       ),
-                  //       dropdownStyleData: DropdownStyleData(
-                  //         decoration: BoxDecoration(
-                  //           borderRadius: BorderRadius.circular(8),
-                  //         ),
-                  //       ),
-                  //       menuItemStyleData: const MenuItemStyleData(
-                  //         padding: EdgeInsets.symmetric(horizontal: 16),
-                  //       ),
-                  //       decoration: InputDecoration(
-                  //         contentPadding:
-                  //             const EdgeInsets.symmetric(vertical: 16),
-                  //         border: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(8),
-                  //         ),
-                  //       ),
-                  //       // autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //       // validator: (value) =>
-                  //       //     value!.isEmpty ? 'Please select a metric length.' : null,
-                  //       items: items
-                  //           .map((String item) => DropdownMenuItem<String>(
-                  //                 value: item,
-                  //                 child: Text(
-                  //                   item,
-                  //                   style: const TextStyle(
-                  //                     fontSize: 16,
-                  //                     // fontWeight: FontWeight.bold,
-                  //                     // color: Colors.],
-                  //                   ),
-                  //                   overflow: TextOverflow.ellipsis,
-                  //                 ),
-                  //               ))
-                  //           .toList(),
-                  //       isExpanded: true,
-                  //       value: selectedCategory,
-                  //       onChanged: (String? value) {
-                  //         setState(() {
-                  //           selectedCategory = value;
-                  //         });
-                  //       },
-                  //     ),)
-                  //   ],
-                  // ),
-                  
-                  // const Gap(20),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     Flexible(child: TextFormField(
+                    //       controller: _dimensionController,
+                    //       decoration: outlineInputBorder(label: 'Dimension/Size'),
+                    //       autovalidateMode: AutovalidateMode.onUserInteraction,
+                    //       validator: (value) =>
+                    //         value!.isEmpty
+                    //           ? 'Please input a dimension.'
+                    //           : null,
+                    //     ),),
 
-                  // GestureDetector(
-                  //   onTap: selectFile,
-                  //   child: Container(
-                  //     height: 60,
-                  //     width: double.infinity,
-                  //     decoration: BoxDecoration(
-                  //         borderRadius: BorderRadius.circular(8),
-                  //         border: Border.all(width: 2, color: borderColor)),
-                  //     child: Stack(
-                  //       children: [
-                  //         Center(
-                  //           child: Row(
-                  //             mainAxisAlignment: MainAxisAlignment.center,
-                  //             children: [
-                  //               SvgPicture.asset('assets/icons/model.svg'),
-                  //               const Gap(8),
-                  //               Text(
-                  //                 fileName,
-                  //                 textAlign: TextAlign.center,
-                  //                 style: const TextStyle(
-                  //                   color: foregroundColor,
-                  //                   fontSize: 16,
-                  //                   fontFamily: 'Nunito Sans',
-                  //                   fontWeight: FontWeight.w600,
-                  //                 ),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         ),
-                  //         if (selectedModel != null)
-                  //           Positioned(
-                  //             top: 5,
-                  //             right: 5,
-                  //             child: IconButton(
-                  //               padding: EdgeInsets.zero,
-                  //               iconSize: 18,
-                  //               constraints: const BoxConstraints(),
-                  //               color: foregroundColor,
-                  //               onPressed: () {
-                  //                 setState(() {
-                  //                   selectedModel = null;
-                  //                 });
-                  //               },
-                  //               icon: const Icon(
-                  //                 Icons.close,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // const Gap(20),
+                    //     Flexible(child: DropdownButtonFormField2<String>(
+                    //       buttonStyleData: const ButtonStyleData(
+                    //         height: 26,
+                    //         padding: EdgeInsets.only(right: 8),
+                    //       ),
+                    //       hint: const Text(
+                    //         'Select Metric Length',
+                    //         style: TextStyle(fontSize: 16),
+                    //         overflow: TextOverflow.ellipsis,
+                    //       ),
+                    //       iconStyleData: const IconStyleData(
+                    //         icon: Icon(
+                    //           Icons.arrow_drop_down,
+                    //         ),
+                    //         iconSize: 24,
+                    //       ),
+                    //       dropdownStyleData: DropdownStyleData(
+                    //         decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(8),
+                    //         ),
+                    //       ),
+                    //       menuItemStyleData: const MenuItemStyleData(
+                    //         padding: EdgeInsets.symmetric(horizontal: 16),
+                    //       ),
+                    //       decoration: InputDecoration(
+                    //         contentPadding:
+                    //             const EdgeInsets.symmetric(vertical: 16),
+                    //         border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(8),
+                    //         ),
+                    //       ),
+                    //       // autovalidateMode: AutovalidateMode.onUserInteraction,
+                    //       // validator: (value) =>
+                    //       //     value!.isEmpty ? 'Please select a metric length.' : null,
+                    //       items: items
+                    //           .map((String item) => DropdownMenuItem<String>(
+                    //                 value: item,
+                    //                 child: Text(
+                    //                   item,
+                    //                   style: const TextStyle(
+                    //                     fontSize: 16,
+                    //                     // fontWeight: FontWeight.bold,
+                    //                     // color: Colors.],
+                    //                   ),
+                    //                   overflow: TextOverflow.ellipsis,
+                    //                 ),
+                    //               ))
+                    //           .toList(),
+                    //       isExpanded: true,
+                    //       value: selectedCategory,
+                    //       onChanged: (String? value) {
+                    //         setState(() {
+                    //           selectedCategory = value;
+                    //         });
+                    //       },
+                    //     ),)
+                    //   ],
+                    // ),
+
+                    // const Gap(20),
+
+                    // GestureDetector(
+                    //   onTap: selectFile,
+                    //   child: Container(
+                    //     height: 60,
+                    //     width: double.infinity,
+                    //     decoration: BoxDecoration(
+                    //         borderRadius: BorderRadius.circular(8),
+                    //         border: Border.all(width: 2, color: borderColor)),
+                    //     child: Stack(
+                    //       children: [
+                    //         Center(
+                    //           child: Row(
+                    //             mainAxisAlignment: MainAxisAlignment.center,
+                    //             children: [
+                    //               SvgPicture.asset('assets/icons/model.svg'),
+                    //               const Gap(8),
+                    //               Text(
+                    //                 fileName,
+                    //                 textAlign: TextAlign.center,
+                    //                 style: const TextStyle(
+                    //                   color: foregroundColor,
+                    //                   fontSize: 16,
+                    //                   fontFamily: 'Nunito Sans',
+                    //                   fontWeight: FontWeight.w600,
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //         if (selectedModel != null)
+                    //           Positioned(
+                    //             top: 5,
+                    //             right: 5,
+                    //             child: IconButton(
+                    //               padding: EdgeInsets.zero,
+                    //               iconSize: 18,
+                    //               constraints: const BoxConstraints(),
+                    //               color: foregroundColor,
+                    //               onPressed: () {
+                    //                 setState(() {
+                    //                   selectedModel = null;
+                    //                 });
+                    //               },
+                    //               icon: const Icon(
+                    //                 Icons.close,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    // const Gap(20),
                   ],
-                  
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
                         final isValid = _formKey.currentState!.validate();
-                          if (!isValid) return;
+                        if (!isValid) return;
                         showDialog(
                           context: context,
                           builder: (context) => ConfirmationAlertDialog(
-                            title: "Are you sure you want to add this color?",
-                            onTapNo: () {
-                              Navigator.pop(context);
-                            },
-                            onTapYes: () async {
-                            // final currentContext = context; // Capture the context outside the async block
-                              // addVariant(context);
-                              saveproduct(context);
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                            tapNoString: "No",
-                            tapYesString: "Yes"
-                          ),
+                              title: "Are you sure you want to add this color?",
+                              onTapNo: () {
+                                Navigator.pop(context);
+                              },
+                              onTapYes: () async {
+                                // final currentContext = context; // Capture the context outside the async block
+                                // addVariant(context);
+                                saveproduct(context);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              tapNoString: "No",
+                              tapYesString: "Yes"),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -431,7 +361,6 @@ class _AddCollorWidgetState extends State<AddColorWidget> {
   }
 
   saveproduct(BuildContext context) async {
-
     ColorService colorService = ColorService();
     // final product = FirebaseFirestore.instance.collection('products').doc();
 
@@ -482,9 +411,8 @@ class _AddCollorWidgetState extends State<AddColorWidget> {
     // }
 
     Fluttertoast.showToast(
-        msg: "Color Added Successfully.",
-        backgroundColor: Colors.grey,
-      );
+      msg: "Color Added Successfully.",
+      backgroundColor: Colors.grey,
+    );
   }
-
 }

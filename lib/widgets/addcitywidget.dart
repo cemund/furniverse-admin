@@ -160,17 +160,15 @@ class _AddCityWidgetState extends State<AddCityWidget> {
                   // const Gap(20),
 
                   TextFormField(
-                    controller: _cityController,
-                    decoration: outlineInputBorder(label: 'City'),
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) 
-                      {print(value);
-                        return value!.isEmpty
-                        ? 'Please input a city.'
-                        : null;}
-                  ),
+                      controller: _cityController,
+                      decoration: outlineInputBorder(label: 'City'),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        print(value);
+                        return value!.isEmpty ? 'Please input a city.' : null;
+                      }),
                   const Gap(20),
-                  
+
                   TextFormField(
                     controller: _priceController,
                     decoration: outlineInputBorder(label: 'Price'),
@@ -178,210 +176,205 @@ class _AddCityWidgetState extends State<AddCityWidget> {
                       signed: false,
                       decimal: true,
                     ),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) =>
-                      value!.isEmpty
-                        ? 'Please input a price.'
-                        : null,
+                        value!.isEmpty ? 'Please input a price.' : null,
                   ),
 
                   const Gap(20),
 
                   ...[
-                  
-                  // TextFormField(
-                  //   controller: _stocksController,
-                  //   decoration: outlineInputBorder(label: 'Stocks'),
-                  //   keyboardType: const TextInputType.numberWithOptions(
-                  //     signed: false,
-                  //     decimal: false,
-                  //   ),
-                  //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //   validator: (value) =>
-                  //     value!.isEmpty
-                  //       ? 'Please input a stock/s.'
-                  //       : null,
-                  // ),
-                  // const Gap(20),
+                    // TextFormField(
+                    //   controller: _stocksController,
+                    //   decoration: outlineInputBorder(label: 'Stocks'),
+                    //   keyboardType: const TextInputType.numberWithOptions(
+                    //     signed: false,
+                    //     decimal: false,
+                    //   ),
+                    //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                    //   validator: (value) =>
+                    //     value!.isEmpty
+                    //       ? 'Please input a stock/s.'
+                    //       : null,
+                    // ),
+                    // const Gap(20),
 
-                  // TextFormField(
-                  //   controller: _colorController,
-                  //   decoration: outlineInputBorder(label: 'Color'),
-                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //   validator: (value) =>
-                  //     value!.isEmpty
-                  //       ? 'Please input a color.'
-                  //       : null,
-                  // ),
-                  // const Gap(20),
-                  
-                  // TextFormField(
-                  //   controller: _materialController,
-                  //   decoration: outlineInputBorder(label: 'Material'),
-                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //   validator: (value) =>
-                  //     value!.isEmpty
-                  //       ? 'Please input a material.'
-                  //       : null,
-                  // ),
-                  // const Gap(20),
+                    // TextFormField(
+                    //   controller: _colorController,
+                    //   decoration: outlineInputBorder(label: 'Color'),
+                    //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                    //   validator: (value) =>
+                    //     value!.isEmpty
+                    //       ? 'Please input a color.'
+                    //       : null,
+                    // ),
+                    // const Gap(20),
 
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     Flexible(child: TextFormField(
-                  //       controller: _dimensionController,
-                  //       decoration: outlineInputBorder(label: 'Dimension/Size'),
-                  //       autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //       validator: (value) =>
-                  //         value!.isEmpty
-                  //           ? 'Please input a dimension.'
-                  //           : null,
-                  //     ),),
+                    // TextFormField(
+                    //   controller: _materialController,
+                    //   decoration: outlineInputBorder(label: 'Material'),
+                    //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                    //   validator: (value) =>
+                    //     value!.isEmpty
+                    //       ? 'Please input a material.'
+                    //       : null,
+                    // ),
+                    // const Gap(20),
 
-                  //     Flexible(child: DropdownButtonFormField2<String>(
-                  //       buttonStyleData: const ButtonStyleData(
-                  //         height: 26,
-                  //         padding: EdgeInsets.only(right: 8),
-                  //       ),
-                  //       hint: const Text(
-                  //         'Select Metric Length',
-                  //         style: TextStyle(fontSize: 16),
-                  //         overflow: TextOverflow.ellipsis,
-                  //       ),
-                  //       iconStyleData: const IconStyleData(
-                  //         icon: Icon(
-                  //           Icons.arrow_drop_down,
-                  //         ),
-                  //         iconSize: 24,
-                  //       ),
-                  //       dropdownStyleData: DropdownStyleData(
-                  //         decoration: BoxDecoration(
-                  //           borderRadius: BorderRadius.circular(8),
-                  //         ),
-                  //       ),
-                  //       menuItemStyleData: const MenuItemStyleData(
-                  //         padding: EdgeInsets.symmetric(horizontal: 16),
-                  //       ),
-                  //       decoration: InputDecoration(
-                  //         contentPadding:
-                  //             const EdgeInsets.symmetric(vertical: 16),
-                  //         border: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(8),
-                  //         ),
-                  //       ),
-                  //       // autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //       // validator: (value) =>
-                  //       //     value!.isEmpty ? 'Please select a metric length.' : null,
-                  //       items: items
-                  //           .map((String item) => DropdownMenuItem<String>(
-                  //                 value: item,
-                  //                 child: Text(
-                  //                   item,
-                  //                   style: const TextStyle(
-                  //                     fontSize: 16,
-                  //                     // fontWeight: FontWeight.bold,
-                  //                     // color: Colors.],
-                  //                   ),
-                  //                   overflow: TextOverflow.ellipsis,
-                  //                 ),
-                  //               ))
-                  //           .toList(),
-                  //       isExpanded: true,
-                  //       value: selectedCategory,
-                  //       onChanged: (String? value) {
-                  //         setState(() {
-                  //           selectedCategory = value;
-                  //         });
-                  //       },
-                  //     ),)
-                  //   ],
-                  // ),
-                  
-                  // const Gap(20),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     Flexible(child: TextFormField(
+                    //       controller: _dimensionController,
+                    //       decoration: outlineInputBorder(label: 'Dimension/Size'),
+                    //       autovalidateMode: AutovalidateMode.onUserInteraction,
+                    //       validator: (value) =>
+                    //         value!.isEmpty
+                    //           ? 'Please input a dimension.'
+                    //           : null,
+                    //     ),),
 
-                  // GestureDetector(
-                  //   onTap: selectFile,
-                  //   child: Container(
-                  //     height: 60,
-                  //     width: double.infinity,
-                  //     decoration: BoxDecoration(
-                  //         borderRadius: BorderRadius.circular(8),
-                  //         border: Border.all(width: 2, color: borderColor)),
-                  //     child: Stack(
-                  //       children: [
-                  //         Center(
-                  //           child: Row(
-                  //             mainAxisAlignment: MainAxisAlignment.center,
-                  //             children: [
-                  //               SvgPicture.asset('assets/icons/model.svg'),
-                  //               const Gap(8),
-                  //               Text(
-                  //                 fileName,
-                  //                 textAlign: TextAlign.center,
-                  //                 style: const TextStyle(
-                  //                   color: foregroundColor,
-                  //                   fontSize: 16,
-                  //                   fontFamily: 'Nunito Sans',
-                  //                   fontWeight: FontWeight.w600,
-                  //                 ),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         ),
-                  //         if (selectedModel != null)
-                  //           Positioned(
-                  //             top: 5,
-                  //             right: 5,
-                  //             child: IconButton(
-                  //               padding: EdgeInsets.zero,
-                  //               iconSize: 18,
-                  //               constraints: const BoxConstraints(),
-                  //               color: foregroundColor,
-                  //               onPressed: () {
-                  //                 setState(() {
-                  //                   selectedModel = null;
-                  //                 });
-                  //               },
-                  //               icon: const Icon(
-                  //                 Icons.close,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // const Gap(20),
+                    //     Flexible(child: DropdownButtonFormField2<String>(
+                    //       buttonStyleData: const ButtonStyleData(
+                    //         height: 26,
+                    //         padding: EdgeInsets.only(right: 8),
+                    //       ),
+                    //       hint: const Text(
+                    //         'Select Metric Length',
+                    //         style: TextStyle(fontSize: 16),
+                    //         overflow: TextOverflow.ellipsis,
+                    //       ),
+                    //       iconStyleData: const IconStyleData(
+                    //         icon: Icon(
+                    //           Icons.arrow_drop_down,
+                    //         ),
+                    //         iconSize: 24,
+                    //       ),
+                    //       dropdownStyleData: DropdownStyleData(
+                    //         decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(8),
+                    //         ),
+                    //       ),
+                    //       menuItemStyleData: const MenuItemStyleData(
+                    //         padding: EdgeInsets.symmetric(horizontal: 16),
+                    //       ),
+                    //       decoration: InputDecoration(
+                    //         contentPadding:
+                    //             const EdgeInsets.symmetric(vertical: 16),
+                    //         border: OutlineInputBorder(
+                    //           borderRadius: BorderRadius.circular(8),
+                    //         ),
+                    //       ),
+                    //       // autovalidateMode: AutovalidateMode.onUserInteraction,
+                    //       // validator: (value) =>
+                    //       //     value!.isEmpty ? 'Please select a metric length.' : null,
+                    //       items: items
+                    //           .map((String item) => DropdownMenuItem<String>(
+                    //                 value: item,
+                    //                 child: Text(
+                    //                   item,
+                    //                   style: const TextStyle(
+                    //                     fontSize: 16,
+                    //                     // fontWeight: FontWeight.bold,
+                    //                     // color: Colors.],
+                    //                   ),
+                    //                   overflow: TextOverflow.ellipsis,
+                    //                 ),
+                    //               ))
+                    //           .toList(),
+                    //       isExpanded: true,
+                    //       value: selectedCategory,
+                    //       onChanged: (String? value) {
+                    //         setState(() {
+                    //           selectedCategory = value;
+                    //         });
+                    //       },
+                    //     ),)
+                    //   ],
+                    // ),
+
+                    // const Gap(20),
+
+                    // GestureDetector(
+                    //   onTap: selectFile,
+                    //   child: Container(
+                    //     height: 60,
+                    //     width: double.infinity,
+                    //     decoration: BoxDecoration(
+                    //         borderRadius: BorderRadius.circular(8),
+                    //         border: Border.all(width: 2, color: borderColor)),
+                    //     child: Stack(
+                    //       children: [
+                    //         Center(
+                    //           child: Row(
+                    //             mainAxisAlignment: MainAxisAlignment.center,
+                    //             children: [
+                    //               SvgPicture.asset('assets/icons/model.svg'),
+                    //               const Gap(8),
+                    //               Text(
+                    //                 fileName,
+                    //                 textAlign: TextAlign.center,
+                    //                 style: const TextStyle(
+                    //                   color: foregroundColor,
+                    //                   fontSize: 16,
+                    //                   fontFamily: 'Nunito Sans',
+                    //                   fontWeight: FontWeight.w600,
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ),
+                    //         if (selectedModel != null)
+                    //           Positioned(
+                    //             top: 5,
+                    //             right: 5,
+                    //             child: IconButton(
+                    //               padding: EdgeInsets.zero,
+                    //               iconSize: 18,
+                    //               constraints: const BoxConstraints(),
+                    //               color: foregroundColor,
+                    //               onPressed: () {
+                    //                 setState(() {
+                    //                   selectedModel = null;
+                    //                 });
+                    //               },
+                    //               icon: const Icon(
+                    //                 Icons.close,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    // const Gap(20),
                   ],
-                  
+
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
                         final isValid = _formKey.currentState!.validate();
-                          if (!isValid) return;
+                        if (!isValid) return;
                         showDialog(
                           context: context,
                           builder: (context) => ConfirmationAlertDialog(
-                            title: "Are you sure you want to add this city?",
-                            onTapNo: () {
-                              Navigator.pop(context);
-                            },
-                            onTapYes: () async {
-                            // final currentContext = context; // Capture the context outside the async block
-                              // addVariant(context);
-                              saveproduct(context);
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            },
-                            tapNoString: "No",
-                            tapYesString: "Yes"
-                          ),
+                              title: "Are you sure you want to add this city?",
+                              onTapNo: () {
+                                Navigator.pop(context);
+                              },
+                              onTapYes: () async {
+                                // final currentContext = context; // Capture the context outside the async block
+                                // addVariant(context);
+                                saveproduct(context);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              tapNoString: "No",
+                              tapYesString: "Yes"),
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -411,7 +404,6 @@ class _AddCityWidgetState extends State<AddCityWidget> {
   }
 
   saveproduct(BuildContext context) async {
-
     DeliveryService deliveryService = DeliveryService();
     // final product = FirebaseFirestore.instance.collection('products').doc();
 
@@ -461,9 +453,8 @@ class _AddCityWidgetState extends State<AddCityWidget> {
     // }
 
     Fluttertoast.showToast(
-        msg: "City Added Successfully.",
-        backgroundColor: Colors.grey,
-      );
+      msg: "City Added Successfully.",
+      backgroundColor: Colors.grey,
+    );
   }
-
 }
