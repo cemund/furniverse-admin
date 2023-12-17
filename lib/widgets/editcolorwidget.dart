@@ -185,6 +185,17 @@ class _EditColorWidgetState extends State<EditColorWidget> {
                   ),
                   const Gap(20),
 
+                  const Text(
+                    "Note: Hex color must have # (Ex. #bf4930)",
+                    style: TextStyle(
+                      color: Color(0xFF808080),
+                      fontSize: 12,
+                      fontFamily: 'Avenir Next LT Pro',
+                      fontWeight: FontWeight.w500,
+                      fontStyle: FontStyle.italic
+                    ),
+                  ),
+                  const Gap(5),
                   TextFormField(
                     controller: _hexController,
                     decoration: outlineInputBorder(label: 'Color Hex Value'),
