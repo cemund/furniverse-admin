@@ -5,6 +5,7 @@ import 'package:furniverse_admin/models/color_model.dart';
 import 'package:furniverse_admin/services/color_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
+import 'package:furniverse_admin/widgets/add_color_stock_widget.dart';
 import 'package:furniverse_admin/widgets/addcolorwidget.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:furniverse_admin/widgets/editcolorwidget.dart';
@@ -39,7 +40,7 @@ class _ColorListState extends State<ColorList> {
       highlightedColors.remove(colorModel);
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     var colorss = Provider.of<List<ColorModel>?>(context);
@@ -142,9 +143,8 @@ class _ColorListState extends State<ColorList> {
                                 Navigator.pop(context);
                               },
                               onTapYes: () async {
-                               
                                 // final currentContext = context; // Capture the context outside the async block
-                                
+
                                 // DELETE MULTIPLE
                                 int i = highlightedColors.length - 1;
                                 while (highlightedColors.isNotEmpty) {
@@ -191,10 +191,9 @@ class _ColorListState extends State<ColorList> {
                         // provider.clearOldVariant();
                         // provider.clearVariant();
                         showDialog(
-                          builder: (context) => const AddColorWidget(),
-                          context: context,
-                          barrierDismissible: false
-                        );
+                            builder: (context) => const AddColorWidget(),
+                            context: context,
+                            barrierDismissible: false);
                       },
                       child: Container(
                           height: 32,
@@ -259,14 +258,14 @@ class _ColorListState extends State<ColorList> {
 
     // filter
     // if (selectedCategory == 'All Products') {
-      finalList = colorss;
-      print(finalList);
+    finalList = colorss;
+    print(finalList);
     // } else {
-      // for (int i = 0; i < material.length; i++) {
-      //   // if (products[i].category == selectedCategory) {
-      //     finalList.add(material[i]);
-      //   // }
-      // }
+    // for (int i = 0; i < material.length; i++) {
+    //   // if (products[i].category == selectedCategory) {
+    //     finalList.add(material[i]);
+    //   // }
+    // }
     // }
 
     // pagination
@@ -443,7 +442,6 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
                       children: [
                         Row(
                           children: [
-                            
                             Text(
                               widget.colorModel.color,
                               style: const TextStyle(
@@ -472,37 +470,37 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                  //       Row(
-                  //         children: [
-                  //           const Text(
-                  //             "ID",
-                  //             style: TextStyle(
-                  //               color: Color(0xFF686873),
-                  //               fontSize: 12,
-                  //               fontFamily: 'Inter',
-                  //               fontWeight: FontWeight.w600,
-                  //               height: 0,
-                  //             ),
-                  //           ),
-                  //           const SizedBox(width: 6),
-                  //           SizedBox(
-                  //             width: 100,
-                  //             child: Text(
-                  //               "widget.product.id",
-                  //               style: const TextStyle(
-                  //                 color: Color(0xFF44444F),
-                  //                 fontSize: 14,
-                  //                 fontFamily: 'Inter',
-                  //                 fontWeight: FontWeight.w400,
-                  //                 height: 0,
-                  //                 letterSpacing: 0.20,
-                  //               ),
-                  //               maxLines: 1,
-                  //               overflow: TextOverflow.ellipsis,
-                  //             ),
-                  //           )
-                  //         ],
-                  //       ),
+                        //       Row(
+                        //         children: [
+                        //           const Text(
+                        //             "ID",
+                        //             style: TextStyle(
+                        //               color: Color(0xFF686873),
+                        //               fontSize: 12,
+                        //               fontFamily: 'Inter',
+                        //               fontWeight: FontWeight.w600,
+                        //               height: 0,
+                        //             ),
+                        //           ),
+                        //           const SizedBox(width: 6),
+                        //           SizedBox(
+                        //             width: 100,
+                        //             child: Text(
+                        //               "widget.product.id",
+                        //               style: const TextStyle(
+                        //                 color: Color(0xFF44444F),
+                        //                 fontSize: 14,
+                        //                 fontFamily: 'Inter',
+                        //                 fontWeight: FontWeight.w400,
+                        //                 height: 0,
+                        //                 letterSpacing: 0.20,
+                        //               ),
+                        //               maxLines: 1,
+                        //               overflow: TextOverflow.ellipsis,
+                        //             ),
+                        //           )
+                        //         ],
+                        //       ),
                         Row(
                           children: [
                             const Text(
@@ -538,7 +536,8 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Text("₱${widget.colorModel.price}",
+            child: Text(
+              "₱${widget.colorModel.price.toStringAsFixed(0)}",
               style: const TextStyle(
                 color: Color(0xFF171625),
                 fontSize: 14,
@@ -571,12 +570,20 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
                 );
               }
               if (value == 2) {
-
-                 showDialog(
-                  builder: (context) => EditColorWidget(id: widget.colorModel.id.toString(), colorModel: widget.colorModel),
-                  context: context,
-                  barrierDismissible: false
-                );
+                showDialog(
+                    builder: (context) => EditColorWidget(
+                        id: widget.colorModel.id.toString(),
+                        colorModel: widget.colorModel),
+                    context: context,
+                    barrierDismissible: false);
+              }
+              if (value == 3) {
+                showDialog(
+                    builder: (context) => AddColorStocksWidget(
+                        id: widget.colorModel.id.toString(),
+                        color: widget.colorModel),
+                    context: context,
+                    barrierDismissible: false);
               }
             },
             padding: EdgeInsets.zero,
@@ -618,6 +625,23 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
                       width: 10,
                     ),
                     Text("Edit", style: TextStyle(color: foregroundColor))
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 3,
+                // row has two child icon and text
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.inventory_2_rounded,
+                      color: foregroundColor,
+                    ),
+                    SizedBox(
+                      // sized box with width 10
+                      width: 10,
+                    ),
+                    Text("Add Stocks", style: TextStyle(color: foregroundColor))
                   ],
                 ),
               ),

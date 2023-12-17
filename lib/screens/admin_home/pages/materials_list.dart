@@ -5,6 +5,7 @@ import 'package:furniverse_admin/models/materials_model.dart';
 import 'package:furniverse_admin/services/materials_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/shared/loading.dart';
+import 'package:furniverse_admin/widgets/add_material_stock_widget.dart';
 import 'package:furniverse_admin/widgets/addmaterialwidget.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
 import 'package:furniverse_admin/widgets/editmaterialwidget.dart';
@@ -18,7 +19,6 @@ class MaterialsList extends StatefulWidget {
 }
 
 class _MaterialsListState extends State<MaterialsList> {
-
   String? selectedAction;
   final List<String> actions = [
     'Delete',
@@ -40,7 +40,7 @@ class _MaterialsListState extends State<MaterialsList> {
       highlightedMaterials.remove(materials);
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     var material = Provider.of<List<Materials>?>(context);
@@ -65,46 +65,6 @@ class _MaterialsListState extends State<MaterialsList> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        // DropdownButtonHideUnderline(
-                        //   child: DropdownButton2<String>(
-                        //     isExpanded: true,
-                        //     hint: Text(
-                        //       selectedCategory ?? "All Products",
-                        //       style: const TextStyle(
-                        //         color: Color(0xFF44444F),
-                        //         fontSize: 14,
-                        //         fontFamily: 'Inter',
-                        //         fontWeight: FontWeight.w400,
-                        //       ),
-                        //     ),
-                        //     items: categories
-                        //         .map((String item) => DropdownMenuItem<String>(
-                        //               value: item,
-                        //               child: Text(
-                        //                 item,
-                        //                 style: const TextStyle(
-                        //                   fontSize: 14,
-                        //                 ),
-                        //                 overflow: TextOverflow.ellipsis,
-                        //                 maxLines: 2,
-                        //               ),
-                        //             ))
-                        //         .toList(),
-                        //     value: selectedCategory,
-                        //     onChanged: (String? value) {
-                        //       setState(() {
-                        //         selectedCategory = value;
-                        //       });
-                        //     },
-                        //     buttonStyleData: const ButtonStyleData(
-                        //       height: 40,
-                        //       width: 110,
-                        //     ),
-                        //     menuItemStyleData: const MenuItemStyleData(
-                        //       height: 40,
-                        //     ),
-                        //   ),
-                        // ),
                       ],
                     ),
                   ],
@@ -145,12 +105,12 @@ class _MaterialsListState extends State<MaterialsList> {
                               onTapYes: () async {
                                 print(material);
                                 // final currentContext = context; // Capture the context outside the async block
-                                
+
                                 // DELETE MULTIPLE
                                 int i = highlightedMaterials.length - 1;
                                 while (highlightedMaterials.isNotEmpty) {
-                                  await MaterialsServices()
-                                      .deleteMaterial(highlightedMaterials[i].id);
+                                  await MaterialsServices().deleteMaterial(
+                                      highlightedMaterials[i].id);
                                   highlightedMaterials.removeAt(i);
                                   i--;
                                 }
@@ -192,10 +152,9 @@ class _MaterialsListState extends State<MaterialsList> {
                         // provider.clearOldVariant();
                         // provider.clearVariant();
                         showDialog(
-                          builder: (context) => const AddMaterialWidget(),
-                          context: context,
-                          barrierDismissible: false
-                        );
+                            builder: (context) => const AddMaterialWidget(),
+                            context: context,
+                            barrierDismissible: false);
                       },
                       child: Container(
                           height: 32,
@@ -260,14 +219,14 @@ class _MaterialsListState extends State<MaterialsList> {
 
     // filter
     // if (selectedCategory == 'All Products') {
-      finalList = material;
-      print(finalList);
+    finalList = material;
+    print(finalList);
     // } else {
-      // for (int i = 0; i < material.length; i++) {
-      //   // if (products[i].category == selectedCategory) {
-      //     finalList.add(material[i]);
-      //   // }
-      // }
+    // for (int i = 0; i < material.length; i++) {
+    //   // if (products[i].category == selectedCategory) {
+    //     finalList.add(material[i]);
+    //   // }
+    // }
     // }
 
     // pagination
@@ -487,37 +446,37 @@ class _MaterialDetailCardState extends State<MaterialDetailCard> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                  //       Row(
-                  //         children: [
-                  //           const Text(
-                  //             "ID",
-                  //             style: TextStyle(
-                  //               color: Color(0xFF686873),
-                  //               fontSize: 12,
-                  //               fontFamily: 'Inter',
-                  //               fontWeight: FontWeight.w600,
-                  //               height: 0,
-                  //             ),
-                  //           ),
-                  //           const SizedBox(width: 6),
-                  //           SizedBox(
-                  //             width: 100,
-                  //             child: Text(
-                  //               "widget.product.id",
-                  //               style: const TextStyle(
-                  //                 color: Color(0xFF44444F),
-                  //                 fontSize: 14,
-                  //                 fontFamily: 'Inter',
-                  //                 fontWeight: FontWeight.w400,
-                  //                 height: 0,
-                  //                 letterSpacing: 0.20,
-                  //               ),
-                  //               maxLines: 1,
-                  //               overflow: TextOverflow.ellipsis,
-                  //             ),
-                  //           )
-                  //         ],
-                  //       ),
+                        //       Row(
+                        //         children: [
+                        //           const Text(
+                        //             "ID",
+                        //             style: TextStyle(
+                        //               color: Color(0xFF686873),
+                        //               fontSize: 12,
+                        //               fontFamily: 'Inter',
+                        //               fontWeight: FontWeight.w600,
+                        //               height: 0,
+                        //             ),
+                        //           ),
+                        //           const SizedBox(width: 6),
+                        //           SizedBox(
+                        //             width: 100,
+                        //             child: Text(
+                        //               "widget.product.id",
+                        //               style: const TextStyle(
+                        //                 color: Color(0xFF44444F),
+                        //                 fontSize: 14,
+                        //                 fontFamily: 'Inter',
+                        //                 fontWeight: FontWeight.w400,
+                        //                 height: 0,
+                        //                 letterSpacing: 0.20,
+                        //               ),
+                        //               maxLines: 1,
+                        //               overflow: TextOverflow.ellipsis,
+                        //             ),
+                        //           )
+                        //         ],
+                        //       ),
                         Row(
                           children: [
                             const Text(
@@ -551,10 +510,10 @@ class _MaterialDetailCardState extends State<MaterialDetailCard> {
               ),
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Text("₱${widget.materials.price}",
+            child: Text(
+              "₱${widget.materials.price.toStringAsFixed(0)}",
               style: const TextStyle(
                 color: Color(0xFF171625),
                 fontSize: 14,
@@ -563,7 +522,6 @@ class _MaterialDetailCardState extends State<MaterialDetailCard> {
               ),
             ),
           ),
-
           PopupMenuButton(
             onSelected: (value) {
               if (value == 1) {
@@ -588,12 +546,20 @@ class _MaterialDetailCardState extends State<MaterialDetailCard> {
                 );
               }
               if (value == 2) {
-
-                 showDialog(
-                  builder: (context) => EditMaterialWidget(id: widget.materials.id.toString(), materials: widget.materials),
-                  context: context,
-                  barrierDismissible: false
-                );
+                showDialog(
+                    builder: (context) => EditMaterialWidget(
+                        id: widget.materials.id.toString(),
+                        materials: widget.materials),
+                    context: context,
+                    barrierDismissible: false);
+              }
+              if (value == 3) {
+                showDialog(
+                    builder: (context) => AddMaterialStockWidget(
+                        id: widget.materials.id.toString(),
+                        materials: widget.materials),
+                    context: context,
+                    barrierDismissible: false);
               }
             },
             padding: EdgeInsets.zero,
@@ -635,6 +601,23 @@ class _MaterialDetailCardState extends State<MaterialDetailCard> {
                       width: 10,
                     ),
                     Text("Edit", style: TextStyle(color: foregroundColor))
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 3,
+                // row has two child icon and text
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.inventory_2_rounded,
+                      color: foregroundColor,
+                    ),
+                    SizedBox(
+                      // sized box with width 10
+                      width: 10,
+                    ),
+                    Text("Add Stocks", style: TextStyle(color: foregroundColor))
                   ],
                 ),
               ),

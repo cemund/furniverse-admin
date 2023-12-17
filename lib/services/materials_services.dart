@@ -52,6 +52,35 @@ class MaterialsServices {
     }
   }
 
+  Future<void> addStocks(String materialId, int stocks, double price) async {
+    try {
+      await _materialsCollection
+          .doc(materialId)
+          .update({'stocks': FieldValue.increment(stocks)});
+
+      // Reference to the expense subcollection
+      CollectionReference expenseSubcollection =
+          _materialsCollection.doc(materialId).collection('expenses');
+
+      // Get the current year
+      int currentYear = DateTime.now().year;
+
+      // Create a document in the expense subcollection with the current year as the document ID
+      DocumentReference expenseDocRef =
+          expenseSubcollection.doc('$currentYear');
+
+      // Add your expense data here
+      await expenseDocRef.set({
+        'expense': FieldValue.increment(price * stocks),
+        'stocks': FieldValue.increment(stocks),
+      }, SetOptions(merge: true));
+
+      print('Expense subcollection created successfully.');
+    } catch (e) {
+      print('Error adding stocks: $e');
+    }
+  }
+
   Future<void> reducedQuantity(String materialId, double quantity) async {
     try {
       final materials = await _materialsCollection.doc(materialId).get();
