@@ -443,21 +443,7 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
                       children: [
                         Row(
                           children: [
-                            // Container(
-                            //   height: 36,
-                            //   width: 36,
-                            //   decoration: BoxDecoration(
-                            //       borderRadius: BorderRadius.circular(6),
-                            //       image: DecorationImage(
-                            //           image: CachedNetworkImageProvider(
-                            //             widget.product.images[0] ??
-                            //                 "http://via.placeholder.com/350x150",
-                            //           ),
-                            //           fit: BoxFit.cover)),
-                            // ),
-                            // const SizedBox(
-                            //   width: 6,
-                            // ),
+                            
                             Text(
                               widget.colorModel.color,
                               style: const TextStyle(
@@ -469,15 +455,15 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
                             ),
                           ],
                         ),
-                        Text(
-                          "₱${widget.colorModel.price}",
-                          style: const TextStyle(
-                            color: Color(0xFF171625),
-                            fontSize: 14,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        )
+                        // Text(
+                        //   "₱${widget.colorModel.price}",
+                        //   style: const TextStyle(
+                        //     color: Color(0xFF171625),
+                        //     fontSize: 14,
+                        //     fontFamily: 'Inter',
+                        //     fontWeight: FontWeight.w700,
+                        //   ),
+                        // )
                       ],
                     ),
                   ),
@@ -545,8 +531,19 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text("₱${widget.colorModel.price}",
+              style: const TextStyle(
+                color: Color(0xFF171625),
+                fontSize: 14,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),

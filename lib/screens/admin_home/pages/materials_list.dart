@@ -470,15 +470,15 @@ class _MaterialDetailCardState extends State<MaterialDetailCard> {
                             ),
                           ],
                         ),
-                        Text(
-                          "₱${widget.materials.price}",
-                          style: const TextStyle(
-                            color: Color(0xFF171625),
-                            fontSize: 14,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        )
+                        // Text(
+                        //   "₱${widget.materials.price}",
+                        //   style: const TextStyle(
+                        //     color: Color(0xFF171625),
+                        //     fontSize: 14,
+                        //     fontFamily: 'Inter',
+                        //     fontWeight: FontWeight.w700,
+                        //   ),
+                        // )
                       ],
                     ),
                   ),
@@ -551,6 +551,19 @@ class _MaterialDetailCardState extends State<MaterialDetailCard> {
               ),
             ),
           ),
+
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text("₱${widget.materials.price}",
+              style: const TextStyle(
+                color: Color(0xFF171625),
+                fontSize: 14,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+
           PopupMenuButton(
             onSelected: (value) {
               if (value == 1) {

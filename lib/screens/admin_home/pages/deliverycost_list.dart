@@ -437,7 +437,7 @@ class _CityDetailCardState extends State<CityDetailCard> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -450,103 +450,7 @@ class _CityDetailCardState extends State<CityDetailCard> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        Text(
-                          "₱${widget.delivery.price}",
-                          style: const TextStyle(
-                            color: Color(0xFF171625),
-                            fontSize: 14,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-
-                        PopupMenuButton(
-            onSelected: (value) {
-              if (value == 1) {
-                showDialog(
-                  context: context,
-                  builder: (context) => ConfirmationAlertDialog(
-                      title: "Are you sure you want to delete this city?",
-                      onTapNo: () {
-                        Navigator.pop(context);
-                      },
-                      onTapYes: () async {
-                        // final currentContext = context; // Capture the context outside the async block
-                        DeliveryService().deleteDelivery(widget.delivery.id);
-                        Fluttertoast.showToast(
-                          msg: "City Deleted Successfully.",
-                          backgroundColor: Colors.grey,
-                        );
-                        Navigator.pop(context);
-                      },
-                      tapNoString: "No",
-                      tapYesString: "Yes"),
-                );
-              }
-              if (value == 2) {
-
-                 showDialog(
-                  builder: (context) => EditCityWidget(id: widget.delivery.id.toString(), delivery: widget.delivery),
-                  context: context,
-                  barrierDismissible: false
-                );
-              }
-            },
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            itemBuilder: (context) => [
-              // popupmenu item 1
-              const PopupMenuItem(
-                value: 1,
-                // row has two child icon and text.
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.delete,
-                      color: foregroundColor,
-                    ),
-                    SizedBox(
-                      // sized box with width 10
-                      width: 10,
-                    ),
-                    Text(
-                      "Delete",
-                      style: TextStyle(color: foregroundColor),
-                    )
-                  ],
-                ),
-              ),
-              // popupmenu item 2
-              const PopupMenuItem(
-                value: 2,
-                // row has two child icon and text
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.edit,
-                      color: foregroundColor,
-                    ),
-                    SizedBox(
-                      // sized box with width 10
-                      width: 10,
-                    ),
-                    Text("Edit", style: TextStyle(color: foregroundColor))
-                  ],
-                ),
-              ),
-            ],
-            offset: const Offset(0, 30),
-            color: backgroundColor,
-            elevation: 3,
-            child: Container(
-              margin: const EdgeInsets.only(top: 5),
-              alignment: Alignment.centerRight,
-              child: const Icon(
-                Icons.more_horiz,
-                color: foregroundColor,
-              ),
-            ),
-          ),
+                        
                       ],
                     ),
                   ),
@@ -619,6 +523,109 @@ class _CityDetailCardState extends State<CityDetailCard> {
               ),
             ),
           ),
+        
+        Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text("₱${widget.delivery.price}",
+              style: const TextStyle(
+                color: Color(0xFF171625),
+                fontSize: 14,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: PopupMenuButton(
+              onSelected: (value) {
+                if (value == 1) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => ConfirmationAlertDialog(
+                        title: "Are you sure you want to delete this city?",
+                        onTapNo: () {
+                          Navigator.pop(context);
+                        },
+                        onTapYes: () async {
+                          // final currentContext = context; // Capture the context outside the async block
+                          DeliveryService().deleteDelivery(widget.delivery.id);
+                          Fluttertoast.showToast(
+                            msg: "City Deleted Successfully.",
+                            backgroundColor: Colors.grey,
+                          );
+                          Navigator.pop(context);
+                        },
+                        tapNoString: "No",
+                        tapYesString: "Yes"),
+                  );
+                }
+                if (value == 2) {
+        
+                   showDialog(
+                    builder: (context) => EditCityWidget(id: widget.delivery.id.toString(), delivery: widget.delivery),
+                    context: context,
+                    barrierDismissible: false
+                  );
+                }
+              },
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              itemBuilder: (context) => [
+                // popupmenu item 1
+                const PopupMenuItem(
+                  value: 1,
+                  // row has two child icon and text.
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.delete,
+                        color: foregroundColor,
+                      ),
+                      SizedBox(
+                        // sized box with width 10
+                        width: 10,
+                      ),
+                      Text(
+                        "Delete",
+                        style: TextStyle(color: foregroundColor),
+                      )
+                    ],
+                  ),
+                ),
+                // popupmenu item 2
+                const PopupMenuItem(
+                  value: 2,
+                  // row has two child icon and text
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.edit,
+                        color: foregroundColor,
+                      ),
+                      SizedBox(
+                        // sized box with width 10
+                        width: 10,
+                      ),
+                      Text("Edit", style: TextStyle(color: foregroundColor))
+                    ],
+                  ),
+                ),
+              ],
+              offset: const Offset(0, 30),
+              color: backgroundColor,
+              elevation: 3,
+              child: Container(
+                margin: const EdgeInsets.only(top: 5),
+                alignment: Alignment.centerRight,
+                child: const Icon(
+                  Icons.more_horiz,
+                  color: foregroundColor,
+                ),
+              ),
+            ),
+        ),
           
         ],
       ),
