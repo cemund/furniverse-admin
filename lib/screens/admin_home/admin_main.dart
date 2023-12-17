@@ -250,29 +250,29 @@ class _AdminMainState extends State<AdminMain> {
                     ),
                   ),
                 ),
-                ListTile(
-                  onTap: () {
-                    setState(() {
-                      pageName = "CUSTOMER REQUEST";
-                      selectedIdxPage = 4;
-                      Navigator.pop(context);
-                    });
-                  },
-                  minLeadingWidth: 10,
-                  contentPadding: EdgeInsets.zero,
-                  leading:
-                      const Icon(Icons.verified_outlined, color: Colors.white),
-                  title: const Text(
-                    'Customer Requests',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 13,
-                      fontFamily: 'Nunito Sans',
-                      fontWeight: FontWeight.w700,
-                      height: 0,
-                    ),
-                  ),
-                ),
+                // ListTile(
+                //   onTap: () {
+                //     setState(() {
+                //       pageName = "CUSTOMER REQUEST";
+                //       selectedIdxPage = 4;
+                //       Navigator.pop(context);
+                //     });
+                //   },
+                //   minLeadingWidth: 10,
+                //   contentPadding: EdgeInsets.zero,
+                //   leading:
+                //       const Icon(Icons.verified_outlined, color: Colors.white),
+                //   title: const Text(
+                //     'Customer Requests',
+                //     style: TextStyle(
+                //       color: Colors.white,
+                //       fontSize: 13,
+                //       fontFamily: 'Nunito Sans',
+                //       fontWeight: FontWeight.w700,
+                //       height: 0,
+                //     ),
+                //   ),
+                // ),
                 ListTile(
                   onTap: () {
                     setState(() {
@@ -306,8 +306,8 @@ class _AdminMainState extends State<AdminMain> {
                   },
                   minLeadingWidth: 10,
                   contentPadding: EdgeInsets.zero,
-                  leading:
-                      const Icon(Icons.construction_outlined, color: Colors.white),
+                  leading: const Icon(Icons.construction_outlined,
+                      color: Colors.white),
                   title: const Text(
                     'Materials',
                     style: TextStyle(
@@ -329,8 +329,8 @@ class _AdminMainState extends State<AdminMain> {
                   },
                   minLeadingWidth: 10,
                   contentPadding: EdgeInsets.zero,
-                  leading:
-                      const Icon(Icons.color_lens_outlined, color: Colors.white),
+                  leading: const Icon(Icons.color_lens_outlined,
+                      color: Colors.white),
                   title: const Text(
                     'Colors',
                     style: TextStyle(
@@ -352,8 +352,8 @@ class _AdminMainState extends State<AdminMain> {
                   },
                   minLeadingWidth: 10,
                   contentPadding: EdgeInsets.zero,
-                  leading:
-                      const Icon(Icons.delivery_dining_outlined, color: Colors.white),
+                  leading: const Icon(Icons.delivery_dining_outlined,
+                      color: Colors.white),
                   title: const Text(
                     'Delivery Cost',
                     style: TextStyle(

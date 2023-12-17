@@ -8,6 +8,7 @@ import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/user_services.dart';
 import 'package:furniverse_admin/shared/loading.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class OrderDetailPage extends StatelessWidget {
@@ -292,6 +293,29 @@ class _BodyState extends State<Body> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    const Text(
+                      "ETA:",
+                      style: TextStyle(
+                        color: Color(0xFF909090),
+                        fontSize: 16,
+                        fontFamily: 'Nunito Sans',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if ((order.requestDetails).isEmpty)
+                      ETA(
+                        days: 7,
+                      ),
+                    if ((order.requestDetails).isNotEmpty)
+                      ETA(
+                        days: 14,
+                      )
+                  ],
+                ),
+                const Gap(10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                     const Text("Status:",
                         style: TextStyle(
                           color: Color(0xFF909090),
@@ -337,6 +361,33 @@ class _BodyState extends State<Body> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ETA extends StatelessWidget {
+  final days;
+  const ETA({super.key, this.days});
+
+  @override
+  Widget build(BuildContext context) {
+    // Get current date
+    DateTime currentDate = DateTime.now();
+
+    // Add days to the current date
+    DateTime futureDate = currentDate.add(Duration(days: days));
+
+    // Format dates
+    String formattedFutureDate = DateFormat('dd/MM/yyyy').format(futureDate);
+
+    return Text(
+      formattedFutureDate,
+      style: const TextStyle(
+        color: Color(0xFF303030),
+        fontSize: 18,
+        fontFamily: 'Nunito Sans',
+        fontWeight: FontWeight.w600,
       ),
     );
   }
