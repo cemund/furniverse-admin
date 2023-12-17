@@ -71,7 +71,19 @@ class _AddProductState extends State<AddProduct> {
     'Outdoor',
     'Storage and Organization',
   ];
+  final List<String> guides = [
+    'Rounded',
+    'Box',
+    'Rectangle',
+  ];
   String? selectedCategory;
+  String? selectedGuide;
+
+  final Map guideMap = {
+    'Rounded': 'assets/images/rounded.png',
+    'Box': 'assets/images/box.png',
+    'Rectangle': 'assets/images/rectangle.png',
+  };
 
   void setCustomizeMaterials(List<Materials> materials) {
     setState(() {
@@ -96,32 +108,7 @@ class _AddProductState extends State<AddProduct> {
       imageUrl = downloadUrl;
       images.add(downloadUrl!);
     }
-    // listSelectedImage.forEach((element) async {
-    //   String? downloadUrl = await uploadImageToFirebase(element);
-    //   if (downloadUrl != null) {
-    //     // Store the downloadUrl in your database or use it as needed.
-    //     // You can display the uploaded image using this URL.
-    //     imageUrl = downloadUrl;
-    //     images.add(downloadUrl);
-    //     print(downloadUrl);
-    //   } else {
-    //     // Handle upload failure.
-    //   }
-    // });
-    // print("images");
-    // print(images);
     return images;
-    // if (selectedImage != null) {
-    //   String? downloadUrl = await uploadImageToFirebase(selectedImage);
-    //   if (downloadUrl != null) {
-    //     // Store the downloadUrl in your database or use it as needed.
-    //     // You can display the uploaded image using this URL.
-    //     imageUrl = downloadUrl;
-    //     imageIsUploaded = true;
-    //   } else {
-    //     // Handle upload failure.
-    //   }
-    // }
   }
 
   @override
@@ -770,6 +757,69 @@ class _AddProductState extends State<AddProduct> {
                           ),
                         ),
                         Gap(10),
+                        DropdownButtonFormField2<String>(
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.only(right: 8),
+                          ),
+                          hint: const Text(
+                            'Select Customization Guide',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          iconStyleData: const IconStyleData(
+                            icon: Icon(
+                              Icons.arrow_drop_down,
+                            ),
+                            iconSize: 24,
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 16),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          // autovalidateMode: AutovalidateMode.onUserInteraction,
+                          // validator: (value) =>
+                          //     value!.isEmpty ? 'Please select a category.' : null,
+                          items: guides
+                              .map((String item) => DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          height: 30,
+                                          width: 30,
+                                          child: Image.asset(guideMap[item]),
+                                        ),
+                                        Gap(10),
+                                        Text(
+                                          item,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                              .toList(),
+                          isExpanded: true,
+                          value: selectedGuide,
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedGuide = value;
+                            });
+                          },
+                        ),
+                        Gap(20),
 
                         TextFormField(
                           controller: _laborController,
@@ -875,7 +925,9 @@ class _AddProductState extends State<AddProduct> {
                               if (!isValid ||
                                   listSelectedImage.isEmpty ||
                                   variants.isEmpty ||
-                                  customizeMaterials.isEmpty) {
+                                  customizeMaterials.isEmpty ||
+                                  selectedCategory == null ||
+                                  selectedGuide == null) {
                                 Fluttertoast.showToast(
                                   msg:
                                       "Please complete the information needed.",
@@ -992,6 +1044,7 @@ class _AddProductState extends State<AddProduct> {
       'noMaterialsReq': double.parse(_materialQuantityRequired.text),
       'noPaintReq': double.parse(_colorQuantityRequired.text),
       'materialIds': materialIds,
+      'selectedGuide': selectedGuide,
     };
 
     // Add the product to Firestore

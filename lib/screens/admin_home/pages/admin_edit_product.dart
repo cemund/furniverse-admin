@@ -90,7 +90,19 @@ class _EditProductState extends State<EditProduct> {
     'Storage and Organization',
     // 'Accent Furniture',
   ];
+  final List<String> guides = [
+    'Rounded',
+    'Box',
+    'Rectangle',
+  ];
   String? selectedCategory;
+  String? selectedGuide;
+
+  final Map guideMap = {
+    'Rounded': 'assets/images/rounded.png',
+    'Box': 'assets/images/box.png',
+    'Rectangle': 'assets/images/rectangle.png',
+  };
 
   Future<void> pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -135,12 +147,13 @@ class _EditProductState extends State<EditProduct> {
 
     _productnameController.text = widget.product!.name;
     selectedCategory = widget.product!.category;
+    selectedGuide = widget.product!.guide;
     _descriptionController.text = widget.product!.description;
-    _laborController.text = widget.product!.labor.toStringAsFixed(0);
-    _expensesController.text = widget.product!.expenses.toStringAsFixed(0);
-    _colorQuantityRequired.text = widget.product!.noPaintReq.toStringAsFixed(0);
+    _laborController.text = widget.product!.labor.toStringAsFixed(2);
+    _expensesController.text = widget.product!.expenses.toStringAsFixed(2);
+    _colorQuantityRequired.text = widget.product!.noPaintReq.toStringAsFixed(1);
     _materialQuantityRequired.text =
-        widget.product!.noMaterialsReq.toStringAsFixed(0);
+        widget.product!.noMaterialsReq.toStringAsFixed(1);
 
     // put original product images
     originalProductImages = widget.product!.images;
@@ -920,6 +933,69 @@ class _EditProductState extends State<EditProduct> {
                           ),
                         ),
                         Gap(10),
+                        DropdownButtonFormField2<String>(
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.only(right: 8),
+                          ),
+                          hint: const Text(
+                            'Select Customization Guide',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          iconStyleData: const IconStyleData(
+                            icon: Icon(
+                              Icons.arrow_drop_down,
+                            ),
+                            iconSize: 24,
+                          ),
+                          dropdownStyleData: DropdownStyleData(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding:
+                                const EdgeInsets.symmetric(vertical: 16),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          // autovalidateMode: AutovalidateMode.onUserInteraction,
+                          // validator: (value) =>
+                          //     value!.isEmpty ? 'Please select a category.' : null,
+                          items: guides
+                              .map((String item) => DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          height: 30,
+                                          width: 30,
+                                          child: Image.asset(guideMap[item]),
+                                        ),
+                                        Gap(10),
+                                        Text(
+                                          item,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                              .toList(),
+                          isExpanded: true,
+                          value: selectedGuide,
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedGuide = value;
+                            });
+                          },
+                        ),
+                        Gap(20),
                         TextFormField(
                           controller: _laborController,
                           decoration:
@@ -1087,6 +1163,7 @@ class _EditProductState extends State<EditProduct> {
       'noMaterialsReq': double.parse(_materialQuantityRequired.text),
       'noPaintReq': double.parse(_colorQuantityRequired.text),
       'materialIds': materialIds,
+      'selectedGuide': selectedGuide,
     };
 
     // Add the product to Firestore

@@ -12,6 +12,7 @@ class Product {
   final String description;
   final List<dynamic> variants;
   final List<String> materialIds;
+  final String guide;
 
   Product({
     required this.id,
@@ -25,6 +26,7 @@ class Product {
     required this.noMaterialsReq,
     required this.noPaintReq,
     required this.materialIds,
+    required this.guide,
   });
 
   factory Product.fromFirestore(DocumentSnapshot doc) {
@@ -47,6 +49,7 @@ class Product {
       noMaterialsReq: (data['noMaterialsReq'] ?? 0.0).toDouble() ?? 0.0,
       noPaintReq: (data['noPaintReq'] ?? 0.0).toDouble() ?? 0.0,
       materialIds: materialIds,
+      guide: data['selectedGuide'] ?? "Rectangle",
     );
   }
 
