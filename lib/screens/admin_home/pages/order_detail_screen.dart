@@ -294,7 +294,7 @@ class _BodyState extends State<Body> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      "ETA:",
+                      "Estimated Arrival:",
                       style: TextStyle(
                         color: Color(0xFF909090),
                         fontSize: 16,
