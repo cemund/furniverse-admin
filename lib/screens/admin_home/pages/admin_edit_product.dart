@@ -138,8 +138,9 @@ class _EditProductState extends State<EditProduct> {
     _descriptionController.text = widget.product!.description;
     _laborController.text = widget.product!.labor.toStringAsFixed(0);
     _expensesController.text = widget.product!.expenses.toStringAsFixed(0);
-    _colorQuantityRequired.text = widget.product!.noPaintReq.toString();
-    _materialQuantityRequired.text = widget.product!.noMaterialsReq.toString();
+    _colorQuantityRequired.text = widget.product!.noPaintReq.toStringAsFixed(0);
+    _materialQuantityRequired.text =
+        widget.product!.noMaterialsReq.toStringAsFixed(0);
 
     // put original product images
     originalProductImages = widget.product!.images;
@@ -925,7 +926,7 @@ class _EditProductState extends State<EditProduct> {
                               outlineInputBorder(label: 'Enter Labor Cost:'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
-                            decimal: false,
+                            decimal: true,
                           ),
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly
@@ -943,7 +944,7 @@ class _EditProductState extends State<EditProduct> {
                               label: 'Enter Other Expenses:'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
-                            decimal: false,
+                            decimal: true,
                           ),
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly
@@ -1080,6 +1081,11 @@ class _EditProductState extends State<EditProduct> {
     final productMaps = await provider.getMap();
     final toDeleteFiles = provider.getToDeleteFiles();
 
+    List<String> materialIds = [];
+    for (var mat in customizeMaterials) {
+      materialIds.add(mat.id);
+    }
+
     Map<String, dynamic> productData = {
       'product_name': _productnameController.text,
       'product_images': images,
@@ -1090,7 +1096,7 @@ class _EditProductState extends State<EditProduct> {
       'variants': productMaps,
       'noMaterialsReq': double.parse(_materialQuantityRequired.text),
       'noPaintReq': double.parse(_colorQuantityRequired.text),
-      // 'materialIds': materialIds,
+      'materialIds': materialIds,
     };
 
     // Add the product to Firestore
