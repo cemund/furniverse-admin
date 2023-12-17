@@ -10,6 +10,7 @@ import 'package:furniverse_admin/models/refund.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/pdf_preview_page.dart';
 import 'package:furniverse_admin/services/analytics_services.dart';
 import 'package:furniverse_admin/services/color_services.dart';
+import 'package:furniverse_admin/services/expenses_services.dart';
 import 'package:furniverse_admin/services/materials_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
@@ -389,6 +390,8 @@ class _AnalyticsState extends State<Analytics> {
       products = Map.fromEntries(sortedEntries);
     }
 
+    //get expenses
+
     AnalyticsServices().updateAnalytics(
       widget.year,
       AnalyticsModel(
@@ -432,18 +435,6 @@ class _AnalyticsState extends State<Analytics> {
                 hasPrevious: widget.years.contains(widget.year - 1),
                 year: widget.year,
               ),
-              // const Report(
-              //   title: 'Return',
-              //   previous: 21340,
-              //   percent: 2.5,
-              //   price: 60289,
-              // ),
-              // const Report(
-              //   title: 'Marketing',
-              //   previous: 21340,
-              //   percent: 2.5,
-              //   price: 60289,
-              // ),
             ],
           ),
         ),

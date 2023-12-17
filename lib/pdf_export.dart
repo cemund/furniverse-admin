@@ -20,6 +20,8 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerCity,
   final totalQuantity = await AnalyticsServices().getTotalQuantity(year);
   final totalRevenue = await AnalyticsServices().getTotalRevenue(year);
   final totalRefund = await AnalyticsServices().getTotalRefund(year);
+  final materialExpenses = await MaterialsServices().getTotalExpense(year);
+  final colorExpenses = await ColorService().getTotalExpense(year);
 
   Map<String, dynamic> ordersWithName = ordersPerProduct;
 
@@ -272,6 +274,158 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerCity,
             sales: color.sales)
       ]
     ],
+  ));
+
+  // sized box
+  widgets.add(SizedBox(height: 20));
+
+  // product table title
+  widgets.add(Container(
+    width: 300,
+    child: Table(
+      children: [
+        TableRow(
+          decoration: const BoxDecoration(
+            border: TableBorder(
+              bottom: BorderSide(color: PdfColors.white),
+            ),
+          ),
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              padding: const EdgeInsets.all(10),
+              decoration:
+                  const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+              child: Text(
+                "Financial Statement",
+                style: const TextStyle(
+                  color: PdfColor.fromInt(0xFFFFFFFF),
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  ));
+  // product table title
+  widgets.add(Container(
+    width: 300,
+    child: Table(
+      children: [
+        TableRow(
+          decoration: const BoxDecoration(
+            border: TableBorder(
+              bottom: BorderSide(color: PdfColors.white),
+            ),
+          ),
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              padding: const EdgeInsets.all(10),
+              decoration:
+                  const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+              child: Text(
+                "Particulars",
+                style: const TextStyle(
+                  color: PdfColor.fromInt(0xFFFFFFFF),
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              padding: const EdgeInsets.all(10),
+              decoration:
+                  const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "Value",
+                  style: const TextStyle(
+                    color: PdfColor.fromInt(0xFFFFFFFF),
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        TableRow(children: [
+          Container(
+            width: 90,
+            height: 25,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Text(
+              "Total Revenue",
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: PdfColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          _buildNextCell(value: totalRevenue)
+        ]),
+        TableRow(children: [
+          Container(
+            width: 90,
+            height: 25,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Text(
+              "Material Expenses",
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: PdfColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          _buildNextCell(value: materialExpenses)
+        ]),
+        TableRow(
+            decoration: const BoxDecoration(
+              border: TableBorder(
+                bottom: BorderSide(color: PdfColors.black),
+              ),
+            ),
+            children: [
+              Container(
+                width: 90,
+                height: 25,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Text(
+                  "Color Expenses",
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    color: PdfColors.black,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              _buildNextCell(value: colorExpenses)
+            ]),
+        TableRow(children: [
+          Container(
+            width: 90,
+            height: 25,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Text(
+              "Profit",
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: PdfColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          _buildNextCell(
+              value: totalRevenue - (colorExpenses + materialExpenses))
+        ]),
+      ],
+    ),
   ));
 
   pdf.addPage(MultiPage(

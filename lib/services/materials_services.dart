@@ -187,4 +187,34 @@ class MaterialsServices {
 
     return specificMaterials;
   }
+
+  Future<double> getTotalExpense(int year) async {
+    double totalExpense = 0;
+    // Get documents in the main collection
+    QuerySnapshot mainCollectionSnapshot = await _materialsCollection.get();
+
+    // Iterate over documents in the main collection
+    for (QueryDocumentSnapshot mainDocument in mainCollectionSnapshot.docs) {
+      // print('Document ID: ${mainDocument.id}');
+
+      // Reference to the subcollection within each document
+      CollectionReference subcollection =
+          mainDocument.reference.collection('expenses');
+
+      // Get documents in the subcollection
+      final subcollectionSnapshot =
+          await subcollection.doc(year.toString()).get();
+
+      if (subcollectionSnapshot.data() != null) {
+        final Map? data = subcollectionSnapshot.data() as Map;
+
+        // print('  Field 1: ${data?['expense']}');
+        // print('  Field 2: ${data?['stocks']}');
+
+        totalExpense += data?['expense'];
+      }
+    }
+    // print(totalExpense);
+    return totalExpense;
+  }
 }
