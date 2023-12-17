@@ -813,28 +813,30 @@ class _AddProductState extends State<AddProduct> {
                         TextFormField(
                           controller: _materialQuantityRequired,
                           decoration: outlineInputBorder(
-                              label: 'Enter the Number of Material Stocks'),
+                              label:
+                                  'Enter the Number of Material Stocks (pieces)'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: true,
                           ),
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
-                              ? 'Please input a required quantity for material.'
+                              ? 'Please input a required quantity for material (pieces).'
                               : null,
                         ),
                         const Gap(10),
                         TextFormField(
                           controller: _colorQuantityRequired,
                           decoration: outlineInputBorder(
-                              label: 'Enter the Number of Color Stocks'),
+                              label:
+                                  'Enter the Number of Color Stocks (liters)'),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: false,
                             decimal: true,
                           ),
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) => value!.isEmpty
-                              ? 'Please input a required quantity for paint.'
+                              ? 'Please input a required quantity for paint (liters).'
                               : null,
                         ),
                         // SizedBox(
