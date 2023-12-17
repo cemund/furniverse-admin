@@ -119,7 +119,7 @@ class LineChartWidget extends StatelessWidget {
 
             List<FlSpot> flSpots = [];
 
-            for (int i = 1; i < 12; i++) {
+            for (int i = 1; i < 13; i++) {
               var x = i;
 
               if (monthlySales.containsKey(i.toString())) {
@@ -138,7 +138,7 @@ class LineChartWidget extends StatelessWidget {
                     titlesData: _titlesData(tmp),
                     showingTooltipIndicators: [],
                     minX: 0,
-                    maxX: 12,
+                    maxX: 13,
                     minY: 0,
                     maxY: 5,
                     // titlesData: LineTitles,
