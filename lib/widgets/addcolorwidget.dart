@@ -380,7 +380,7 @@ class _AddCollorWidgetState extends State<AddColorWidget> {
       // 'price': _priceController.text,
       // 'product 3D model': model,
       'price': double.parse(_priceController.text),
-      'stocks': int.parse(_stocksController.text),
+      'stocks': double.parse(_stocksController.text),
     };
 
     // Add the product to Firestore
