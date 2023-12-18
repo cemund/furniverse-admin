@@ -1149,6 +1149,7 @@ class _EditProductState extends State<EditProduct> {
 
     List<String> materialIds = [];
     for (var mat in customizeMaterials) {
+      print("hi");
       materialIds.add(mat.id);
     }
 

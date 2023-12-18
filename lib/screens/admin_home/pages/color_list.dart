@@ -537,7 +537,7 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Text(
-              "₱${widget.colorModel.price.toStringAsFixed(0)}",
+              "₱${widget.colorModel.price.toStringAsFixed(2)}",
               style: const TextStyle(
                 color: Color(0xFF171625),
                 fontSize: 14,

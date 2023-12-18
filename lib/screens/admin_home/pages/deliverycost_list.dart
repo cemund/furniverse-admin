@@ -39,7 +39,7 @@ class _DeliveryCostListState extends State<DeliveryCostList> {
       highlightedCity.remove(delivery);
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     var delivery = Provider.of<List<Delivery>?>(context);
@@ -142,9 +142,8 @@ class _DeliveryCostListState extends State<DeliveryCostList> {
                                 Navigator.pop(context);
                               },
                               onTapYes: () async {
-                               
                                 // final currentContext = context; // Capture the context outside the async block
-                                
+
                                 // DELETE MULTIPLE
                                 int i = highlightedCity.length - 1;
                                 while (highlightedCity.isNotEmpty) {
@@ -191,10 +190,9 @@ class _DeliveryCostListState extends State<DeliveryCostList> {
                         // provider.clearOldVariant();
                         // provider.clearVariant();
                         showDialog(
-                          builder: (context) => const AddCityWidget(),
-                          context: context,
-                          barrierDismissible: false
-                        );
+                            builder: (context) => const AddCityWidget(),
+                            context: context,
+                            barrierDismissible: false);
                       },
                       child: Container(
                           height: 32,
@@ -259,14 +257,14 @@ class _DeliveryCostListState extends State<DeliveryCostList> {
 
     // filter
     // if (selectedCategory == 'All Products') {
-      finalList = delivery;
-      print(finalList);
+    finalList = delivery;
+    print(finalList);
     // } else {
-      // for (int i = 0; i < material.length; i++) {
-      //   // if (products[i].category == selectedCategory) {
-      //     finalList.add(material[i]);
-      //   // }
-      // }
+    // for (int i = 0; i < material.length; i++) {
+    //   // if (products[i].category == selectedCategory) {
+    //     finalList.add(material[i]);
+    //   // }
+    // }
     // }
 
     // pagination
@@ -450,7 +448,6 @@ class _CityDetailCardState extends State<CityDetailCard> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        
                       ],
                     ),
                   ),
@@ -523,10 +520,10 @@ class _CityDetailCardState extends State<CityDetailCard> {
               ),
             ),
           ),
-        
-        Padding(
+          Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Text("₱${widget.delivery.price}",
+            child: Text(
+              "₱${widget.delivery.price.toStringAsFixed(2)}",
               style: const TextStyle(
                 color: Color(0xFF171625),
                 fontSize: 14,
@@ -535,10 +532,9 @@ class _CityDetailCardState extends State<CityDetailCard> {
               ),
             ),
           ),
-
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: PopupMenuButton(
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: PopupMenuButton(
               onSelected: (value) {
                 if (value == 1) {
                   showDialog(
@@ -562,12 +558,12 @@ class _CityDetailCardState extends State<CityDetailCard> {
                   );
                 }
                 if (value == 2) {
-        
-                   showDialog(
-                    builder: (context) => EditCityWidget(id: widget.delivery.id.toString(), delivery: widget.delivery),
-                    context: context,
-                    barrierDismissible: false
-                  );
+                  showDialog(
+                      builder: (context) => EditCityWidget(
+                          id: widget.delivery.id.toString(),
+                          delivery: widget.delivery),
+                      context: context,
+                      barrierDismissible: false);
                 }
               },
               padding: EdgeInsets.zero,
@@ -625,8 +621,7 @@ class _CityDetailCardState extends State<CityDetailCard> {
                 ),
               ),
             ),
-        ),
-          
+          ),
         ],
       ),
     );

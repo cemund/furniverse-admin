@@ -42,7 +42,7 @@ class MaterialsServices {
       materialData['timestamp'] =
           materialTimestamp; // Add the timestamp to your data
 
-      await _materialsCollection.doc(materialId).set(materialData);
+      await _materialsCollection.doc(materialId).update(materialData);
 
       // for (int i = 0; i < materialVariations.length; i++) {
       //   await materialDocRef.collection('variants').add(materialVariations[i]);
@@ -180,6 +180,7 @@ class MaterialsServices {
 
     for (var docSnapshot in docRef.docs) {
       final material = Materials.fromFirestore(docSnapshot);
+      if (materialIds.contains(material.id)) {}
       if (materialIds.contains(material.id) && material.stocks > 0) {
         specificMaterials.add(material);
       }

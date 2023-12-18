@@ -513,7 +513,7 @@ class _MaterialDetailCardState extends State<MaterialDetailCard> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Text(
-              "₱${widget.materials.price.toStringAsFixed(0)}",
+              "₱${widget.materials.price.toStringAsFixed(2)}",
               style: const TextStyle(
                 color: Color(0xFF171625),
                 fontSize: 14,

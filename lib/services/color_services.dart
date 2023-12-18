@@ -42,7 +42,7 @@ class ColorService {
       colorData['timestamp'] =
           materialTimestamp; // Add the timestamp to your data
 
-      await _colorCollection.doc(colorId).set(colorData);
+      await _colorCollection.doc(colorId).update(colorData);
     } catch (e) {
       print('Error adding a material: $e');
     }
