@@ -9,6 +9,7 @@ import 'package:furniverse_admin/services/materials_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
 import 'package:furniverse_admin/services/refund_services.dart';
+import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -49,11 +50,6 @@ final navigatorKey = GlobalKey<NavigatorState>();
 class MyApp extends StatelessWidget {
   final routes = {
     '/': 'Home Page',
-    // '/page1': 'Page 1',
-    // '/adminHome': "Admin Home",
-    // '/newprod': "New Product",
-    // '/notif': "Notfication",
-    // '/login': 'login',
   };
 
   MyApp({super.key});
@@ -62,6 +58,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final customTheme = ThemeData(
+      primarySwatch: Colors.grey,
       primaryColor: Colors.white,
       primaryIconTheme: const IconThemeData(color: Colors.black),
     );

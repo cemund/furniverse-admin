@@ -8,6 +8,7 @@ import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/models/products.dart';
 import 'package:furniverse_admin/models/refund.dart';
 import 'package:furniverse_admin/screens/admin_home/pages/pdf_preview_page.dart';
+import 'package:furniverse_admin/screens/report_modal.dart';
 import 'package:furniverse_admin/services/analytics_services.dart';
 import 'package:furniverse_admin/services/color_services.dart';
 import 'package:furniverse_admin/services/expenses_services.dart';
@@ -137,26 +138,27 @@ class _AdminHomePageState extends State<AdminHomePage> {
               children: [
                 GestureDetector(
                   onTap: () async {
-                    final ordersPerCity = await AnalyticsServices()
-                        .getOrdersPerCity(
-                            int.parse(selectedValue ?? years[0].toString()));
-                    final ordersPerProduct = await AnalyticsServices()
-                        .getOrdersPerProduct(
-                            int.parse(selectedValue ?? years[0].toString()));
+                    showModalReport(context: context);
+                    // final ordersPerCity = await AnalyticsServices()
+                    //     .getOrdersPerCity(
+                    //         int.parse(selectedValue ?? years[0].toString()));
+                    // final ordersPerProduct = await AnalyticsServices()
+                    //     .getOrdersPerProduct(
+                    //         int.parse(selectedValue ?? years[0].toString()));
 
-                    if (context.mounted) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PdfPreviewPage(
-                            ordersPerCity: ordersPerCity,
-                            ordersPerProduct: ordersPerProduct,
-                            year:
-                                int.parse(selectedValue ?? years[0].toString()),
-                          ),
-                        ),
-                      );
-                    }
+                    // if (context.mounted) {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => PdfPreviewPage(
+                    //         ordersPerCity: ordersPerCity,
+                    //         ordersPerProduct: ordersPerProduct,
+                    //         year:
+                    //             int.parse(selectedValue ?? years[0].toString()),
+                    //       ),
+                    //     ),
+                    //   );
+                    // }
                   },
                   child: Container(
                       height: 32,
