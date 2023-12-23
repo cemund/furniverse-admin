@@ -113,8 +113,19 @@ class ProductService {
     }
   }
 
-  Stream<QuerySnapshot> getAllProducts() {
-    return _productsCollection.snapshots();
+  Future<List<Product>> getAllProducts() async {
+    List<Product> listProducts = [];
+    try {
+      final products = await _productsCollection.get();
+      for (var product in products.docs) {
+        final prod = Product.fromFirestore(product);
+        listProducts.add(prod);
+      }
+    } catch (e) {
+      print("Error getting all products:$e");
+    }
+
+    return listProducts;
   }
 
   Stream<QuerySnapshot> getProductVariations(String productId) {
