@@ -6,6 +6,10 @@ class Materials {
   double price;
   int stocks;
   int sales;
+  double length;
+  double width;
+  double height;
+  String metric;
 
   Materials({
     required this.id,
@@ -13,6 +17,10 @@ class Materials {
     required this.price,
     required this.stocks,
     required this.sales,
+    required this.length,
+    required this.width,
+    required this.height,
+    required this.metric
   });
 
   factory Materials.fromFirestore(DocumentSnapshot doc) {
@@ -24,6 +32,10 @@ class Materials {
       stocks: data['stocks'] ?? '',
       price: data['price'] ?? '',
       sales: data['sales'] ?? 0,
+      length: data['length'] ?? 0.00,
+      width: data['width'] ?? 0.00,
+      height: data['height'] ?? 0.00,
+      metric: data['metric'] ?? '',
     );
   }
 
