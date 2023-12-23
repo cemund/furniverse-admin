@@ -9,7 +9,7 @@ Future<DateTime?> _showDatePicker({required BuildContext context}) async {
           context: context,
           initialDate: DateTime.now(),
           firstDate: DateTime(2023),
-          lastDate: DateTime(DateTime.now().year + 1))
+          lastDate: DateTime.now())
       .then((value) {
     if (value != null) {
       dateTime = value;
