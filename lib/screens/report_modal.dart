@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:furniverse_admin/inventory_pdf_page.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 
-void _showDatePicker({required BuildContext context}) {
-  showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2023),
-      lastDate: DateTime(DateTime.now().year + 1));
+Future<DateTime?> _showDatePicker({required BuildContext context}) async {
+  DateTime? dateTime;
+  await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2023),
+          lastDate: DateTime(DateTime.now().year + 1))
+      .then((value) {
+    if (value != null) {
+      dateTime = value;
+    }
+  });
+  return dateTime;
 }
 
 showModalReport({required BuildContext context}) {
   int selectedIndex = 0;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
+  final DateFormat formatter = DateFormat('yyyy-MM-dd');
 
   showModalBottomSheet<dynamic>(
     isScrollControlled: true,
@@ -96,33 +106,60 @@ showModalReport({required BuildContext context}) {
                             children: [
                               Expanded(
                                 child: GestureDetector(
-                                    onTap: () {
-                                      _showDatePicker(context: context);
+                                    onTap: () async {
+                                      startDate = await _showDatePicker(
+                                              context: context) ??
+                                          DateTime.now();
+                                      setModalState(
+                                        () {},
+                                      );
                                     },
                                     child: Row(
                                       children: [
                                         Icon(Icons.date_range),
                                         Gap(5),
                                         Text(
-                                          "Start: ${startDate}",
+                                          "From: ${formatter.format(startDate)}",
                                         ),
                                       ],
                                     )),
                               ),
-                              Gap(20),
-                              Icon(Icons.date_range),
-                              Gap(5),
+                              // Expanded(
+                              //   child: Text(
+                              //     "-",
+                              //     style: TextStyle(
+                              //       color: Colors.black,
+                              //       fontSize: 16,
+                              //       fontFamily: 'Nunito Sans',
+                              //       fontWeight: FontWeight.w600,
+                              //     ),
+                              //   ),
+                              // ),
                               Expanded(
                                 child: GestureDetector(
-                                    onTap: () {
-                                      _showDatePicker(context: context);
+                                    onTap: () async {
+                                      endDate = await _showDatePicker(
+                                              context: context) ??
+                                          DateTime.now();
+                                      setModalState(
+                                        () {},
+                                      );
                                     },
-                                    child: Text("End Date: ${endDate}")),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.date_range),
+                                        Gap(5),
+                                        Text(
+                                            "To: ${formatter.format(endDate)}"),
+                                      ],
+                                    )),
                               ),
                             ],
                           ),
                         if (selectedIndex == 0) Gap(20),
-                        GeneratePDFButton(),
+                        GeneratePDFButton(
+                          selectedIndex: selectedIndex,
+                        ),
                       ],
                     ),
                   ),
@@ -151,7 +188,9 @@ showModalReport({required BuildContext context}) {
 class GeneratePDFButton extends StatelessWidget {
   const GeneratePDFButton({
     super.key,
+    required this.selectedIndex,
   });
+  final int selectedIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +198,20 @@ class GeneratePDFButton extends StatelessWidget {
       height: 48,
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          if (selectedIndex == 0) {
+            print("Generate Sales");
+          } else {
+            print("Generate Inventory");
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    InventoryPDFPreviewPage(year: DateTime.now().year),
+              ),
+            );
+          }
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
