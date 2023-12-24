@@ -86,4 +86,19 @@ class RefundService {
               .toList(),
         );
   }
+
+  Future<List<Refund>> getRefundByRange(
+      DateTime fromDate, DateTime toDate) async {
+    List<Refund> listOrders = [];
+    final orders = await _refundsCollection
+        .where('timestamp', isGreaterThanOrEqualTo: fromDate)
+        .where('timestamp', isLessThan: toDate)
+        .orderBy('timestamp', descending: true)
+        .get();
+
+    for (var order in orders.docs) {
+      listOrders.add(Refund.fromFirestore(order));
+    }
+    return listOrders;
+  }
 }

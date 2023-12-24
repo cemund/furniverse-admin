@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:furniverse_admin/inventory_pdf_export.dart';
+import 'package:furniverse_admin/sales_pdf_export.dart';
 import 'package:printing/printing.dart';
 
-class InventoryPDFPreviewPage extends StatelessWidget {
-  const InventoryPDFPreviewPage({super.key});
+class SalesPDFPage extends StatelessWidget {
+  const SalesPDFPage(
+      {super.key,
+      required this.year,
+      required this.fromDate,
+      required this.toDate});
+  final int year;
+  final DateTime fromDate;
+  final DateTime toDate;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +26,7 @@ class InventoryPDFPreviewPage extends StatelessWidget {
           ),
         ),
         title: const Text(
-          'Inventory PDF Preview',
+          'Sales PDF Preview',
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.transparent,
@@ -30,7 +37,7 @@ class InventoryPDFPreviewPage extends StatelessWidget {
         canDebug: false,
 
         // pdfPreviewPageDecoration: const BoxDecoration(color: Colors.white),
-        build: (context) => makeInventoryPDF(),
+        build: (context) => makeSalesPDF(year, fromDate, toDate),
         pdfPreviewPageDecoration: const BoxDecoration(color: Colors.white),
       ),
     );
