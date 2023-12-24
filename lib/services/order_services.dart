@@ -6,12 +6,12 @@ class OrderService {
       FirebaseFirestore.instance.collection('orders');
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  Future<void> updateStatus(String orderId, String newStatus, String reason) async {
+  Future<void> updateStatus(
+      String orderId, String newStatus, String reason) async {
     try {
-      await _ordersCollection.doc(orderId).update({
-        'shippingStatus': newStatus,
-        'reason': reason
-      });
+      await _ordersCollection
+          .doc(orderId)
+          .update({'shippingStatus': newStatus, 'reason': reason});
       print('Status updated successfully');
     } catch (e) {
       print('Error updating status: $e');
@@ -52,6 +52,21 @@ class OrderService {
             )
             .toList()
             .cast());
+  }
+
+  Future<List<OrderModel>> getOrdersByRange(
+      DateTime fromDate, DateTime toDate) async {
+    List<OrderModel> listOrders = [];
+    final orders = await _ordersCollection
+        .where('orderDate', isGreaterThanOrEqualTo: fromDate)
+        .where('orderDate', isLessThan: toDate)
+        .orderBy('orderDate', descending: true)
+        .get();
+
+    for (var order in orders.docs) {
+      listOrders.add(OrderModel.fromFirestore(order));
+    }
+    return listOrders;
   }
 
   Stream<OrderModel> streamOrder(String orderId) {

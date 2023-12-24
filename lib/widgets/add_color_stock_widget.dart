@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:furniverse_admin/models/color_model.dart';
+import 'package:furniverse_admin/models/resource_expense_model.dart';
 import 'package:furniverse_admin/services/color_services.dart';
+import 'package:furniverse_admin/services/expense_services.dart';
 import 'package:furniverse_admin/services/materials_services.dart';
 import 'package:furniverse_admin/shared/constants.dart';
 import 'package:furniverse_admin/widgets/confirmation_dialog.dart';
@@ -135,6 +137,14 @@ class _AddColorStocksWidgetState extends State<AddColorStocksWidget> {
 
     await colorService.addStocks(widget.color!.id,
         int.parse(_stocksController.text), widget.color!.price);
+
+    await ExpenseService().addExpense(ResourceExpenseModel(
+        resourceId: widget.color!.id,
+        resourceName: widget.color!.color,
+        expense: double.parse(_stocksController.text) * widget.color!.price,
+        stocks: int.parse(_stocksController.text),
+        isColor: true,
+        isMaterial: false));
 
     Fluttertoast.showToast(
       msg: "${int.parse(_stocksController.text)} Stocks Added Successfully.",

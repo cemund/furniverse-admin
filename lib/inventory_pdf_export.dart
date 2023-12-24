@@ -9,7 +9,7 @@ import 'package:furniverse_admin/shared/company_info.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 
-Future<Uint8List> makeInventoryPDF(int year) async {
+Future<Uint8List> makeInventoryPDF() async {
   final pdf = Document();
 
   List<Widget> widgets = [];

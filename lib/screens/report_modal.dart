@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:furniverse_admin/inventory_pdf_page.dart';
+import 'package:furniverse_admin/sales_pdf_page.dart';
+import 'package:furniverse_admin/screens/admin_home/pages/pdf_preview_page.dart';
+import 'package:furniverse_admin/services/analytics_services.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 
@@ -159,6 +162,8 @@ showModalReport({required BuildContext context}) {
                         if (selectedIndex == 0) Gap(20),
                         GeneratePDFButton(
                           selectedIndex: selectedIndex,
+                          fromDate: startDate,
+                          toDate: endDate,
                         ),
                       ],
                     ),
@@ -189,8 +194,12 @@ class GeneratePDFButton extends StatelessWidget {
   const GeneratePDFButton({
     super.key,
     required this.selectedIndex,
+    required this.fromDate,
+    required this.toDate,
   });
   final int selectedIndex;
+  final DateTime fromDate;
+  final DateTime toDate;
 
   @override
   Widget build(BuildContext context) {
@@ -198,16 +207,28 @@ class GeneratePDFButton extends StatelessWidget {
       height: 48,
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           if (selectedIndex == 0) {
             print("Generate Sales");
+
+            if (context.mounted) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SalesPDFPage(
+                    year: DateTime.now().year,
+                    fromDate: fromDate,
+                    toDate: toDate,
+                  ),
+                ),
+              );
+            }
           } else {
             print("Generate Inventory");
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    InventoryPDFPreviewPage(year: DateTime.now().year),
+                builder: (context) => InventoryPDFPreviewPage(),
               ),
             );
           }
