@@ -50,7 +50,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
         years.add(year);
       }
     }
-    print(years);
     if (years.isEmpty) {
       AnalyticsServices().clearAnalytics();
     }
@@ -204,7 +203,6 @@ class _AnalyticsState extends State<Analytics> {
 
     // not cancelled orders
     final List<OrderModel> fullOrders = [];
-    print(orders);
     for (var order in orders) {
       if (order.shippingStatus.toUpperCase() != 'CANCELLED') {
         fullOrders.add(order);

@@ -1,3 +1,4 @@
+import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:furniverse_admin/inventory_pdf_page.dart';
 import 'package:furniverse_admin/sales_pdf_page.dart';
@@ -26,6 +27,7 @@ showModalReport({required BuildContext context}) {
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
+  String salesFilter = "Custom";
 
   showModalBottomSheet<dynamic>(
     isScrollControlled: true,
@@ -105,6 +107,43 @@ showModalReport({required BuildContext context}) {
                         ),
                         Gap(20),
                         if (selectedIndex == 0)
+                          CustomRadioButton(
+                            elevation: 0,
+                            absoluteZeroSpacing: true,
+                            unSelectedColor: Theme.of(context).canvasColor,
+                            buttonLables: [
+                              "Custom",
+                              'Weekly',
+                              'Monthly',
+                              'Quarterly',
+                              'Semi-annually',
+                              'Annually',
+                            ],
+                            buttonValues: [
+                              "Custom",
+                              "Weekly",
+                              "Monthly",
+                              'Quarterly',
+                              "Semi-annually",
+                              "Annually",
+                            ],
+                            buttonTextStyle: ButtonTextStyle(
+                                selectedColor: Colors.white,
+                                unSelectedColor: Colors.black,
+                                textStyle: TextStyle(fontSize: 14)),
+                            radioButtonValue: (value) {
+                              setModalState(() {
+                                salesFilter = value;
+                                print(salesFilter);
+                              });
+                            },
+                            selectedColor: Colors.blue,
+                            enableShape: true,
+                            defaultSelected: "Custom",
+                          ),
+                        if (salesFilter == "Custom" && selectedIndex == 0)
+                          Gap(20),
+                        if (salesFilter == "Custom" && selectedIndex == 0)
                           Row(
                             children: [
                               Expanded(
@@ -127,17 +166,6 @@ showModalReport({required BuildContext context}) {
                                       ],
                                     )),
                               ),
-                              // Expanded(
-                              //   child: Text(
-                              //     "-",
-                              //     style: TextStyle(
-                              //       color: Colors.black,
-                              //       fontSize: 16,
-                              //       fontFamily: 'Nunito Sans',
-                              //       fontWeight: FontWeight.w600,
-                              //     ),
-                              //   ),
-                              // ),
                               Expanded(
                                 child: GestureDetector(
                                     onTap: () async {
@@ -164,6 +192,7 @@ showModalReport({required BuildContext context}) {
                           selectedIndex: selectedIndex,
                           fromDate: startDate,
                           toDate: endDate,
+                          salesFilter: salesFilter,
                         ),
                       ],
                     ),
@@ -196,10 +225,12 @@ class GeneratePDFButton extends StatelessWidget {
     required this.selectedIndex,
     required this.fromDate,
     required this.toDate,
+    required this.salesFilter,
   });
   final int selectedIndex;
   final DateTime fromDate;
   final DateTime toDate;
+  final String salesFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -209,15 +240,66 @@ class GeneratePDFButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () async {
           if (selectedIndex == 0) {
-            print("Generate Sales");
+            DateTime newFromDate = fromDate;
+
+            switch (salesFilter) {
+              case "Weekly":
+
+                // Subtract the difference to get the most recent Sunday.
+                DateTime recentSunday =
+                    fromDate.subtract(Duration(days: fromDate.weekday));
+
+                newFromDate = recentSunday;
+                break;
+              case "Monthly":
+                // Set the day of the month to 1 to get the first day of the month.
+                DateTime firstDay = DateTime(fromDate.year, fromDate.month, 1);
+                newFromDate = firstDay;
+                break;
+              case "Quarterly":
+                // Determine the current quarter.
+                int firstMonthOfQuarter = 1;
+                if (fromDate.month > 4 && fromDate.month < 9) {
+                  firstMonthOfQuarter = 5;
+                } else if (fromDate.month > 8) {
+                  firstMonthOfQuarter = 9;
+                }
+
+                // Create a new DateTime object for the first day of the current quarter.
+                DateTime firstDayOfQuarter =
+                    DateTime(fromDate.year, firstMonthOfQuarter, 1);
+
+                newFromDate = firstDayOfQuarter;
+                break;
+              case "Semi-annually":
+                // Determine the current semi-annual period.
+                int currentSemiAnnual = (fromDate.month <= 6) ? 1 : 2;
+
+                // Calculate the first month of the current semi-annual period.
+                int firstMonthOfSemiAnnual = (currentSemiAnnual - 1) * 6 + 1;
+
+                // Create a new DateTime object for the first day of the current semi-annual period.
+                DateTime firstDayOfSemiAnnual =
+                    DateTime(fromDate.year, firstMonthOfSemiAnnual, 1);
+
+                newFromDate = firstDayOfSemiAnnual;
+                break;
+              case "Annually":
+                // Set the month and day to 1 to get the first day of the year.
+                DateTime firstDay = DateTime(fromDate.year, 1, 1);
+                newFromDate = firstDay;
+                break;
+              default:
+            }
 
             if (context.mounted) {
+              print(newFromDate);
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => SalesPDFPage(
                     year: DateTime.now().year,
-                    fromDate: fromDate,
+                    fromDate: newFromDate,
                     toDate: toDate,
                   ),
                 ),

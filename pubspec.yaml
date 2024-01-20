@@ -61,7 +61,7 @@ dependencies:
   fluttertoast: ^8.2.4
   email_validator: ^2.1.17
   path: ^1.8.3
-  
+  custom_radio_grouped_button: ^2.2.1
 
 dev_dependencies:
   flutter_test:
