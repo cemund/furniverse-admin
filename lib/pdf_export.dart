@@ -123,7 +123,7 @@ Future<Uint8List> makePDF(Map<String, dynamic> ordersPerCity,
                 child: _buildHeader(title: "Furniture"),
               ),
 
-              _buildHeader(title: "Complete Orders"),
+              _buildHeader(title: "Sales"),
               _buildHeader(title: "Refunds"),
               _buildHeader(title: "Total Revenue"),
               // _buildHeader(title: "Surplus/Leakage"),

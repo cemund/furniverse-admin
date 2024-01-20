@@ -193,9 +193,11 @@ Future<Uint8List> makeSalesPDF(
 
   Map colorSales = {};
   Map materialSales = {};
+  int totalResourceSales = 0;
   for (var order in fullOrders) {
     if (!refundOrderIds.contains(order.orderId) &&
         order.requestDetails.isNotEmpty) {
+      totalResourceSales++;
       final colorId = order.requestDetails['colorId'];
       final colorName = order.requestDetails['color'];
 
@@ -304,7 +306,7 @@ Future<Uint8List> makeSalesPDF(
                 child: _buildHeader(title: "Furniture"),
               ),
 
-              _buildHeader(title: "Complete Orders"),
+              _buildHeader(title: "Sales"),
               _buildHeader(title: "Refunds"),
               _buildHeader(title: "Total Revenue"),
               // _buildHeader(title: "Surplus/Leakage"),
@@ -389,6 +391,11 @@ Future<Uint8List> makeSalesPDF(
         ],
       ),
 
+      _buildTotalResourceRow(
+        title: "Total",
+        totalSales: totalResourceSales.toDouble(),
+      ),
+
       for (var id in materialIds) ...[
         _buildResourceRow(
             id: id,
@@ -446,6 +453,11 @@ Future<Uint8List> makeSalesPDF(
           ),
           _buildHeader(title: "Sales"),
         ],
+      ),
+
+      _buildTotalResourceRow(
+        title: "Total",
+        totalSales: totalResourceSales.toDouble(),
       ),
 
       for (var id in colorIds) ...[
@@ -812,10 +824,37 @@ TableRow _buildTotalRow({
         _buildNextCell(value: totalQuantity),
         _buildNextCell(value: totalRefund),
         _buildNextCell(value: totalRevenue),
-        // _buildNextCell(value: quantity),
-        // _buildNextCell(value: totalRevenue),
-        // _buildNextCell(value: 2000000),
-        // _buildNextCell(value: 2000000),
+      ]);
+}
+
+TableRow _buildTotalResourceRow({
+  required String title,
+  required double totalSales,
+}) {
+  return TableRow(
+      decoration: const BoxDecoration(
+        border: TableBorder(
+          bottom: BorderSide(color: PdfColors.black),
+        ),
+      ),
+      children: [
+        Container(
+          height: 25,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              title,
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: PdfColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ),
+        _buildNextCell(value: ""),
+        _buildNextCell(value: totalSales),
       ]);
 }
 

@@ -7,11 +7,9 @@ import 'package:furniverse_admin/models/materials_model.dart';
 import 'package:furniverse_admin/models/order.dart';
 import 'package:furniverse_admin/models/products.dart';
 import 'package:furniverse_admin/models/refund.dart';
-import 'package:furniverse_admin/screens/admin_home/pages/pdf_preview_page.dart';
 import 'package:furniverse_admin/screens/report_modal.dart';
 import 'package:furniverse_admin/services/analytics_services.dart';
 import 'package:furniverse_admin/services/color_services.dart';
-import 'package:furniverse_admin/services/expenses_services.dart';
 import 'package:furniverse_admin/services/materials_services.dart';
 import 'package:furniverse_admin/services/order_services.dart';
 import 'package:furniverse_admin/services/product_services.dart';
@@ -52,6 +50,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
         years.add(year);
       }
     }
+    print(years);
     if (years.isEmpty) {
       AnalyticsServices().clearAnalytics();
     }
@@ -139,26 +138,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 GestureDetector(
                   onTap: () async {
                     showModalReport(context: context);
-                    // final ordersPerCity = await AnalyticsServices()
-                    //     .getOrdersPerCity(
-                    //         int.parse(selectedValue ?? years[0].toString()));
-                    // final ordersPerProduct = await AnalyticsServices()
-                    //     .getOrdersPerProduct(
-                    //         int.parse(selectedValue ?? years[0].toString()));
-
-                    // if (context.mounted) {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => PdfPreviewPage(
-                    //         ordersPerCity: ordersPerCity,
-                    //         ordersPerProduct: ordersPerProduct,
-                    //         year:
-                    //             int.parse(selectedValue ?? years[0].toString()),
-                    //       ),
-                    //     ),
-                    //   );
-                    // }
                   },
                   child: Container(
                       height: 32,
@@ -225,6 +204,7 @@ class _AnalyticsState extends State<Analytics> {
 
     // not cancelled orders
     final List<OrderModel> fullOrders = [];
+    print(orders);
     for (var order in orders) {
       if (order.shippingStatus.toUpperCase() != 'CANCELLED') {
         fullOrders.add(order);
