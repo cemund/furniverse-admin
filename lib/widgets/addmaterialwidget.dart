@@ -288,7 +288,14 @@ class _AddMaterialWidgetState extends State<AddMaterialWidget> {
                     child: ElevatedButton(
                       onPressed: () {
                         final isValid = _formKey.currentState!.validate();
-                        if (!isValid) return;
+                       if (!isValid || selectedCategory == null) {
+                            Fluttertoast.showToast(
+                              msg: "Please complete the information needed.",
+                              backgroundColor: Colors.grey,
+                            );
+                            print("Input values are invalid");
+                            return;
+                          }
                         showDialog(
                           context: context,
                           builder: (context) => ConfirmationAlertDialog(
