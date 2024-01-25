@@ -77,10 +77,6 @@ class ProductService {
 
   Future<void> addQuantity(List<dynamic> products) async {
     try {
-      // await _productsCollection
-      //     .doc(productId)
-      //     .update({'quantity': FieldValue.increment(-quantity)});
-      // print(products);
       if (products[0]['productId'] == "") return;
       for (var product in products) {
         DocumentSnapshot doc =
@@ -97,7 +93,6 @@ class ProductService {
         await _productsCollection
             .doc(product['productId'])
             .update({'variants': newVariants});
-        // .update({'quantity': FieldValue.increment(-quantity)});
       }
     } catch (e) {
       print('Error updating product quantity: $e');

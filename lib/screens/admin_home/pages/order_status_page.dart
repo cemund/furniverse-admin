@@ -410,6 +410,7 @@ class _OrdersCardState extends State<OrdersCard> {
                                                                               String title = "";
                                                                               String subtitile = "";
                                                                               String? notifImage = await ProductService().getProductImage(order.products[0]['productId']);
+
                                                                               if (order.requestDetails.isEmpty) {
                                                                                 await ProductService().addQuantity(order.products);
                                                                               } else {
@@ -428,10 +429,6 @@ class _OrdersCardState extends State<OrdersCard> {
                                                                                 messagingService.notifyUser(userId: order.userId, message: value);
                                                                               }
 
-                                                                              // notifyUser(value),
-                                                                              // messagingService.notifyUser(
-                                                                              //     userId: order.userId,
-                                                                              //     message: value!);
                                                                               if (context.mounted) {
                                                                                 Navigator.pop(context);
                                                                                 Navigator.pop(context);
@@ -510,28 +507,6 @@ class _OrdersCardState extends State<OrdersCard> {
                                                         "Your order #${order.orderId.toUpperCase()} has been confirmed.";
                                                     subtitile =
                                                         "Seller has confirmed your order! Please expect your item to be shipped within 5-7 days.";
-                                                    if (order.requestDetails
-                                                        .isEmpty) {
-                                                      await ProductService()
-                                                          .reducedQuantity(
-                                                              order.products);
-                                                    } else {
-                                                      await ColorService().reducedQuantity(
-                                                          widget.order
-                                                                  .requestDetails[
-                                                              'colorId'],
-                                                          widget.order
-                                                                  .requestDetails[
-                                                              'colorQuantity']);
-                                                      await MaterialsServices()
-                                                          .reducedQuantity(
-                                                              widget.order
-                                                                      .requestDetails[
-                                                                  'materialId'],
-                                                              widget.order
-                                                                      .requestDetails[
-                                                                  'materialQuantity']);
-                                                    }
 
                                                     break;
                                                   }
@@ -552,12 +527,6 @@ class _OrdersCardState extends State<OrdersCard> {
                                                         "Thank you for purchasing.";
                                                     break;
                                                   }
-                                                // case "CANCELLED":
-                                                //   {
-                                                //     title = "Your order #${order.orderId.toUpperCase()} has been cancelled by the seller.";
-                                                //     subtitile = "Your order #${order.orderId.toUpperCase()} has been canceled by the seller. Please click here for more details.";
-                                                //     break;
-                                                //   }
                                               }
 
                                               if (value != null) {
@@ -613,24 +582,6 @@ class _OrdersCardState extends State<OrdersCard> {
       ],
     );
   }
-
-  // notifyUser(
-  //   value,
-  // ) {
-  //   FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc("CzKVkPWfrxcsLbac6qT28MDWGom1")
-  //       //.where("uid", isEqualTo: "Q3tRGI2r4n8rUkGArsla")
-  //       .get()
-  //       .then((ds) {
-  //     samplel = "${ds["token"]}";
-  //     setState(() {});
-  //   });
-
-  //   FirebaseUserNotification().sendPushMessage(value!, samplel);
-
-  //   Navigator.pop(context);
-  // }
 }
 
 class MyOrdersTab extends StatelessWidget {

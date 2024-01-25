@@ -141,7 +141,6 @@ class ColorService {
         await _colorCollection
             .doc(colorId)
             .update({'stocks': FieldValue.increment(quantity)});
-        // .update({'stocks': FieldValue.increment(quantity.ceil())});
 
         int sales = (colors.data() as Map)['sales'] ?? 0;
         if (sales > 0) {
