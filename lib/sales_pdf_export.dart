@@ -191,9 +191,31 @@ Future<Uint8List> makeSalesPDF(
         await ProductService().getProductName(key);
   });
 
+  List<ColorModel> allColors = [];
+  try {
+    allColors = await ColorService().getAllColors();
+  } catch (e) {
+    print("Error in getting all colors from db: $e");
+  }
+
+  Map allColorsPriceById = {};
+  allColors.forEach((color) => allColorsPriceById[color.id] = color.price);
+
+  Map allMaterialsPriceById = {};
+
+  try {
+    listMaterials = await MaterialsServices().getAllMaterials();
+  } on Exception catch (e) {
+    print("Error in getting all materials from db: $e");
+  }
+  listMaterials.forEach(
+      (material) => allMaterialsPriceById[material.id] = material.price);
+
   Map colorSales = {};
   Map materialSales = {};
   int totalResourceSales = 0;
+  double totalColorRevenue = 0.0;
+  double totalMaterialRevenue = 0.0;
   for (var order in fullOrders) {
     if (!refundOrderIds.contains(order.orderId) &&
         order.requestDetails.isNotEmpty) {
@@ -203,18 +225,26 @@ Future<Uint8List> makeSalesPDF(
 
       final materialId = order.requestDetails['materialId'];
       final materialName = order.requestDetails['material'];
-      colorSales.putIfAbsent(colorId, () => {'name': colorName, 'sales': 0});
+      colorSales.putIfAbsent(
+          colorId, () => {'name': colorName, 'sales': 0, 'revenue': 0});
       materialSales.putIfAbsent(
-          materialId, () => {'name': materialName, 'sales': 0});
+          materialId, () => {'name': materialName, 'sales': 0, 'revenue': 0});
 
       colorSales[colorId]['sales'] = colorSales[colorId]['sales'] + 1;
       materialSales[materialId]['sales'] =
           materialSales[materialId]['sales'] + 1;
+
+      colorSales[colorId]['revenue'] = colorSales[colorId]['revenue'] +
+          (allColorsPriceById[colorId] * order.requestDetails['colorQuantity']);
+      totalColorRevenue += colorSales[colorId]['revenue'];
+
+      materialSales[materialId]['revenue'] = materialSales[materialId]
+              ['revenue'] +
+          (allMaterialsPriceById[materialId] *
+              order.requestDetails['materialQuantity']);
+      totalMaterialRevenue += materialSales[materialId]['revenue'];
     }
   }
-
-  // listColors = await ColorService().getAllColors();
-  listMaterials = await MaterialsServices().getAllMaterials();
 
   // company name
   var companyInfo = Container(
@@ -301,22 +331,16 @@ Future<Uint8List> makeSalesPDF(
           TableRow(
             children: [
               _buildIdHeader(title: "Product ID"),
-
               Expanded(
                 child: _buildHeader(title: "Furniture"),
               ),
-
               _buildHeader(title: "Sales"),
               _buildHeader(title: "Refunds"),
               _buildHeader(title: "Total Revenue"),
-              // _buildHeader(title: "Surplus/Leakage"),
-              // _buildHeader(title: "Trade Area Capture"),
-              // _buildHeader(title: "Pull Factor"),
             ],
           ),
 
           // total
-          // _buildCityRow("Total"),
           _buildTotalRow(
             title: "Total",
             totalQuantity: totalQuantity,
@@ -332,9 +356,6 @@ Future<Uint8List> makeSalesPDF(
                 refunds: ordersWithName[productId]['refunds'] ?? 0,
                 revenue: ordersWithName[productId]['total'] ?? 0.0),
           ]
-
-          // loop
-          // for (int i = 0; i < 20; i++) _buildCityRow("Coffee Table")
         ],
       );
     },
@@ -361,7 +382,7 @@ Future<Uint8List> makeSalesPDF(
                 decoration:
                     const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
                 child: Text(
-                  "Material Inventory Report",
+                  "Material Sales Report",
                   style: const TextStyle(
                     color: PdfColor.fromInt(0xFFFFFFFF),
                     fontSize: 12,
@@ -388,19 +409,22 @@ Future<Uint8List> makeSalesPDF(
             child: _buildHeader(title: "Name"),
           ),
           _buildHeader(title: "Sales"),
+          _buildHeader(title: "Revenue"),
         ],
       ),
 
       _buildTotalResourceRow(
         title: "Total",
         totalSales: totalResourceSales.toDouble(),
+        totalRevenue: totalMaterialRevenue,
       ),
 
       for (var id in materialIds) ...[
         _buildResourceRow(
             id: id,
             name: materialSales[id]['name'],
-            sales: materialSales[id]['sales'])
+            sales: materialSales[id]['sales'],
+            revenue: materialSales[id]['revenue'])
       ]
     ],
   ));
@@ -426,7 +450,7 @@ Future<Uint8List> makeSalesPDF(
                 decoration:
                     const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
                 child: Text(
-                  "Color Inventory Report",
+                  "Color Sales Report",
                   style: const TextStyle(
                     color: PdfColor.fromInt(0xFFFFFFFF),
                     fontSize: 12,
@@ -452,19 +476,22 @@ Future<Uint8List> makeSalesPDF(
             child: _buildHeader(title: "Name"),
           ),
           _buildHeader(title: "Sales"),
+          _buildHeader(title: "Revenue"),
         ],
       ),
 
       _buildTotalResourceRow(
         title: "Total",
         totalSales: totalResourceSales.toDouble(),
+        totalRevenue: totalColorRevenue,
       ),
 
       for (var id in colorIds) ...[
         _buildResourceRow(
             id: id,
             name: colorSales[id]['name'],
-            sales: colorSales[id]['sales'])
+            sales: colorSales[id]['sales'],
+            revenue: colorSales[id]['revenue'])
       ]
     ],
   ));
@@ -551,7 +578,7 @@ Future<Uint8List> makeSalesPDF(
             height: 25,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Text(
-              "Total Revenue",
+              "Revenue",
               textAlign: TextAlign.left,
               style: const TextStyle(
                 color: PdfColors.black,
@@ -689,6 +716,7 @@ TableRow _buildResourceRow({
   required String id,
   required String name,
   required int sales,
+  required double revenue,
 }) {
   return TableRow(
       decoration: const BoxDecoration(
@@ -731,6 +759,7 @@ TableRow _buildResourceRow({
           ),
         ),
         _buildNextCell(value: sales),
+        _buildNextCell(value: revenue),
       ]);
 }
 
@@ -830,6 +859,7 @@ TableRow _buildTotalRow({
 TableRow _buildTotalResourceRow({
   required String title,
   required double totalSales,
+  required double totalRevenue,
 }) {
   return TableRow(
       decoration: const BoxDecoration(
@@ -855,6 +885,7 @@ TableRow _buildTotalResourceRow({
         ),
         _buildNextCell(value: ""),
         _buildNextCell(value: totalSales),
+        _buildNextCell(value: totalRevenue),
       ]);
 }
 

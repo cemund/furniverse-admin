@@ -196,7 +196,7 @@ class _OrdersCardState extends State<OrdersCard> {
                       ),
                     ),
                     TextSpan(
-                      text: '₱${order.totalPrice.toStringAsFixed(0)}',
+                      text: '₱${order.totalPrice.toStringAsFixed(2)}',
                       style: const TextStyle(
                         color: Color(0xFF303030),
                         fontSize: 16,
