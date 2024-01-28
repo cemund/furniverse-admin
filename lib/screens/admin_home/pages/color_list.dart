@@ -65,46 +65,6 @@ class _ColorListState extends State<ColorList> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        // DropdownButtonHideUnderline(
-                        //   child: DropdownButton2<String>(
-                        //     isExpanded: true,
-                        //     hint: Text(
-                        //       selectedCategory ?? "All Products",
-                        //       style: const TextStyle(
-                        //         color: Color(0xFF44444F),
-                        //         fontSize: 14,
-                        //         fontFamily: 'Inter',
-                        //         fontWeight: FontWeight.w400,
-                        //       ),
-                        //     ),
-                        //     items: categories
-                        //         .map((String item) => DropdownMenuItem<String>(
-                        //               value: item,
-                        //               child: Text(
-                        //                 item,
-                        //                 style: const TextStyle(
-                        //                   fontSize: 14,
-                        //                 ),
-                        //                 overflow: TextOverflow.ellipsis,
-                        //                 maxLines: 2,
-                        //               ),
-                        //             ))
-                        //         .toList(),
-                        //     value: selectedCategory,
-                        //     onChanged: (String? value) {
-                        //       setState(() {
-                        //         selectedCategory = value;
-                        //       });
-                        //     },
-                        //     buttonStyleData: const ButtonStyleData(
-                        //       height: 40,
-                        //       width: 110,
-                        //     ),
-                        //     menuItemStyleData: const MenuItemStyleData(
-                        //       height: 40,
-                        //     ),
-                        //   ),
-                        // ),
                       ],
                     ),
                   ],

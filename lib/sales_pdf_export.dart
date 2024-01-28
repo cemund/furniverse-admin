@@ -517,7 +517,7 @@ Future<Uint8List> makeSalesPDF(
               decoration:
                   const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
               child: Text(
-                "Financial Statement",
+                "Resource Sales Report",
                 style: const TextStyle(
                   color: PdfColor.fromInt(0xFFFFFFFF),
                   fontSize: 12,
@@ -530,6 +530,157 @@ Future<Uint8List> makeSalesPDF(
     ),
   ));
   // product table title
+  widgets.add(Container(
+    width: 300,
+    child: Table(
+      children: [
+        TableRow(
+          decoration: const BoxDecoration(
+            border: TableBorder(
+              bottom: BorderSide(color: PdfColors.white),
+            ),
+          ),
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              padding: const EdgeInsets.all(10),
+              decoration:
+                  const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+              child: Text(
+                "Resource",
+                style: const TextStyle(
+                  color: PdfColor.fromInt(0xFFFFFFFF),
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              padding: const EdgeInsets.all(10),
+              decoration:
+                  const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "Sales",
+                  style: const TextStyle(
+                    color: PdfColor.fromInt(0xFFFFFFFF),
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              padding: const EdgeInsets.all(10),
+              decoration:
+                  const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "Revenue",
+                  style: const TextStyle(
+                    color: PdfColor.fromInt(0xFFFFFFFF),
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        TableRow(children: [
+          Container(
+            width: 90,
+            height: 25,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Text(
+              "Material",
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: PdfColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          _buildNextCell(value: totalResourceSales),
+          _buildNextCell(value: totalMaterialRevenue)
+        ]),
+        TableRow(
+            decoration: const BoxDecoration(
+              border: TableBorder(
+                bottom: BorderSide(color: PdfColors.black),
+              ),
+            ),
+            children: [
+              Container(
+                width: 90,
+                height: 25,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Text(
+                  "Color",
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    color: PdfColors.black,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              _buildNextCell(value: totalResourceSales),
+              _buildNextCell(value: totalColorRevenue),
+            ]),
+        TableRow(children: [
+          Container(
+            width: 90,
+            height: 25,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Text(
+              "Grand Total",
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: PdfColors.black,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          _buildNextCell(value: totalResourceSales + totalResourceSales),
+          _buildNextCell(value: totalColorRevenue + totalMaterialRevenue),
+        ]),
+      ],
+    ),
+  ));
+
+  widgets.add(SizedBox(height: 20));
+
+  widgets.add(Container(
+    width: 300,
+    child: Table(
+      children: [
+        TableRow(
+          decoration: const BoxDecoration(
+            border: TableBorder(
+              bottom: BorderSide(color: PdfColors.white),
+            ),
+          ),
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 1),
+              padding: const EdgeInsets.all(10),
+              decoration:
+                  const BoxDecoration(color: PdfColor.fromInt(0xff6F2C3E)),
+              child: Text(
+                "Financial Statement",
+                style: const TextStyle(
+                  color: PdfColor.fromInt(0xFFFFFFFF),
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  ));
   widgets.add(Container(
     width: 300,
     child: Table(
