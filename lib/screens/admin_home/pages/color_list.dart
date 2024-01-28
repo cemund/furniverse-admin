@@ -453,15 +453,6 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
                             ),
                           ],
                         ),
-                        // Text(
-                        //   "₱${widget.colorModel.price}",
-                        //   style: const TextStyle(
-                        //     color: Color(0xFF171625),
-                        //     fontSize: 14,
-                        //     fontFamily: 'Inter',
-                        //     fontWeight: FontWeight.w700,
-                        //   ),
-                        // )
                       ],
                     ),
                   ),
@@ -470,37 +461,6 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        //       Row(
-                        //         children: [
-                        //           const Text(
-                        //             "ID",
-                        //             style: TextStyle(
-                        //               color: Color(0xFF686873),
-                        //               fontSize: 12,
-                        //               fontFamily: 'Inter',
-                        //               fontWeight: FontWeight.w600,
-                        //               height: 0,
-                        //             ),
-                        //           ),
-                        //           const SizedBox(width: 6),
-                        //           SizedBox(
-                        //             width: 100,
-                        //             child: Text(
-                        //               "widget.product.id",
-                        //               style: const TextStyle(
-                        //                 color: Color(0xFF44444F),
-                        //                 fontSize: 14,
-                        //                 fontFamily: 'Inter',
-                        //                 fontWeight: FontWeight.w400,
-                        //                 height: 0,
-                        //                 letterSpacing: 0.20,
-                        //               ),
-                        //               maxLines: 1,
-                        //               overflow: TextOverflow.ellipsis,
-                        //             ),
-                        //           )
-                        //         ],
-                        //       ),
                         Row(
                           children: [
                             const Text(
@@ -515,7 +475,7 @@ class _ColorDetailCardState extends State<ColorDetailCard> {
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              widget.colorModel.stocks.toString(),
+                              widget.colorModel.stocks.toStringAsFixed(2),
                               style: const TextStyle(
                                 color: Color(0xFF44444F),
                                 fontSize: 14,
